@@ -3,7 +3,7 @@ using System.Net;
 using System.Configuration;
 using Microsoft.SharePoint.Client;
 
-namespace SPFileSync_Application
+namespace Configuration
 {
     public class Connection
     {
@@ -17,12 +17,11 @@ namespace SPFileSync_Application
 
         public static NetworkCredential Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Account"], ConfigurationManager.AppSettings["Password"]);
 
-        public static Web SharePointResult()
+        public static ClientContext SharePointResult()
         {
             ClientContext context = new ClientContext(Uri);
             context.Credentials = Credentials;
-            Web site = context.Web;
-            return site;
+            return context;
         }
     }
 }

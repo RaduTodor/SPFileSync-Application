@@ -1,5 +1,4 @@
-﻿using Microsoft.SharePoint.Client;
-using System.Windows;
+﻿using System.Windows;
 
 namespace SPFileSync_Application
 {
@@ -11,7 +10,6 @@ namespace SPFileSync_Application
         public MainWindow()
         {
             InitializeComponent();
-            Web actual = Connection.SharePointResult();
         }
     }
 }
