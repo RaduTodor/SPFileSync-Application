@@ -11,9 +11,14 @@ namespace DataAccessLayer
 
         public string ListName { get; set; }
 
-        public string GetCurrentUser()
+        public string GetCurrentUserName()
         {
             return ConnectionConfiguration.Connection.Credentials.UserName.Split('\\')[1].Split('\\')[0];
+        }
+
+        public SP.User GetCurrentUser()
+        {
+            return ConnectionConfiguration.Connection.SharePointResult().Web.CurrentUser;
         }
 
         public void AddListItem()
@@ -48,6 +53,37 @@ namespace DataAccessLayer
                 };
                 client.PutListItem(ListName, contactEntry, itemID);
             }
+        }
+
+        public void AddListReferenceItem(System.Uri uri)
+        {
+            var clientContext = ConnectionConfiguration.Connection.SharePointResult();
+            SP.List oList = clientContext.Web.Lists.GetByTitle(ListName);
+            ListItemCreationInformation itemCreateInfo = new ListItemCreationInformation();
+            ListItem oListItem = oList.AddItem(itemCreateInfo);
+            oListItem["URL"] = uri;
+            oListItem["User"] = clientContext.Web.CurrentUser;
+            oListItem.Update();
+            clientContext.ExecuteQuery();
+        }
+
+        public void RemoveListReferenceItem(int itemID)
+        {
+            var clientContext = ConnectionConfiguration.Connection.SharePointResult();
+            SP.List oList = clientContext.Web.Lists.GetByTitle(ListName);
+            oList.GetItemById(itemID).DeleteObject();
+            clientContext.ExecuteQuery();
+        }
+
+        public void ChangeListReferenceItem(System.Uri uri, int itemID)
+        {
+            var clientContext = ConnectionConfiguration.Connection.SharePointResult();
+            SP.List oList = clientContext.Web.Lists.GetByTitle(ListName);
+            ListItem oListItem = oList.GetItemById(itemID);
+            oListItem["URL"] = uri;
+            oListItem["User"] = clientContext.Web.CurrentUser;
+            oListItem.Update();
+            clientContext.ExecuteQuery();
         }
 
         public IEnumerable<SP.List> GetLists()

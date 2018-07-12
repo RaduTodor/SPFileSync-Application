@@ -8,7 +8,7 @@ namespace BusinessLogicLayer
         public static void DownloadFilesOfUser(DataAccessOperations dataAccessOperations)
         {
             var listOfItems = dataAccessOperations.Operations.GetListItems(dataAccessOperations.Operations.ListName);
-            string currentUserName = dataAccessOperations.Operations.GetCurrentUser();
+            string currentUserName = dataAccessOperations.Operations.GetCurrentUserName();
             foreach (var item in listOfItems)
             {
                 FieldUserValue itemUser = (FieldUserValue)item["User"];
