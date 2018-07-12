@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using BusinessLogicLayer;
 using DataAccessLayer;
+using Microsoft.SharePoint.Client;
 
 namespace SPFileSync_Application
 {
@@ -30,7 +31,9 @@ namespace SPFileSync_Application
                 SyncTimeSpan = new System.TimeSpan()
             };
             DataAccessOperations dao = new DataAccessOperations(connectionConfiguration, "SyncList");
-            ListOperations.DownloadFilesOfUser(dao);
+            //ListOperations.DownloadFilesOfUser(dao);
+            FileSynchronizer fileSynchronizer = new FileSynchronizer { DataAccessOperations = dao };
+            fileSynchronizer.Synchronize();
         }
     }
 }

@@ -41,7 +41,7 @@ namespace DataAccessLayer
             }
         }
 
-        private static void DownloadAFile(Microsoft.SharePoint.Client.ListItem item, string targetPath)
+        private static void DownloadAFile(ListItem item, string targetPath)
         {
             var ctx = (ClientContext)item.Context;
             var fileRef = (string)item["FileRef"];
@@ -56,6 +56,7 @@ namespace DataAccessLayer
 
         public string DownloadFile(string url, string directoryPath)
         {
+            
             string serverTempdocPath = "";
 
             try

@@ -1,6 +1,9 @@
 ﻿using Configuration;
 using Microsoft.SharePoint.Client;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using SP = Microsoft.SharePoint.Client;
 
 namespace DataAccessLayer
@@ -39,6 +42,16 @@ namespace DataAccessLayer
             using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
             {
                 client.DeleteListItem(ListName, itemID);
+            }
+        }
+
+        public string GetMetadataItem(string url)
+        {
+            using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
+            {
+                string json=client.GetMetadataFileItem(url);
+                
+                return json;
             }
         }
 
@@ -86,6 +99,15 @@ namespace DataAccessLayer
             clientContext.ExecuteQuery();
         }
 
+        public SP.List GetList(string url)
+        {
+            ClientContext context = ConnectionConfiguration.Connection.SharePointResult();
+            Web site = context.Web;
+            context.Load(site, osite => osite.Title);
+            context.ExecuteQuery();
+            return site.GetList(url);
+        }
+
         public IEnumerable<SP.List> GetLists()
         {
             ClientContext context = ConnectionConfiguration.Connection.SharePointResult();
@@ -99,7 +121,7 @@ namespace DataAccessLayer
             return listsCollection;
         }
 
-        public IEnumerable<SP.ListItem> GetListItems(string listName)
+        public IEnumerable<SP.ListItem> GetListItems()
         {
             using (var ctx = ConnectionConfiguration.Connection.SharePointResult())
             {
@@ -115,7 +137,7 @@ namespace DataAccessLayer
                                           "</Query>" +
                                        "</View>";
 
-                var sourceList = ctx.Web.Lists.GetByTitle(listName);
+                var sourceList = ctx.Web.Lists.GetByTitle(ListName);
                 var items = sourceList.GetItems(qry);
                 ctx.Load(items);
                 ctx.ExecuteQuery();

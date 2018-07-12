@@ -7,7 +7,8 @@ namespace BusinessLogicLayer
         public static string GetValueURL(SP.ListItem item, string columnName)
         {
             SP.FieldUrlValue value = (SP.FieldUrlValue)item[columnName];
-            return value.Url;
+            string urlString = value.Url.Replace("%20", " ");
+            return urlString;
         }
     }
 }

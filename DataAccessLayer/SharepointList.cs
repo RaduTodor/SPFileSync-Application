@@ -2,6 +2,12 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
+using Microsoft.SharePoint;
+using Microsoft.SharePoint.Client;
+using System.Linq;
+using System.IO;
+using System.Text;
+using System.Collections.Generic;
 
 namespace DataAccessLayer
 {
@@ -39,6 +45,37 @@ namespace DataAccessLayer
             var payloadString = JsonConvert.SerializeObject(payload);
             webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json;odata=verbose");
             webClient.UploadString(endpointUri, "POST", payloadString);
+        }
+
+        public string GetMetadataFileItem(string fileUrl)
+        {
+            fileUrl = fileUrl.Replace("%20", " ");
+            string listTitle = ParseURLParentDirectory(fileUrl);
+            HttpWebRequest endpointRequest = (HttpWebRequest)HttpWebRequest.Create(WebUri.ToString() + $"_api/Web/lists/getbytitle('{listTitle}')/items?$select=Modified&$filter=FileRef eq '{fileUrl}'");
+            endpointRequest.Method = "GET";
+            endpointRequest.Credentials = webClient.Credentials;
+            endpointRequest.Accept = "application/json;odata=verbose";
+            HttpWebResponse endpointResponse = (HttpWebResponse)endpointRequest.GetResponse();
+            string result = "";
+            using (System.IO.Stream stream = endpointResponse.GetResponseStream())
+            {
+                using (System.IO.StreamReader sr = new System.IO.StreamReader(stream, Encoding.UTF8))
+                {
+                    result = sr.ReadToEnd();
+                    sr.Close();
+                }
+            }
+            return result;
+        }
+
+        public string ParseURLParentDirectory(string url)
+        {
+            Uri uri = new Uri(url);
+            uri = new Uri(uri.AbsoluteUri.Remove(uri.AbsoluteUri.Length - uri.Segments.Last().Length));
+            string final = uri.Segments[3];
+            final = final.Remove(final.Length - 1);
+            final = final.Replace("%20", " ");
+            return final;
         }
 
         public void DeleteListItem(string listTitle, int id)

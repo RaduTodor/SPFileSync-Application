@@ -1,5 +1,7 @@
 ﻿using DataAccessLayer;
 using Microsoft.SharePoint.Client;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BusinessLogicLayer
 {
@@ -7,8 +9,19 @@ namespace BusinessLogicLayer
     {
         public static void DownloadFilesOfUser(DataAccessOperations dataAccessOperations)
         {
-            var listOfItems = dataAccessOperations.Operations.GetListItems(dataAccessOperations.Operations.ListName);
+            List<ListItem> items = GetAllUserItems(dataAccessOperations);
+            foreach (ListItem item in items)
+            {
+                string url = SPItemManipulator.GetValueURL(item, "URL");
+                dataAccessOperations.FilesGetter.DownloadFile(url, dataAccessOperations.ConnectionConfiguration.DirectoryPath);
+            }
+        }
+
+        public static List<ListItem> GetAllUserItems(DataAccessOperations dataAccessOperations)
+        {
+            var listOfItems = dataAccessOperations.Operations.GetListItems().ToList();
             string currentUserName = dataAccessOperations.Operations.GetCurrentUserName();
+            List<ListItem> allUserItems = new List<ListItem>();
             foreach (var item in listOfItems)
             {
                 FieldUserValue itemUser = (FieldUserValue)item["User"];
@@ -16,11 +29,11 @@ namespace BusinessLogicLayer
                 {
                     if (((FieldUserValue)item["User"]).LookupValue == currentUserName)
                     {
-                        string url = ((Microsoft.SharePoint.Client.FieldUrlValue)(item["URL"])).Url;
-                        dataAccessOperations.FilesGetter.DownloadFile(url, dataAccessOperations.ConnectionConfiguration.DirectoryPath);
+                        allUserItems.Add(item);
                     }
                 }
             }
+            return allUserItems;
         }
     }
 }
