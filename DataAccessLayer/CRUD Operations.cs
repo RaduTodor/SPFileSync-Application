@@ -1,19 +1,24 @@
 ﻿using Configuration;
 using Microsoft.SharePoint.Client;
-using System;
 using System.Collections.Generic;
-using System.Net;
 using SP = Microsoft.SharePoint.Client;
 
 namespace DataAccessLayer
 {
     public class CRUD_Operations
     {
+        public ConnectionConfiguration ConnectionConfiguration { get; set; }
+
         public string ListName { get; set; }
 
-        public void AddListItem(Uri uri, ICredentials credentials)
+        public string GetCurrentUser()
         {
-            using (var client = new SharepointList(uri, credentials))
+            return ConnectionConfiguration.Connection.Credentials.UserName.Split('\\')[1].Split('\\')[0];
+        }
+
+        public void AddListItem()
+        {
+            using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
             {
                 var contactEntry = new
                 {
@@ -24,17 +29,17 @@ namespace DataAccessLayer
             }
         }
 
-        public void RemoveListItem(Uri uri, ICredentials credentials, int itemID)
+        public void RemoveListItem(int itemID)
         {
-            using (var client = new SharepointList(uri, credentials))
+            using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
             {
                 client.DeleteListItem(ListName, itemID);
             }
         }
 
-        public void ChangeListItem(Uri uri, ICredentials credentials, int itemID)
+        public void ChangeListItem(int itemID)
         {
-            using (var client = new SharepointList(uri, credentials))
+            using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
             {
                 var contactEntry = new
                 {
@@ -47,7 +52,7 @@ namespace DataAccessLayer
 
         public IEnumerable<SP.List> GetLists()
         {
-            ClientContext context = Connection.SharePointResult();
+            ClientContext context = ConnectionConfiguration.Connection.SharePointResult();
             Web site = context.Web;
             context.Load(site, osite => osite.Title);
             context.ExecuteQuery();
@@ -60,7 +65,7 @@ namespace DataAccessLayer
 
         public IEnumerable<SP.ListItem> GetListItems(string listName)
         {
-            using (var ctx = Connection.SharePointResult())
+            using (var ctx = ConnectionConfiguration.Connection.SharePointResult())
             {
                 var qry = new CamlQuery();
                 qry.ViewXml = "<View Scope='RecursiveAll'>" +

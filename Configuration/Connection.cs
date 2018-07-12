@@ -13,11 +13,11 @@ namespace Configuration
             Credentials = credentials;
         }
 
-        public static Uri Uri = new Uri(ConfigurationManager.AppSettings["SharePointURL"]);
+        public Uri Uri = new Uri(ConfigurationManager.AppSettings["SharePointURL"]);
 
-        public static NetworkCredential Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Account"], ConfigurationManager.AppSettings["Password"]);
+        public NetworkCredential Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Account"], ConfigurationManager.AppSettings["Password"]);
 
-        public static ClientContext SharePointResult()
+        public ClientContext SharePointResult()
         {
             ClientContext context = new ClientContext(Uri);
             context.Credentials = Credentials;

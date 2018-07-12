@@ -45,10 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ListOperations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SPItemManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Configuration\Configuration.csproj">
+      <Project>{1D7EECC5-411E-40E0-9D6B-FF15EDE1FECB}</Project>
+      <Name>Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
       <Project>{1675d16a-2b92-4e5d-ae8c-027be54afc4f}</Project>
       <Name>DataAccessLayer</Name>

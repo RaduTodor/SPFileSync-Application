@@ -10,9 +10,11 @@ namespace DataAccessLayer
 {
     public class FilesGetter
     {
+        public ConnectionConfiguration ConnectionConfiguration { get; set; }
+
         public void DownloadListItems(string listName)
         {
-            using (var ctx = Connection.SharePointResult())
+            using (var ctx = ConnectionConfiguration.Connection.SharePointResult())
             {
                 var qry = new CamlQuery();
                 qry.ViewXml = "<View Scope='RecursiveAll'>" +
@@ -59,7 +61,7 @@ namespace DataAccessLayer
             try
             {
                 var request = (HttpWebRequest)WebRequest.Create(url);
-                var credentials = Connection.Credentials;
+                var credentials = ConnectionConfiguration.Connection.Credentials;
 
                 request.Credentials = credentials;
                 request.Timeout = 20000;

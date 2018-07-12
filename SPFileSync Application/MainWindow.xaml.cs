@@ -1,4 +1,9 @@
-﻿using System.Windows;
+﻿using Configuration;
+using System.Windows;
+using System.Configuration;
+using System.Collections.Generic;
+using BusinessLogicLayer;
+using DataAccessLayer;
 
 namespace SPFileSync_Application
 {
@@ -10,6 +15,22 @@ namespace SPFileSync_Application
         public MainWindow()
         {
             InitializeComponent();
+            Connection connection = new Connection(new System.Uri(ConfigurationManager.AppSettings["SharePointURL"]), 
+                new System.Net.NetworkCredential(ConfigurationManager.AppSettings["Account"], ConfigurationManager.AppSettings["Password"]));
+            Dictionary<string, List<string>> listsAndColumns = new Dictionary<string, List<string>>();
+            List<string> columns = new List<string>();
+            columns.Add("URL");
+            columns.Add("User");
+            listsAndColumns.Add("SyncList", columns);
+            ConnectionConfiguration connectionConfiguration = new ConnectionConfiguration
+            {
+                Connection = connection,
+                ListsAndColumns = listsAndColumns,
+                DirectoryPath = ConfigurationManager.AppSettings["DirectoryPath"],
+                SyncTimeSpan = new System.TimeSpan()
+            };
+            DataAccessOperations dao = new DataAccessOperations(connectionConfiguration, "SyncList");
+            ListOperations.DownloadFilesOfUser(dao);
         }
     }
 }
