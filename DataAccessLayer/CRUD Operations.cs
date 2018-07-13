@@ -1,9 +1,6 @@
 ﻿using Configuration;
 using Microsoft.SharePoint.Client;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Linq;
 using SP = Microsoft.SharePoint.Client;
 
 namespace DataAccessLayer
@@ -52,6 +49,14 @@ namespace DataAccessLayer
                 string json=client.GetMetadataFileItem(url);
                 
                 return json;
+            }
+        }
+
+        public void GetCurrentUserItems()
+        {
+            using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
+            {
+                client.GetCurrentUserItems(ConnectionConfiguration);   
             }
         }
 
@@ -121,7 +126,7 @@ namespace DataAccessLayer
             return listsCollection;
         }
 
-        public IEnumerable<SP.ListItem> GetListItems()
+        public IEnumerable<SP.ListItem> GetAllListItems()
         {
             using (var ctx = ConnectionConfiguration.Connection.SharePointResult())
             {

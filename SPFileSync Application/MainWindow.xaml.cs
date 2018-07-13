@@ -20,22 +20,26 @@ namespace SPFileSync_Application
             InitializeComponent();
             Connection connection = new Connection(new System.Uri(ConfigurationManager.AppSettings["SharePointURL"]), 
                 new System.Net.NetworkCredential(ConfigurationManager.AppSettings["Account"], ConfigurationManager.AppSettings["Password"]));
-            Dictionary<string, List<string>> listsAndColumns = new Dictionary<string, List<string>>();
-            List<string> columns = new List<string>();
-            columns.Add("URL");
-            columns.Add("User");
-            listsAndColumns.Add("SyncList", columns);
+            List<ListWithColumnsName> listsWithColumnsNames = new List<ListWithColumnsName>();
+            listsWithColumnsNames.Add(new ListWithColumnsName
+            {
+                ListName = "SyncList",
+                UrlColumnName = "URL",
+                UserColumnName = "User"
+            });
+
             ConnectionConfiguration connectionConfiguration = new ConnectionConfiguration
             {
                 Connection = connection,
-                ListsAndColumns = listsAndColumns,
+                ListsWithColumnsNames = listsWithColumnsNames,
                 DirectoryPath = ConfigurationManager.AppSettings["DirectoryPath"],
                 SyncTimeSpan = new System.TimeSpan()
             };
             DataAccessOperations dao = new DataAccessOperations(connectionConfiguration, "SyncList");
             //ListOperations.DownloadFilesOfUser(dao);
-            FileSynchronizer fileSynchronizer = new FileSynchronizer { DataAccessOperations = dao };
-            fileSynchronizer.Synchronize();
+            //FileSynchronizer fileSynchronizer = new FileSynchronizer { DataAccessOperations = dao };
+            //fileSynchronizer.Synchronize();
+            dao.Operations.GetCurrentUserItems();
         }
     }
 }

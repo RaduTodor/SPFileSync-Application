@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models;
+using System;
 using System.Collections.Generic;
 
 namespace Configuration
@@ -7,7 +8,7 @@ namespace Configuration
     {
         public Connection Connection { get; set; }
 
-        public Dictionary<string,List<string>> ListsAndColumns { get; set; }
+        public List<ListWithColumnsName> ListsWithColumnsNames { get; set; }
 
         public string DirectoryPath { get; set; }
 

@@ -9,7 +9,7 @@ namespace BusinessLogicLayer
     {
         public static void DownloadFilesOfUser(DataAccessOperations dataAccessOperations)
         {
-            List<ListItem> items = GetAllUserItems(dataAccessOperations);
+            List<ListItem> items = FilterItemsForCurrentUser(dataAccessOperations);
             foreach (ListItem item in items)
             {
                 string url = SPItemManipulator.GetValueURL(item, "URL");
@@ -17,9 +17,9 @@ namespace BusinessLogicLayer
             }
         }
 
-        public static List<ListItem> GetAllUserItems(DataAccessOperations dataAccessOperations)
+        public static List<ListItem> FilterItemsForCurrentUser(DataAccessOperations dataAccessOperations)
         {
-            var listOfItems = dataAccessOperations.Operations.GetListItems().ToList();
+            var listOfItems = dataAccessOperations.Operations.GetAllListItems().ToList();
             string currentUserName = dataAccessOperations.Operations.GetCurrentUserName();
             List<ListItem> allUserItems = new List<ListItem>();
             foreach (var item in listOfItems)

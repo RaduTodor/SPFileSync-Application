@@ -2,12 +2,14 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
-using Microsoft.SharePoint;
-using Microsoft.SharePoint.Client;
 using System.Linq;
-using System.IO;
 using System.Text;
+using Configuration;
 using System.Collections.Generic;
+using Models;
+using Microsoft.SharePoint.Client;
+using System.Xml.Linq;
+using System.Xml;
 
 namespace DataAccessLayer
 {
@@ -66,6 +68,40 @@ namespace DataAccessLayer
                 }
             }
             return result;
+        }
+
+        public void GetCurrentUserItems(ConnectionConfiguration connectionConfiguration)
+        {
+            foreach (ListWithColumnsName listWithColumnsName in connectionConfiguration.ListsWithColumnsNames)
+            {
+                int id = 0;
+                using (ClientContext context = connectionConfiguration.Connection.SharePointResult()) {
+                    context.Load(context.Web);
+                    context.Load(context.Web.CurrentUser);
+                    context.ExecuteQuery();
+                    id = context.Web.CurrentUser.Id;
+                }
+                HttpWebRequest endpointRequest = (HttpWebRequest)HttpWebRequest.Create(WebUri.ToString() + $"_api/Web/lists/getbytitle('{listWithColumnsName.ListName}')" +
+                    $"/items?" +
+                    $"&$filter=User eq {id}");
+                endpointRequest.Method = "GET";
+                endpointRequest.Credentials = webClient.Credentials;
+                endpointRequest.Accept = "application/xml;odata=verbose";
+                HttpWebResponse endpointResponse = (HttpWebResponse)endpointRequest.GetResponse();
+                string result = "";
+                using (System.IO.Stream stream = endpointResponse.GetResponseStream())
+                {
+                    using (System.IO.StreamReader sr = new System.IO.StreamReader(stream, Encoding.UTF8))
+                    {
+                        result = sr.ReadToEnd().Trim();
+                        XDocument doc = XDocument.Parse(result);
+                        var elements = XElement.Parse(result);
+                        elements.
+                        sr.Close();
+                    }
+                }
+
+            }
         }
 
         public string ParseURLParentDirectory(string url)

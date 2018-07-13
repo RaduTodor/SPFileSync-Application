@@ -6,7 +6,6 @@ using Microsoft.SharePoint.Client;
 using System.IO;
 using CsvHelper;
 using Models;
-using System.Globalization;
 using System.Text;
 
 namespace BusinessLogicLayer
@@ -42,7 +41,7 @@ namespace BusinessLogicLayer
 
         public List<MetadataModel> GetUserUrlsWithDate()
         {
-            List<ListItem> userListItems = ListOperations.GetAllUserItems(DataAccessOperations);
+            List<ListItem> userListItems = ListOperations.FilterItemsForCurrentUser(DataAccessOperations);
             List<string> userURLs = new List<string>();
             foreach (ListItem item in userListItems)
             {
