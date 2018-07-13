@@ -116,6 +116,10 @@
       <Project>{1675D16A-2B92-4E5D-AE8C-027BE54AFC4F}</Project>
       <Name>DataAccessLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Models\Models.csproj">
+      <Project>{DED02398-DD8C-4FED-BCAB-5BF6AD9F0576}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -2,12 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.SharePoint.Client;
 using System.IO;
-using System.Text.RegularExpressions;
 using CsvHelper;
+using Models;
+using System.Globalization;
+using System.Text;
 
 namespace BusinessLogicLayer
 {
@@ -17,78 +17,90 @@ namespace BusinessLogicLayer
 
         public void Synchronize()
         {
-            Dictionary<string, DateTime> spData = GetUserUrlsWithDate();
-            Dictionary<string, DateTime> currentData = ReadMetadata(DataAccessOperations.ConnectionConfiguration.DirectoryPath + "\\data.csv");
-            foreach(KeyValuePair<string,DateTime> pair in spData)
+            List<MetadataModel> spData = GetUserUrlsWithDate();
+            List<MetadataModel> currentData = ReadMetadata<MetadataModel>(DataAccessOperations.ConnectionConfiguration.DirectoryPath + "\\data.csv");
+            foreach (MetadataModel model in spData)
             {
-                KeyValuePair<string, DateTime> match = currentData.FirstOrDefault(x => x.Key == pair.Key);
-                if (match.Key!=null && match.Value > pair.Value)
+                MetadataModel match = currentData.FirstOrDefault(x => x.Url == model.Url);
+                if (match != null && match.ModifiedDate < model.ModifiedDate)
                 {
-                    DataAccessOperations.FilesGetter.DownloadFile(match.Key, DataAccessOperations.ConnectionConfiguration.DirectoryPath);
-                    currentData.Remove(match.Key);
-                    currentData.Add(pair.Key, pair.Value);
+                    DataAccessOperations.FilesGetter.DownloadFile(match.Url, DataAccessOperations.ConnectionConfiguration.DirectoryPath);
+                    currentData.Remove(match);
+                    currentData.Add(model);
                 }
                 else
                 {
-                    DataAccessOperations.FilesGetter.DownloadFile(pair.Key, DataAccessOperations.ConnectionConfiguration.DirectoryPath);
-                    currentData.Add(pair.Key, pair.Value);
+                    if (!System.IO.File.Exists(DataAccessOperations.ConnectionConfiguration.DirectoryPath + "\\" + FilesGetter.ParseURLFileName(model.Url)))
+                        {
+                        DataAccessOperations.FilesGetter.DownloadFile(model.Url, DataAccessOperations.ConnectionConfiguration.DirectoryPath);
+                        currentData.Add(model);
+                    }
                 }
             }
             WriteMetadata(DataAccessOperations.ConnectionConfiguration.DirectoryPath + "\\data.csv", currentData);
         }
 
-        public Dictionary<string, DateTime> GetUserUrlsWithDate()
+        public List<MetadataModel> GetUserUrlsWithDate()
         {
             List<ListItem> userListItems = ListOperations.GetAllUserItems(DataAccessOperations);
             List<string> userURLs = new List<string>();
             foreach (ListItem item in userListItems)
             {
-               
+
                 userURLs.Add(SPItemManipulator.GetValueURL(item, "URL"));
             }
-            Dictionary<string, DateTime> metadata = new Dictionary<string, DateTime>();
+            List<MetadataModel> metadata = new List<MetadataModel>();
             foreach (string url in userURLs)
             {
-                DateTime dateTime= FindModifiedDateTime(DataAccessOperations.Operations.GetMetadataItem(url));
-                metadata.Add(url, dateTime);
+                DateTime dateTime = FindModifiedDateTime(DataAccessOperations.Operations.GetMetadataItem(url));
+                metadata.Add(new MetadataModel { Url = url, ModifiedDate = dateTime });
             }
             return metadata;
         }
 
-        static public void WriteMetadata(string filePath, Dictionary<string, DateTime> urlsDate)
+        public void WriteMetadata<T>(string filePath, List<T> list)
         {
             using (var csv = new CsvWriter(System.IO.File.CreateText(filePath)))
             {
-                csv.WriteRecords(urlsDate);
+                csv.Configuration.Delimiter = ";";
+                csv.WriteRecords(list);
             }
         }
 
-        public static Dictionary<string, DateTime> ReadMetadata(string filePath)
+        public List<T> ReadMetadata<T>(string filePath)
         {
-            var file=System.IO.File.OpenText(filePath);
-            var csv = new CsvReader(file);
-            csv.Configuration.IgnoreBlankLines = true;
-            csv.Read();
-            IDictionary<string, DateTime> records = null;
-            try
+            if (!System.IO.File.Exists(filePath))
             {
-                records = csv.GetRecords<dynamic>() as IDictionary<string, DateTime>;
+                StreamWriter streamWriter = System.IO.File.CreateText(filePath);
+                streamWriter.Close();
             }
-            catch(Exception ex)
+            List<T> records = new List<T>();
+            using (var file = System.IO.File.OpenText(filePath))
             {
-                if (ex is NullReferenceException)
+                using (var csv = new CsvReader(file))
                 {
-                    records = new Dictionary<string, DateTime>();
+                    csv.Configuration.RegisterClassMap<MetadataModelCsvMap>();
+                    csv.Configuration.Delimiter = ";";
+                    csv.Configuration.Encoding = Encoding.UTF8;
+                    try
+                    {
+                        records = csv.GetRecords<T>().ToList();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is NullReferenceException)
+                        {
+                            records = new List<T>();
+                        }
+                    }
                 }
             }
-            file.Close();
-            return (Dictionary<string,DateTime>)records;
+            return records;
         }
-
 
         public static DateTime FindModifiedDateTime(string json)
         {
-            string result= json.Substring(json.LastIndexOf("201"),json.Length- json.LastIndexOf("201"));
+            string result = json.Substring(json.LastIndexOf("201"), json.Length - json.LastIndexOf("201"));
             result = result.Substring(0, result.Length - 6); //MAGIC NUMBER EVERYBODY
             return Convert.ToDateTime(result);
         }
@@ -96,10 +108,10 @@ namespace BusinessLogicLayer
         public static string ParseURLParentDirectory(string url)
         {
             Uri uri = new Uri(url);
-            uri=new Uri(uri.AbsoluteUri.Remove(uri.AbsoluteUri.Length - uri.Segments.Last().Length));
+            uri = new Uri(uri.AbsoluteUri.Remove(uri.AbsoluteUri.Length - uri.Segments.Last().Length));
             return uri.AbsoluteUri;
         }
-        
+
         public DateTime GetFileModifyDate(string fileName)
         {
             return System.IO.File.GetLastWriteTime(DataAccessOperations.ConnectionConfiguration.DirectoryPath + "/" + fileName);

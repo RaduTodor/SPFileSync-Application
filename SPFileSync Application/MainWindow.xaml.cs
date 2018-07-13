@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using BusinessLogicLayer;
 using DataAccessLayer;
 using Microsoft.SharePoint.Client;
+using Models;
+using System;
 
 namespace SPFileSync_Application
 {
