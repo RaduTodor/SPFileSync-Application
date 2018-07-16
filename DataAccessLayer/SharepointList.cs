@@ -1,6 +1,5 @@
 ﻿using Configuration;
 using Models;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -140,7 +139,7 @@ namespace DataAccessLayer
         //{
         //    var formDigestValue = RequestFormDigest("DELETE");
         //    webClient.Headers.Add("X-RequestDigest", formDigestValue);
-        //    var url = WebUri + string.Format("_api/web/lists/getbytitle('{0}')/items({1})", listTitle, id);
+        //    var url = WebUri + string.Format("_api/web/lists/getbytitle('{0}')/items/getbyid({1})", listTitle, id);
         //    var endpointUri = new Uri(url);
         //    webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json;odata=verbose");
         //    webClient.UploadString(endpointUri, "DELETE");
@@ -150,7 +149,7 @@ namespace DataAccessLayer
         //{
         //    var formDigestValue = RequestFormDigest("PUT");
         //    webClient.Headers.Add("X-RequestDigest", formDigestValue);
-        //    var url = WebUri + string.Format("_api/web/lists/getbytitle('{0}')/items({1})", listTitle, id);
+        //    var url = WebUri + string.Format("_api/web/lists/getbytitle('{0}')/items/getbyid({1})", listTitle, id);
         //    var endpointUri = new Uri(url);
         //    var payloadString = JsonConvert.SerializeObject(payload);
         //    webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json;odata=verbose");

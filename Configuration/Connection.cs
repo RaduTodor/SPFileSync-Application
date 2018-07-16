@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Configuration;
 using Microsoft.SharePoint.Client;
 using System.Linq;
 

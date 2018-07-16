@@ -1,7 +1,9 @@
 ﻿using Configuration;
 using Microsoft.SharePoint.Client;
+using Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SP = Microsoft.SharePoint.Client;
 
 namespace DataAccessLayer
@@ -14,7 +16,7 @@ namespace DataAccessLayer
         {
             using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
             {
-                return client.GetModifiedDateOfItem(url);  
+                return client.GetModifiedDateOfItem(url);
             }
         }
 
@@ -22,45 +24,41 @@ namespace DataAccessLayer
         {
             using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
             {
-                return client.GetCurrentUserUrls(ConnectionConfiguration);   
+                return client.GetCurrentUserUrls(ConnectionConfiguration);
             }
         }
 
-        public void AddListReferenceItem(System.Uri uri)
+        public void AddListReferenceItem(System.Uri uri, string listName)
         {
-            foreach (var listWithColumns in ConnectionConfiguration.ListsWithColumnsNames)
-            {
-                var clientContext = ConnectionConfiguration.Connection.SharePointResult();
-                SP.List oList = clientContext.Web.Lists.GetByTitle(listWithColumns.ListName);
-                ListItemCreationInformation itemCreateInfo = new ListItemCreationInformation();
-                ListItem oListItem = oList.AddItem(itemCreateInfo);
-                oListItem[$"{listWithColumns.UrlColumnName}"] = uri;
-                oListItem[$"{listWithColumns.UserColumnName}"] = clientContext.Web.CurrentUser;
-                oListItem.Update();
-                clientContext.ExecuteQuery();
-            }
+            ListWithColumnsName listWithColumns = ConnectionConfiguration.ListsWithColumnsNames.First(bigList => bigList.ListName == listName);
+            var clientContext = ConnectionConfiguration.Connection.SharePointResult();
+            SP.List oList = clientContext.Web.Lists.GetByTitle(listName);
+            ListItemCreationInformation itemCreateInfo = new ListItemCreationInformation();
+            ListItem oListItem = oList.AddItem(itemCreateInfo);
+            oListItem[$"{listWithColumns.UrlColumnName}"] = uri;
+            oListItem[$"{listWithColumns.UserColumnName}"] = clientContext.Web.CurrentUser;
+            oListItem.Update();
+            clientContext.ExecuteQuery();
         }
 
-        public void RemoveListReferenceItem(int itemID, string ListName)
+        public void RemoveListReferenceItem(int itemID, string listName)
         {
             var clientContext = ConnectionConfiguration.Connection.SharePointResult();
-            SP.List oList = clientContext.Web.Lists.GetByTitle(ListName);
+            SP.List oList = clientContext.Web.Lists.GetByTitle(listName);
             oList.GetItemById(itemID).DeleteObject();
             clientContext.ExecuteQuery();
         }
 
-        public void ChangeListReferenceItem(System.Uri uri, int itemID)
+        public void ChangeListReferenceItem(System.Uri uri, int itemID, string listName)
         {
-            foreach (var listWithColumns in ConnectionConfiguration.ListsWithColumnsNames)
-            {
-                var clientContext = ConnectionConfiguration.Connection.SharePointResult();
-                SP.List oList = clientContext.Web.Lists.GetByTitle(listWithColumns.ListName);
-                ListItem oListItem = oList.GetItemById(itemID);
-                oListItem[$"{listWithColumns.UrlColumnName}"] = uri;
-                oListItem[$"{listWithColumns.UserColumnName}"] = clientContext.Web.CurrentUser;
-                oListItem.Update();
-                clientContext.ExecuteQuery();
-            }
+            ListWithColumnsName listWithColumns = ConnectionConfiguration.ListsWithColumnsNames.First(bigList => bigList.ListName == listName);
+            var clientContext = ConnectionConfiguration.Connection.SharePointResult();
+            SP.List oList = clientContext.Web.Lists.GetByTitle(listWithColumns.ListName);
+            ListItem oListItem = oList.GetItemById(itemID);
+            oListItem[$"{listWithColumns.UrlColumnName}"] = uri;
+            oListItem[$"{listWithColumns.UserColumnName}"] = clientContext.Web.CurrentUser;
+            oListItem.Update();
+            clientContext.ExecuteQuery();
         }
 
         public SP.List GetList(string url)

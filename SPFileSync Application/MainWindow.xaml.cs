@@ -2,8 +2,6 @@
 using System.Windows;
 using System.Configuration;
 using System.Collections.Generic;
-using BusinessLogicLayer;
-using DataAccessLayer;
 using Models;
 
 namespace SPFileSync_Application

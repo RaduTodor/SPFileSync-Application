@@ -24,5 +24,23 @@ namespace SPFileSync_Application
                 Credentials = new System.Net.NetworkCredential(user, password) };
             return new ConnectionConfiguration { Connection = newConnection };
         }
+
+        public static void AddSyncListItem(ConnectionConfiguration connection, string url, string listName)
+        {
+            DataAccessOperations dataAccessOperations = new DataAccessOperations(connection);
+            dataAccessOperations.Operations.AddListReferenceItem(new Uri(url), listName);
+        }
+
+        public static void RemoveSyncListItem(ConnectionConfiguration connection, int id, string listName)
+        {
+            DataAccessOperations dataAccessOperations = new DataAccessOperations(connection);
+            dataAccessOperations.Operations.RemoveListReferenceItem(id, listName);
+        }
+
+        public static void ChangeSyncListItem(ConnectionConfiguration connection, string url, int id, string listName)
+        {
+            DataAccessOperations dataAccessOperations = new DataAccessOperations(connection);
+            dataAccessOperations.Operations.ChangeListReferenceItem(new Uri(url), id , listName);
+        }
     }
 }
