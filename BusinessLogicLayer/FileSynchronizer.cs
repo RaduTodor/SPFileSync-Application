@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.SharePoint.Client;
 using System.IO;
 using CsvHelper;
 using Models;
 using System.Text;
+using System.Security.AccessControl;
 
 namespace BusinessLogicLayer
 {
@@ -17,7 +17,8 @@ namespace BusinessLogicLayer
         public void Synchronize()
         {
             List<MetadataModel> spData = GetUserUrlsWithDate();
-            List<MetadataModel> currentData = ReadMetadata<MetadataModel>(DataAccessOperations.ConnectionConfiguration.DirectoryPath + "\\data.csv");
+            List<MetadataModel> currentData = ReadMetadata<MetadataModel>(DataAccessOperations.ConnectionConfiguration.DirectoryPath + 
+                $"\\data-{DataAccessOperations.ConnectionConfiguration.Connection.GetSharepointIdentifier()}.csv");
             foreach (MetadataModel model in spData)
             {
                 MetadataModel match = currentData.FirstOrDefault(x => x.Url == model.Url);
@@ -36,25 +37,20 @@ namespace BusinessLogicLayer
                     }
                 }
             }
-            WriteMetadata(DataAccessOperations.ConnectionConfiguration.DirectoryPath + "\\data.csv", currentData);
+            WriteMetadata(DataAccessOperations.ConnectionConfiguration.DirectoryPath + 
+                $"\\data-{DataAccessOperations.ConnectionConfiguration.Connection.GetSharepointIdentifier()}.csv", currentData);
         }
 
         public List<MetadataModel> GetUserUrlsWithDate()
         {
-            List<ListItem> userListItems = ListOperations.FilterItemsForCurrentUser(DataAccessOperations);
-            List<string> userURLs = new List<string>();
-            foreach (ListItem item in userListItems)
-            {
-
-                userURLs.Add(SPItemManipulator.GetValueURL(item, "URL"));
-            }
-            List<MetadataModel> metadata = new List<MetadataModel>();
+            List<MetadataModel> metadatas = new List<MetadataModel>();
+            List<string> userURLs = DataAccessOperations.Operations.GetCurrentUserUrls();
             foreach (string url in userURLs)
             {
-                DateTime dateTime = FindModifiedDateTime(DataAccessOperations.Operations.GetMetadataItem(url));
-                metadata.Add(new MetadataModel { Url = url, ModifiedDate = dateTime });
+                DateTime dateTime = DataAccessOperations.Operations.GetMetadataItem(url);
+                metadatas.Add(new MetadataModel { Url = url, ModifiedDate = dateTime });
             }
-            return metadata;
+            return metadatas;
         }
 
         public void WriteMetadata<T>(string filePath, List<T> list)
@@ -70,6 +66,13 @@ namespace BusinessLogicLayer
         {
             if (!System.IO.File.Exists(filePath))
             {
+                System.IO.Directory.CreateDirectory(DataAccessOperations.ConnectionConfiguration.DirectoryPath);
+                DirectoryInfo info = new DirectoryInfo(DataAccessOperations.ConnectionConfiguration.DirectoryPath);
+                DirectorySecurity security = info.GetAccessControl();
+                security.AddAccessRule(new FileSystemAccessRule("radu.tudor", FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+                security.AddAccessRule(new FileSystemAccessRule("radu.tudor", FileSystemRights.Modify, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+                info.SetAccessControl(security);
+
                 StreamWriter streamWriter = System.IO.File.CreateText(filePath);
                 streamWriter.Close();
             }
@@ -97,23 +100,25 @@ namespace BusinessLogicLayer
             return records;
         }
 
-        public static DateTime FindModifiedDateTime(string json)
-        {
-            string result = json.Substring(json.LastIndexOf("201"), json.Length - json.LastIndexOf("201"));
-            result = result.Substring(0, result.Length - 6); //MAGIC NUMBER EVERYBODY
-            return Convert.ToDateTime(result);
-        }
+        #region CommentedCode
+        //public static DateTime FindModifiedDateTime(string json)
+        //{
+        //    string result = json.Substring(json.LastIndexOf("201"), json.Length - json.LastIndexOf("201"));
+        //    result = result.Substring(0, result.Length - 6); //MAGIC NUMBER EVERYBODY
+        //    return Convert.ToDateTime(result);
+        //}
 
-        public static string ParseURLParentDirectory(string url)
-        {
-            Uri uri = new Uri(url);
-            uri = new Uri(uri.AbsoluteUri.Remove(uri.AbsoluteUri.Length - uri.Segments.Last().Length));
-            return uri.AbsoluteUri;
-        }
+        //public static string ParseURLParentDirectory(string url)
+        //{
+        //    Uri uri = new Uri(url);
+        //    uri = new Uri(uri.AbsoluteUri.Remove(uri.AbsoluteUri.Length - uri.Segments.Last().Length));
+        //    return uri.AbsoluteUri;
+        //}
 
-        public DateTime GetFileModifyDate(string fileName)
-        {
-            return System.IO.File.GetLastWriteTime(DataAccessOperations.ConnectionConfiguration.DirectoryPath + "/" + fileName);
-        }
+        //public DateTime GetFileModifyDate(string fileName)
+        //{
+        //    return System.IO.File.GetLastWriteTime(DataAccessOperations.ConnectionConfiguration.DirectoryPath + "/" + fileName);
+        //}
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Configuration;
 using Microsoft.SharePoint.Client;
+using System;
 using System.Collections.Generic;
 using SP = Microsoft.SharePoint.Client;
 
@@ -9,83 +10,38 @@ namespace DataAccessLayer
     {
         public ConnectionConfiguration ConnectionConfiguration { get; set; }
 
-        public string ListName { get; set; }
-
-        public string GetCurrentUserName()
-        {
-            return ConnectionConfiguration.Connection.Credentials.UserName.Split('\\')[1].Split('\\')[0];
-        }
-
-        public SP.User GetCurrentUser()
-        {
-            return ConnectionConfiguration.Connection.SharePointResult().Web.CurrentUser;
-        }
-
-        public void AddListItem()
+        public DateTime GetMetadataItem(string url)
         {
             using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
             {
-                var contactEntry = new
-                {
-                    metadata = new { type = $"SP.Data.{ListName}ListItem" },
-                    Title = "testtt"
-                };
-                client.PostListItem(ListName, contactEntry);
+                return client.GetModifiedDateOfItem(url);  
             }
         }
 
-        public void RemoveListItem(int itemID)
+        public List<string> GetCurrentUserUrls()
         {
             using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
             {
-                client.DeleteListItem(ListName, itemID);
-            }
-        }
-
-        public string GetMetadataItem(string url)
-        {
-            using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
-            {
-                string json=client.GetMetadataFileItem(url);
-                
-                return json;
-            }
-        }
-
-        public void GetCurrentUserItems()
-        {
-            using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
-            {
-                client.GetCurrentUserItems(ConnectionConfiguration);   
-            }
-        }
-
-        public void ChangeListItem(int itemID)
-        {
-            using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
-            {
-                var contactEntry = new
-                {
-                    metadata = new { type = $"SP.Data.{ListName}ListItem" },
-                    Title = "testtt"
-                };
-                client.PutListItem(ListName, contactEntry, itemID);
+                return client.GetCurrentUserUrls(ConnectionConfiguration);   
             }
         }
 
         public void AddListReferenceItem(System.Uri uri)
         {
-            var clientContext = ConnectionConfiguration.Connection.SharePointResult();
-            SP.List oList = clientContext.Web.Lists.GetByTitle(ListName);
-            ListItemCreationInformation itemCreateInfo = new ListItemCreationInformation();
-            ListItem oListItem = oList.AddItem(itemCreateInfo);
-            oListItem["URL"] = uri;
-            oListItem["User"] = clientContext.Web.CurrentUser;
-            oListItem.Update();
-            clientContext.ExecuteQuery();
+            foreach (var listWithColumns in ConnectionConfiguration.ListsWithColumnsNames)
+            {
+                var clientContext = ConnectionConfiguration.Connection.SharePointResult();
+                SP.List oList = clientContext.Web.Lists.GetByTitle(listWithColumns.ListName);
+                ListItemCreationInformation itemCreateInfo = new ListItemCreationInformation();
+                ListItem oListItem = oList.AddItem(itemCreateInfo);
+                oListItem[$"{listWithColumns.UrlColumnName}"] = uri;
+                oListItem[$"{listWithColumns.UserColumnName}"] = clientContext.Web.CurrentUser;
+                oListItem.Update();
+                clientContext.ExecuteQuery();
+            }
         }
 
-        public void RemoveListReferenceItem(int itemID)
+        public void RemoveListReferenceItem(int itemID, string ListName)
         {
             var clientContext = ConnectionConfiguration.Connection.SharePointResult();
             SP.List oList = clientContext.Web.Lists.GetByTitle(ListName);
@@ -95,13 +51,16 @@ namespace DataAccessLayer
 
         public void ChangeListReferenceItem(System.Uri uri, int itemID)
         {
-            var clientContext = ConnectionConfiguration.Connection.SharePointResult();
-            SP.List oList = clientContext.Web.Lists.GetByTitle(ListName);
-            ListItem oListItem = oList.GetItemById(itemID);
-            oListItem["URL"] = uri;
-            oListItem["User"] = clientContext.Web.CurrentUser;
-            oListItem.Update();
-            clientContext.ExecuteQuery();
+            foreach (var listWithColumns in ConnectionConfiguration.ListsWithColumnsNames)
+            {
+                var clientContext = ConnectionConfiguration.Connection.SharePointResult();
+                SP.List oList = clientContext.Web.Lists.GetByTitle(listWithColumns.ListName);
+                ListItem oListItem = oList.GetItemById(itemID);
+                oListItem[$"{listWithColumns.UrlColumnName}"] = uri;
+                oListItem[$"{listWithColumns.UserColumnName}"] = clientContext.Web.CurrentUser;
+                oListItem.Update();
+                clientContext.ExecuteQuery();
+            }
         }
 
         public SP.List GetList(string url)
@@ -126,7 +85,7 @@ namespace DataAccessLayer
             return listsCollection;
         }
 
-        public IEnumerable<SP.ListItem> GetAllListItems()
+        public IEnumerable<SP.ListItem> GetAllListItems(string ListName)
         {
             using (var ctx = ConnectionConfiguration.Connection.SharePointResult())
             {
@@ -149,5 +108,45 @@ namespace DataAccessLayer
                 return items;
             }
         }
+        #region CommentedRegion
+        //public SP.User GetCurrentUser()
+        //{
+        //    return ConnectionConfiguration.Connection.SharePointResult().Web.CurrentUser;
+        //}
+
+        //public void AddListItem()
+        //{
+        //    using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
+        //    {
+        //        var contactEntry = new
+        //        {
+        //            metadata = new { type = $"SP.Data.{ListName}ListItem" },
+        //            Title = "testtt"
+        //        };
+        //        client.PostListItem(ListName, contactEntry);
+        //    }
+        //}
+
+        //public void RemoveListItem(int itemID)
+        //{
+        //    using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
+        //    {
+        //        client.DeleteListItem(ListName, itemID);
+        //    }
+        //}
+
+        //public void ChangeListItem(int itemID)
+        //{
+        //    using (var client = new SharepointList(ConnectionConfiguration.Connection.Uri, ConnectionConfiguration.Connection.Credentials))
+        //    {
+        //        var contactEntry = new
+        //        {
+        //            metadata = new { type = $"SP.Data.{ListName}ListItem" },
+        //            Title = "testtt"
+        //        };
+        //        client.PutListItem(ListName, contactEntry, itemID);
+        //    }
+        //}
+        #endregion
     }
 }

@@ -4,9 +4,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using BusinessLogicLayer;
 using DataAccessLayer;
-using Microsoft.SharePoint.Client;
 using Models;
-using System;
 
 namespace SPFileSync_Application
 {
@@ -18,8 +16,10 @@ namespace SPFileSync_Application
         public MainWindow()
         {
             InitializeComponent();
-            Connection connection = new Connection(new System.Uri(ConfigurationManager.AppSettings["SharePointURL"]), 
-                new System.Net.NetworkCredential(ConfigurationManager.AppSettings["Account"], ConfigurationManager.AppSettings["Password"]));
+            List<ConnectionConfiguration> connectionConfigurations = new List<ConnectionConfiguration>();
+            ConnectionConfiguration firstConfiguration=ButtonActions.AddConnectionButtonPressed(ConfigurationManager.AppSettings["SharePointURL"], 
+                ConfigurationManager.AppSettings["Account"], 
+                ConfigurationManager.AppSettings["Password"]);
             List<ListWithColumnsName> listsWithColumnsNames = new List<ListWithColumnsName>();
             listsWithColumnsNames.Add(new ListWithColumnsName
             {
@@ -28,18 +28,24 @@ namespace SPFileSync_Application
                 UserColumnName = "User"
             });
 
-            ConnectionConfiguration connectionConfiguration = new ConnectionConfiguration
+            firstConfiguration.ListsWithColumnsNames = listsWithColumnsNames;
+            connectionConfigurations.Add(firstConfiguration);
+
+            ConnectionConfiguration secondConfiguration = ButtonActions.AddConnectionButtonPressed(ConfigurationManager.AppSettings["SecondSharePointURL"],
+                ConfigurationManager.AppSettings["Account"],
+                ConfigurationManager.AppSettings["Password"]);
+            listsWithColumnsNames = new List<ListWithColumnsName>();
+            listsWithColumnsNames.Add(new ListWithColumnsName
             {
-                Connection = connection,
-                ListsWithColumnsNames = listsWithColumnsNames,
-                DirectoryPath = ConfigurationManager.AppSettings["DirectoryPath"],
-                SyncTimeSpan = new System.TimeSpan()
-            };
-            DataAccessOperations dao = new DataAccessOperations(connectionConfiguration, "SyncList");
-            //ListOperations.DownloadFilesOfUser(dao);
-            //FileSynchronizer fileSynchronizer = new FileSynchronizer { DataAccessOperations = dao };
-            //fileSynchronizer.Synchronize();
-            dao.Operations.GetCurrentUserItems();
+                ListName = "SyncList",
+                UrlColumnName = "URL",
+                UserColumnName = "Utilizator"
+            });
+
+            secondConfiguration.ListsWithColumnsNames = listsWithColumnsNames;
+            connectionConfigurations.Add(secondConfiguration);
+
+            ButtonActions.SynchronizeButtonPressed(connectionConfigurations);
         }
     }
 }

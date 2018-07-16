@@ -1,6 +1,8 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 
 namespace Configuration
 {
@@ -10,8 +12,8 @@ namespace Configuration
 
         public List<ListWithColumnsName> ListsWithColumnsNames { get; set; }
 
-        public string DirectoryPath { get; set; }
+        public string DirectoryPath { get; set; } = $"{ConfigurationManager.AppSettings[("DirectoryPath")]}\\{Guid.NewGuid()}";
 
-        public TimeSpan SyncTimeSpan { get; set; }
+        public TimeSpan SyncTimeSpan { get; set; } = new TimeSpan(0, 10, 0);
     }
 }
