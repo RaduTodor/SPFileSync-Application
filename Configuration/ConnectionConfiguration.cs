@@ -11,7 +11,7 @@ namespace Configuration
 
         public List<ListWithColumnsName> ListsWithColumnsNames { get; set; }
 
-        public string DirectoryPath { get; set; } = $"{ConfigurationManager.AppSettings[("DirectoryPath")]}\\{Guid.NewGuid()}";
+        public string DirectoryPath { get; set; } = $"{ConfigurationManager.AppSettings[("DirectoryPath")]}\\{DateTime.Now.Day}";
 
         public TimeSpan SyncTimeSpan { get; set; } = new TimeSpan(0, 10, 0);
     }

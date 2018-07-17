@@ -15,9 +15,9 @@ namespace SPFileSync_Application
         {
             InitializeComponent();
             List<ConnectionConfiguration> connectionConfigurations = new List<ConnectionConfiguration>();
-            ConnectionConfiguration firstConfiguration=ButtonActions.AddConnectionButtonPressed(ConfigurationManager.AppSettings["SharePointURL"], 
-                ConfigurationManager.AppSettings["Account"], 
-                ConfigurationManager.AppSettings["Password"]);
+            ConnectionConfiguration firstConfiguration = ButtonActions.AddConnectionButtonPressed(ConfigurationManager.AppSettings["SharePointURL"],
+                ConfigurationManager.AppSettings["Account"],
+                ConfigurationManager.AppSettings["Password"], 1);
             List<ListWithColumnsName> listsWithColumnsNames = new List<ListWithColumnsName>();
             listsWithColumnsNames.Add(new ListWithColumnsName
             {
@@ -31,7 +31,7 @@ namespace SPFileSync_Application
 
             ConnectionConfiguration secondConfiguration = ButtonActions.AddConnectionButtonPressed(ConfigurationManager.AppSettings["SecondSharePointURL"],
                 ConfigurationManager.AppSettings["Account"],
-                ConfigurationManager.AppSettings["Password"]);
+                ConfigurationManager.AppSettings["Password"], 2);
             listsWithColumnsNames = new List<ListWithColumnsName>();
             listsWithColumnsNames.Add(new ListWithColumnsName
             {
@@ -43,7 +43,17 @@ namespace SPFileSync_Application
             secondConfiguration.ListsWithColumnsNames = listsWithColumnsNames;
             connectionConfigurations.Add(secondConfiguration);
 
-            ButtonActions.SynchronizeButtonPressed(connectionConfigurations);
+            ButtonActions.SynchronizeButtonPressed(connectionConfigurations, 2);
+
+            //ButtonActions.AddSyncListItem(firstConfiguration, "http://binebine", "SyncList", 1);
+            //ButtonActions.AddSyncListItem(firstConfiguration, "http://binebine", "SyncList", 2);
+            //ButtonActions.ChangeSyncListItem(firstConfiguration, "http://simaibine", 28, "SyncList", 1);
+            //ButtonActions.ChangeSyncListItem(firstConfiguration, "http://simaibine", 29, "SyncList", 2);
+            //ButtonActions.RemoveSyncListItem(firstConfiguration, 28, "SyncList", 2);
+            //ButtonActions.RemoveSyncListItem(firstConfiguration, 29, "SyncList", 1);
+            //ButtonActions.RemoveSyncListItem(firstConfiguration, 31, "SyncList", 2);
+            //ButtonActions.RemoveSyncListItem(firstConfiguration, 30, "SyncList", 1);
+
         }
     }
 }

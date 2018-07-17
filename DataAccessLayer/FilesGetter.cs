@@ -1,5 +1,4 @@
 ﻿using Configuration;
-using Microsoft.SharePoint.Client;
 using System;
 using System.IO;
 using System.Linq;
@@ -11,21 +10,8 @@ namespace DataAccessLayer
     {
         public ConnectionConfiguration ConnectionConfiguration { get; set; }
 
-        private static void DownloadAFile(ListItem item, string targetPath)
-        {
-            var ctx = (ClientContext)item.Context;
-            var fileRef = (string)item["FileRef"];
-            var fileName = System.IO.Path.GetFileName(fileRef);
-            var fileInfo = Microsoft.SharePoint.Client.File.OpenBinaryDirect(ctx, fileRef);
-            var filePath = Path.Combine(targetPath, fileName);
-            using (var fileStream = System.IO.File.Create(filePath))
-            {
-                fileInfo.Stream.CopyTo(fileStream);
-            }
-        }
-
         public string DownloadFile(string url, string directoryPath)
-        {      
+        {
             string serverTempdocPath = "";
             try
             {
@@ -63,38 +49,8 @@ namespace DataAccessLayer
 
         public static string ParseURLFileName(string url)
         {
-            url=url.Replace("%20", " ");
+            url = url.Replace("%20", " ");
             return url.Split('/').Last();
         }
-        #region CommentedCode
-        //public void DownloadListItems(string listName)
-        //{
-        //    using (var ctx = ConnectionConfiguration.Connection.SharePointResult())
-        //    {
-        //        var qry = new CamlQuery();
-        //        qry.ViewXml = "<View Scope='RecursiveAll'>" +
-        //                                 "<Query>" +
-        //                                     "<Where>" +
-        //                                           "<Eq>" +
-        //                                                "<FieldRef Name='FSObjType' />" +
-        //                                                "<Value Type='Integer'>0</Value>" +
-        //                                           "</Eq>" +
-        //                                    "</Where>" +
-        //                                  "</Query>" +
-        //                               "</View>";
-
-        //        var sourceList = ctx.Web.Lists.GetByTitle(listName);
-        //        var items = sourceList.GetItems(qry);
-        //        ctx.Load(items);
-        //        ctx.ExecuteQuery();
-        //        foreach (var item in items)
-        //        {
-        //            var curPath = ConfigurationManager.AppSettings["DirectoryPath"] + System.IO.Path.GetDirectoryName((string)item["FileRef"]);
-        //            Directory.CreateDirectory(curPath);
-        //            DownloadAFile(item, curPath);
-        //        }
-        //    }
-        //}
-        #endregion
     }
 }
