@@ -18,7 +18,7 @@ namespace DataAccessLayer
                 var request = (HttpWebRequest)WebRequest.Create(url);
                 var credentials = ConnectionConfiguration.Connection.Credentials;
 
-                request.Credentials = credentials;
+                request.Credentials = new NetworkCredential(credentials.UserName,credentials.Password);
                 request.Timeout = 20000;
                 request.AllowWriteStreamBuffering = false;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())

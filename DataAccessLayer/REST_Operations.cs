@@ -14,7 +14,7 @@ namespace DataAccessLayer
         private string RequestFormDigest()
         {
             WebClient webClient = new WebClient();
-            webClient.Credentials = ConnectionConfiguration.Connection.Credentials;
+            webClient.Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName, ConnectionConfiguration.Connection.Credentials.Password);
             webClient.Headers.Add("X-FORMS_BASED_AUTH_ACCEPTED", "f");
             webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json;odata=verbose");
             webClient.Headers.Add(HttpRequestHeader.Accept, "application/json;odata=verbose");
@@ -31,7 +31,7 @@ namespace DataAccessLayer
             string result = string.Empty;
             Uri connectionUri = new Uri(ConnectionConfiguration.Connection.Uri + string.Format($"_api/web/lists/getbytitle('{listName}')/items"));
             HttpWebRequest wreq = (HttpWebRequest)WebRequest.Create(connectionUri);
-            wreq.Credentials = ConnectionConfiguration.Connection.Credentials;
+            wreq.Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName, ConnectionConfiguration.Connection.Credentials.Password);
 
             wreq.Method = "POST";
             wreq.Accept = "application/json; odata=verbose";
@@ -54,7 +54,7 @@ namespace DataAccessLayer
         public override void ChangeListReferenceItem(Uri uri, int itemID, string listName)
         {
             WebClient webClient = new WebClient();
-            webClient.Credentials = ConnectionConfiguration.Connection.Credentials;
+            webClient.Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName, ConnectionConfiguration.Connection.Credentials.Password);
             webClient.Headers.Add("X-FORMS_BASED_AUTH_ACCEPTED", "f");
             webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json;odata=verbose");
             webClient.Headers.Add(HttpRequestHeader.Accept, "application/json;odata=verbose");
@@ -86,7 +86,7 @@ namespace DataAccessLayer
         public override void RemoveListReferenceItem(string listName, int itemID)
         {
             WebClient webClient = new WebClient();
-            webClient.Credentials = ConnectionConfiguration.Connection.Credentials;
+            webClient.Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName, ConnectionConfiguration.Connection.Credentials.Password);
             webClient.Headers.Add("X-FORMS_BASED_AUTH_ACCEPTED", "f");
             webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json;odata=verbose");
             webClient.Headers.Add(HttpRequestHeader.Accept, "application/json;odata=verbose");

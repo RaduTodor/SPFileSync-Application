@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Credentials.cs" />
     <Compile Include="ListWithColumnsName.cs" />
     <Compile Include="MetadataModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

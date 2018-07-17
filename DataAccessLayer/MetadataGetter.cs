@@ -26,7 +26,7 @@ namespace DataAccessLayer
                 $"$select=Modified" +
                 $"&$filter=FileRef eq '{fileUrl}'");
             endpointRequest.Method = "GET";
-            endpointRequest.Credentials = connectionConfiguration.Connection.Credentials;
+            endpointRequest.Credentials = new NetworkCredential(connectionConfiguration.Connection.Credentials.UserName, connectionConfiguration.Connection.Credentials.Password);
             endpointRequest.Accept = "application/xml;odata=verbose";
             HttpWebResponse endpointResponse = (HttpWebResponse)endpointRequest.GetResponse();
             string result = "";
@@ -50,7 +50,7 @@ namespace DataAccessLayer
                     $"$select={listWithColumnsName.UrlColumnName}" +
                     $"&$filter={listWithColumnsName.UserColumnName} eq '{connectionConfiguration.Connection.GetCurrentUserName()}'");
                 endpointRequest.Method = "GET";
-                endpointRequest.Credentials = connectionConfiguration.Connection.Credentials;
+                endpointRequest.Credentials = new NetworkCredential(connectionConfiguration.Connection.Credentials.UserName, connectionConfiguration.Connection.Credentials.Password);
                 endpointRequest.Accept = "application/xml;odata=verbose";
                 HttpWebResponse endpointResponse = (HttpWebResponse)endpointRequest.GetResponse();
                 string result = "";

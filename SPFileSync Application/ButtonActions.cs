@@ -22,7 +22,7 @@ namespace SPFileSync_Application
             Connection newConnection = new Connection
             {
                 Uri = new Uri(spUrl),
-                Credentials = new System.Net.NetworkCredential(user, password)
+                Credentials = new Models.Credentials { UserName = user, Password = password }
             };
             return new ConnectionConfiguration { Connection = newConnection };
         }
