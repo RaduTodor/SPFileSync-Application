@@ -9,6 +9,13 @@ using System.Xml.Serialization;
 
 namespace Configuration
 {
+    //TODO [CR RT]: Should be moved to Common, in a Helper class
+    //TODO [CR RT]: To be made static
+    //TODO [CR RT]: Add class and methods documentation
+    //TODO [CR RT]: Remove unused using, move under namespace
+    //TODO [CR RT]: Extarct constants
+    //TODO [CR RT]: To be checked if there is code duplicate with the one from CsvFileManipulator class
+
     public class ConnectionConfigurationXmlManipulator
     {
         public static void Serialize(List<ConnectionConfiguration> configurations)

@@ -13,7 +13,7 @@ namespace BusinessLogicLayer
     //TODO [CR RT]: Remove redundant qualifiers
     //TODO [CR RT]: Add class and methods documentation
     //TODO [CR RT]: Put all suing inside namespace
-
+    //TODO [CR RT]: Should be moved to Common, in a Helper class
     public class CsvFileManipulator
     {
         public static void WriteMetadata<T>(string filePath, List<T> list)
