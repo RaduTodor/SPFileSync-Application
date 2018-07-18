@@ -9,6 +9,9 @@ namespace SPFileSync_Application
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
+
+    //TODO [CR RT]: Extract constants
     public partial class MainWindow : Window
     {
         public MainWindow()

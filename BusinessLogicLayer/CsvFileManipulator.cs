@@ -9,17 +9,24 @@ using System.Text;
 
 namespace BusinessLogicLayer
 {
+    //TODO [CR RT]: Make class static
+    //TODO [CR RT]: Remove redundant qualifiers
+    //TODO [CR RT]: Add class and methods documentation
+    //TODO [CR RT]: Put all suing inside namespace
+
     public class CsvFileManipulator
     {
         public static void WriteMetadata<T>(string filePath, List<T> list)
         {
             using (var csv = new CsvWriter(System.IO.File.CreateText(filePath)))
             {
+                //TODO [CR RT]: Extract constant
                 csv.Configuration.Delimiter = ";";
                 csv.WriteRecords(list);
             }
         }
 
+        //TODO [CR RT]: Split in two different methods
         public static List<T> ReadMetadata<T>(string filePath, DataAccessOperations dataAccessOperations)
         {
             if (!System.IO.File.Exists(filePath))
@@ -42,6 +49,7 @@ namespace BusinessLogicLayer
                 using (var csv = new CsvReader(file))
                 {
                     csv.Configuration.RegisterClassMap<MetadataModelCsvMap>();
+                    //TODO [CR RT]: Extract constant
                     csv.Configuration.Delimiter = ";";
                     csv.Configuration.Encoding = Encoding.UTF8;
                     try
@@ -50,6 +58,8 @@ namespace BusinessLogicLayer
                     }
                     catch (Exception ex)
                     {
+                        //TODO [CR RT]: Log exception
+                        //TODO [CR RT]: Remove code, it is not needed
                         if (ex is NullReferenceException)
                         {
                             records = new List<T>();

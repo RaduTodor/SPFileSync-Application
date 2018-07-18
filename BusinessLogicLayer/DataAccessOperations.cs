@@ -2,7 +2,8 @@
 using DataAccessLayer;
 
 namespace BusinessLogicLayer
-{
+{   //TODO [CR RT]: To be dicided if the class is needed
+    //TODO [CR RT]: SRP violation, class handles operations, keeps the conection and also download files -> to be split in different managers
     public class DataAccessOperations
     {
         public DataAccessOperations(ConnectionConfiguration connectionConfiguration, int restOrCsom)

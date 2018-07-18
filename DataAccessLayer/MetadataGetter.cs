@@ -9,6 +9,13 @@ using System.Xml.Linq;
 
 namespace DataAccessLayer
 {
+    //TODO [CR RT]: Add class and methods documentation
+    //TODO [CR RT]: Remove static from methods. Initialize connectionConfiguration from ctor, make it private
+    //TODO [CR RT]: Extract constants
+    //TODO [CR RT]: Rename class e.g. MetadataProvider.
+    //TODO [CR RT]: Extract all Api Urls in a constant class
+    //TODO [CR RT]: Exception handling
+
     public class MetadataGetter
     {
         private static readonly XNamespace metadataBaseNamespace = "http://www.w3.org/2005/Atom";
@@ -16,6 +23,8 @@ namespace DataAccessLayer
         private static readonly XNamespace mNamespace = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
 
         private static readonly XNamespace dNamespace = "http://schemas.microsoft.com/ado/2007/08/dataservices";
+
+        //TODO [CR RT]: Extract duplicate code from GetModifiedDateOfItem and GetCurrentUserUrls (request header build step). Keep just the particular logic in the methods.
 
         public static DateTime GetModifiedDateOfItem(ConnectionConfiguration connectionConfiguration, string fileUrl)
         {
@@ -66,6 +75,8 @@ namespace DataAccessLayer
             return allUrlsOfCurrentUser;
         }
 
+        //TODO [CR RT]: Make it private
+        //TODO [CR RT]: Rename Urls ->urls
         public static List<string> GetAllUrlsInResponse(string xmlString, string urlColumnName)
         {
             var elements = XElement.Parse(xmlString);
@@ -83,9 +94,11 @@ namespace DataAccessLayer
             return Urls;
         }
 
+        //TODO [CR RT]: Make it private
         public static DateTime GetModifiedDateInResponse(string xmlString)
         {
             var elements = XElement.Parse(xmlString);
+            //TODO [CR RT]: use string.Format
             var result = from entryBody in elements.Elements(metadataBaseNamespace + "entry")
                          from contentBody in entryBody.Elements(metadataBaseNamespace + "content")
                          from propertiesBody in contentBody.Elements(mNamespace + "properties")
@@ -94,10 +107,15 @@ namespace DataAccessLayer
             return Convert.ToDateTime(result.First().Value);
         }
 
+        //TODO [CR RT]: Make it private
+        //TODO [CR RT]: Ranem final; give intuitive naming
         public static string ParseURLParentDirectory(string url)
         {
             Uri uri = new Uri(url);
+            //TODO [CR RT]: Extract new Uri() parameter into a variable with explicit naming
             uri = new Uri(uri.AbsoluteUri.Remove(uri.AbsoluteUri.Length - uri.Segments.Last().Length));
+
+            //TODO [CR RT]: 3->Magic number -> should say what represents
             string final = uri.Segments[3];
             final = final.Remove(final.Length - 1);
             return final.Replace("%20", " ");

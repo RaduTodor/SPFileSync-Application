@@ -9,8 +9,14 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer
 {
+    //TODO [CR RT]: Rename class. Use intuitive naming e.g. RestListReferenceProvider
+    //TODO [CR RT]: Add class and methods documentation
+    //TODO [CR RT]: Remove unused using
+    //TODO [CR RT]: Extract contant values to Common DLL if are used in multiple places, otherwise extract them on class level (private const string fields)
+    //TODO [CR RT]: All Api Urls to be extracted to a constant class from Common DLL 
     public class REST_Operations : CRUD_OperationsClass
     {
+        //TODO [CR RT]: Give intuitive naming for t etc.
         private string RequestFormDigest()
         {
             WebClient webClient = new WebClient();
@@ -22,13 +28,18 @@ namespace DataAccessLayer
             var endpointUri = new Uri(url);
             var result = webClient.UploadString(endpointUri, "POST");
             JToken t = JToken.Parse(result);
+            //TODO [CR RT]: Check for null
             return t["d"]["GetContextWebInformation"]["FormDigestValue"].ToString();
         }
 
+        //TODO [CR RT]: Remove unnecessary code, lines for result member
+        //TODO [CR RT]: Extract header build in a separate method
+        //TODO [CR RT]: Extract request and conection creation in a separate method
         public override void AddListReferenceItem(string listName, Uri uri)
         {
             string listItem = CreateNewReferenceListItem(listName, uri, ConnectionConfiguration.Connection.GetCurrentUserName());
             string result = string.Empty;
+            //TODO [CR RT]: USe Path.Combine or String.Format
             Uri connectionUri = new Uri(ConnectionConfiguration.Connection.Uri + string.Format($"_api/web/lists/getbytitle('{listName}')/items"));
             HttpWebRequest wreq = (HttpWebRequest)WebRequest.Create(connectionUri);
             wreq.Credentials = ConnectionConfiguration.Connection.Credentials;
@@ -50,6 +61,10 @@ namespace DataAccessLayer
                 result = sr.ReadToEnd();
             }
         }
+
+        //TODO [CR RT]: Remove unnecessary code, lines for result member
+        //TODO [CR RT]: Rename itemID ->itemId
+        //TODO [CR RT]: Apply the same rules from the above method
 
         public override void ChangeListReferenceItem(Uri uri, int itemID, string listName)
         {
@@ -83,6 +98,7 @@ namespace DataAccessLayer
             }
         }
 
+        //TODO [CR RT]: Extract header build in a separate method
         public override void RemoveListReferenceItem(string listName, int itemID)
         {
             WebClient webClient = new WebClient();

@@ -6,6 +6,10 @@ using Models;
 
 namespace BusinessLogicLayer
 {
+    //TODO [CR RT]: Make DataAccessOperations private and make ctor for initializing it. This member is not used from outside of the class, except for initialization -> Incapsulation issue if it is let public.
+
+    //TODO [CR RT]: Add class and methods documentation
+
     public class FileSynchronizer
     {
         public DataAccessOperations DataAccessOperations { get; set; }
@@ -13,10 +17,12 @@ namespace BusinessLogicLayer
         public void Synchronize()
         {
             List<MetadataModel> spData = GetUserUrlsWithDate();
+            //TODO [CR RT]: Use string.Format
             List<MetadataModel> currentData = CsvFileManipulator.ReadMetadata<MetadataModel>(DataAccessOperations.ConnectionConfiguration.DirectoryPath +
                 $"\\data-{DataAccessOperations.ConnectionConfiguration.Connection.GetSharepointIdentifier()}.csv",DataAccessOperations);
             foreach (MetadataModel model in spData)
             {
+                //TODO [CR RT]: Extract to new method named e.g. EnsureFile
                 MetadataModel match = currentData.FirstOrDefault(x => x.Url == model.Url);
                 if (match != null && match.ModifiedDate < model.ModifiedDate)
                 {
@@ -37,6 +43,7 @@ namespace BusinessLogicLayer
                 $"\\data-{DataAccessOperations.ConnectionConfiguration.Connection.GetSharepointIdentifier()}.csv", currentData);
         }
 
+        //TODO [CR RT]: Let methods to be public just when realy needed
         public List<MetadataModel> GetUserUrlsWithDate()
         {
             List<MetadataModel> metadatas = new List<MetadataModel>();

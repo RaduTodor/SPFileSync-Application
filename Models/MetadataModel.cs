@@ -2,6 +2,9 @@
 
 namespace Models
 {
+    //TODO [CR RT]: Put each class in a separate cs file
+    //TODO [CR RT]: Extract constant
+
     public class MetadataModel
     {
         public string Url { get; set; }
