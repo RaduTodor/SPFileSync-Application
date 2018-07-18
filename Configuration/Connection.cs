@@ -2,21 +2,33 @@
 using System.Net;
 using Microsoft.SharePoint.Client;
 using System.Linq;
+using System.Xml.Serialization;
+using System.ComponentModel;
+using Models;
 
 namespace Configuration
 {
     //TODO [CR RT]: Add class and methods documentation
     public class Connection
     {
+        [XmlIgnore]
         public Uri Uri { get; set; }
 
-        public NetworkCredential Credentials { get; set; }
+        [XmlAttribute("uri")]
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public string UriString
+        {
+            get { return Uri == null ? null : Uri.ToString(); }
+            set { Uri = value == null ? null : new Uri(value); }
+        }
+
+        public Credentials Credentials { get; set; }
 
         //TODO [CR RT]: Rename method e.g. CreateContext
         public ClientContext SharePointResult()
         {
             ClientContext context = new ClientContext(Uri);
-            context.Credentials = Credentials;
+            context.Credentials = new NetworkCredential(Credentials.UserName,Credentials.Password);
             return context;
         }
 

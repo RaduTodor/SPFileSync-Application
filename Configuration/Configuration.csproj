@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionConfiguration.cs" />
+    <Compile Include="ConnectionConfigurationXmlManipulator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
