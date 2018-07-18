@@ -2,6 +2,9 @@
 using System.Windows;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Linq;
+using BusinessLogicLayer;
+using Common.Constants;
 using Models;
 
 namespace SPFileSync_Application
@@ -19,19 +22,20 @@ namespace SPFileSync_Application
             InitializeComponent();
             //var hardcodedConfigs = InitializeConfigurationList();
 
-            List<ConnectionConfiguration> connectionConfigurations = ConnectionConfigurationXmlManipulator.Deserialize();
-            ButtonActions.SynchronizeButtonPressed(connectionConfigurations, 2);
+            var connectionConfigurations = ConnectionConfigurationXmlManipulator.Deserialize();
+            FilesManager filesManager = new FilesManager(connectionConfigurations, ApplicationEnums.ListReferenceProviderType.REST);
+            filesManager.Synchronize();
 
             //ConnectionConfigurationXmlManipulator.Serialize(connectionConfigurations);
         }
 
         public List<ConnectionConfiguration> InitializeConfigurationList()
         {
-            List<ConnectionConfiguration> connectionConfigurations = new List<ConnectionConfiguration>();
-            ConnectionConfiguration firstConfiguration = ButtonActions.AddConnectionButtonPressed(ConfigurationManager.AppSettings["SharePointURL"],
+            var connectionConfigurations = new List<ConnectionConfiguration>();
+            var firstConfiguration = ButtonActions.AddConnectionButtonPressed(ConfigurationManager.AppSettings["SharePointURL"],
                 ConfigurationManager.AppSettings["Account"],
                 ConfigurationManager.AppSettings["Password"], 1);
-            List<ListWithColumnsName> listsWithColumnsNames = new List<ListWithColumnsName>();
+            var listsWithColumnsNames = new List<ListWithColumnsName>();
             listsWithColumnsNames.Add(new ListWithColumnsName
             {
                 ListName = "SyncList",
@@ -44,7 +48,7 @@ namespace SPFileSync_Application
             firstConfiguration.ListsWithColumnsNames = listsWithColumnsNames;
             connectionConfigurations.Add(firstConfiguration);
 
-            ConnectionConfiguration secondConfiguration = ButtonActions.AddConnectionButtonPressed(ConfigurationManager.AppSettings["SecondSharePointURL"],
+            var secondConfiguration = ButtonActions.AddConnectionButtonPressed(ConfigurationManager.AppSettings["SecondSharePointURL"],
                 ConfigurationManager.AppSettings["Account"],
                 ConfigurationManager.AppSettings["Password"], 2);
             listsWithColumnsNames = new List<ListWithColumnsName>();

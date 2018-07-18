@@ -1,16 +1,18 @@
-﻿using System;
-using System.Net;
-using Microsoft.SharePoint.Client;
-using System.Linq;
-using System.Xml.Serialization;
-using System.ComponentModel;
-using Models;
-
-namespace Configuration
+﻿namespace Configuration
 {
+    using System;
+    using System.Net;
+    using Microsoft.SharePoint.Client;
+    using System.Linq;
+    using System.Xml.Serialization;
+    using System.ComponentModel;
+    using Models;
+
     //TODO [CR RT]: Add class and methods documentation
     public class Connection
     {
+        private const char Backslash = '\\';
+
         [XmlIgnore]
         public Uri Uri { get; set; }
 
@@ -24,40 +26,51 @@ namespace Configuration
 
         public Credentials Credentials { get; set; }
 
-        //TODO [CR RT]: Rename method e.g. CreateContext
-        public ClientContext SharePointResult()
+        public ClientContext CreateContext()
         {
-            ClientContext context = new ClientContext(Uri);
+            var context = new ClientContext(Uri);
             context.Credentials = new NetworkCredential(Credentials.UserName,Credentials.Password);
             return context;
         }
 
         public string GetCurrentUserName()
         {
-            //TODO [CR RT]: Exttract constants
-            //TODO [CR RT]: Check for null or empty before additinal operation on the item
-            return Credentials.UserName.Split('\\')[1].Split('\\')[0];
+            return Credentials != null ? Credentials.UserName.Split(Backslash)[1].Split(Backslash)[0] : "";
         }
 
         public string GetSharepointIdentifier()
         {
-            string result = Uri.Segments.Last();
+            var result = Uri.Segments.Last();
             return result.Substring(0, result.Length - 1);
         }
 
-        //TODO [CR RT]: Check for null and exception handling on clientContext
         public int GetCurrentUserId()
         {
-            ClientContext clientContext = SharePointResult();
-            Web oWebsite = clientContext.Web;
+            using (var clientContext = CreateContext())
+            {
+                if (clientContext != null)
+                {
+                    var oWebsite = clientContext.Web;
 
-            clientContext.Load(oWebsite,
-                w => w.CurrentUser);
+                    clientContext.Load(oWebsite,
+                        w => w.CurrentUser);
+                }
 
-            clientContext.ExecuteQuery();
+                if (clientContext != null)
+                {
+                    try
+                    {
+                        clientContext.ExecuteQuery();
+                    }
+                    catch (Exception exception)
+                    {
 
+                    }
+                    return clientContext.Web.CurrentUser.Id;
+                }
+            }
 
-            return clientContext.Web.CurrentUser.Id;
+            return -1;
         }
     }
 }

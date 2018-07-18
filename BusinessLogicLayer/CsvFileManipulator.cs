@@ -1,56 +1,40 @@
-﻿using CsvHelper;
-using Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-
-namespace BusinessLogicLayer
+﻿namespace BusinessLogicLayer
 {
-    //TODO [CR RT]: Make class static
-    //TODO [CR RT]: Remove redundant qualifiers
-    //TODO [CR RT]: Add class and methods documentation
-    //TODO [CR RT]: Put all suing inside namespace
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Security.AccessControl;
+    using System.Security.Principal;
+    using System.Text;
+    using CsvHelper;
+    using Models;
+    using Common.Constants;
+    using DataAccessLayer;
 
-    public class CsvFileManipulator
+    //TODO [CR RT]: Add class and methods documentation
+
+    public static class CsvFileManipulator
     {
         public static void WriteMetadata<T>(string filePath, List<T> list)
         {
-            using (var csv = new CsvWriter(System.IO.File.CreateText(filePath)))
+            using (var csv = new CsvWriter(File.CreateText(filePath)))
             {
-                //TODO [CR RT]: Extract constant
-                csv.Configuration.Delimiter = ";";
+                csv.Configuration.Delimiter = HelpersConstant.CsvDelimiter;
                 csv.WriteRecords(list);
             }
         }
 
-        //TODO [CR RT]: Split in two different methods
-        public static List<T> ReadMetadata<T>(string filePath, DataAccessOperations dataAccessOperations)
+        public static List<T> ReadMetadata<T>(string filePath, BaseListReferenceProvider listReferenceProvider)
         {
-            if (!System.IO.File.Exists(filePath))
-            {
-                System.IO.Directory.CreateDirectory(dataAccessOperations.ConnectionConfiguration.DirectoryPath);
-                DirectoryInfo info = new DirectoryInfo(dataAccessOperations.ConnectionConfiguration.DirectoryPath);
-                DirectorySecurity security = info.GetAccessControl();
-                security.AddAccessRule(new FileSystemAccessRule(System.Security.Principal.WindowsIdentity.GetCurrent().Name,
-                    FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
-                security.AddAccessRule(new FileSystemAccessRule(System.Security.Principal.WindowsIdentity.GetCurrent().Name,
-                    FileSystemRights.Modify, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
-                info.SetAccessControl(security);
-
-                StreamWriter streamWriter = System.IO.File.CreateText(filePath);
-                streamWriter.Close();
-            }
-            List<T> records = new List<T>();
-            using (var file = System.IO.File.OpenText(filePath))
+            CreateAccesibleFile(filePath, listReferenceProvider);
+            var records = new List<T>();
+            using (var file = File.OpenText(filePath))
             {
                 using (var csv = new CsvReader(file))
                 {
                     csv.Configuration.RegisterClassMap<MetadataModelCsvMap>();
-                    //TODO [CR RT]: Extract constant
-                    csv.Configuration.Delimiter = ";";
+                    csv.Configuration.Delimiter = HelpersConstant.CsvDelimiter;
                     csv.Configuration.Encoding = Encoding.UTF8;
                     try
                     {
@@ -59,15 +43,31 @@ namespace BusinessLogicLayer
                     catch (Exception ex)
                     {
                         //TODO [CR RT]: Log exception
-                        //TODO [CR RT]: Remove code, it is not needed
-                        if (ex is NullReferenceException)
-                        {
-                            records = new List<T>();
-                        }
                     }
                 }
             }
+
             return records;
+        }
+
+        public static void CreateAccesibleFile(string filePath, BaseListReferenceProvider listReferenceProvider)
+        {
+            if (!File.Exists(filePath))
+            {
+                Directory.CreateDirectory(listReferenceProvider.ConnectionConfiguration.DirectoryPath);
+                var info = new DirectoryInfo(listReferenceProvider.ConnectionConfiguration.DirectoryPath);
+                var security = info.GetAccessControl();
+                security.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().Name,
+                    FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None,
+                    AccessControlType.Allow));
+                security.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().Name,
+                    FileSystemRights.Modify, InheritanceFlags.ObjectInherit, PropagationFlags.None,
+                    AccessControlType.Allow));
+                info.SetAccessControl(security);
+
+                var streamWriter = File.CreateText(filePath);
+                streamWriter.Close();
+            }
         }
     }
 }

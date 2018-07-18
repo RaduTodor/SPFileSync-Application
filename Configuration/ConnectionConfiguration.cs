@@ -1,12 +1,13 @@
-﻿using Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Xml.Serialization;
-
-namespace Configuration
+﻿namespace Configuration
 {
+    using System.IO;
+    using Models;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Configuration;
+    using System.Xml.Serialization;
+
     //TODO [CR RT]: Extract constants -> create new class library project called Commom. Keep constant values there. Add reference to Common for each project
     //TODO [CR RT]: Remove unused members
     //TODO [CR RT]: Add class and methods documentation
@@ -17,9 +18,8 @@ namespace Configuration
 
         public List<ListWithColumnsName> ListsWithColumnsNames { get; set; }
 
-        //TODO [CR RT] : Use Path.Combine(p1, p2); instead.
         //TODO [CR RT] : Initialize properties from another place or make it constant
-        public string DirectoryPath { get; set; } = $"{ConfigurationManager.AppSettings[("DirectoryPath")]}\\{DateTime.Now.Day}";
+        public string DirectoryPath { get; set; } = Path.Combine(ConfigurationManager.AppSettings[("DirectoryPath")],DateTime.Now.Day.ToString());
 
         [XmlIgnore]
         public TimeSpan SyncTimeSpan { get; set; } = new TimeSpan(0, 10, 0);

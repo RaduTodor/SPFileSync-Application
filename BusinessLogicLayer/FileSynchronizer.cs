@@ -1,56 +1,73 @@
-﻿using DataAccessLayer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Models;
-
-namespace BusinessLogicLayer
+﻿namespace BusinessLogicLayer
 {
-    //TODO [CR RT]: Make DataAccessOperations private and make ctor for initializing it. This member is not used from outside of the class, except for initialization -> Incapsulation issue if it is let public.
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Models;
+    using System.IO;
+    using Common.Constants;
+    using Common.Helpers;
+    using Configuration;
+    using DataAccessLayer;
 
     //TODO [CR RT]: Add class and methods documentation
 
     public class FileSynchronizer
     {
-        public DataAccessOperations DataAccessOperations { get; set; }
+        private FileOperationProvider fileOperationProvider { get; }
+
+        private BaseListReferenceProvider listReferenceProvider { get; }
+
+        public FileSynchronizer(ConnectionConfiguration configuration, ApplicationEnums.ListReferenceProviderType type)
+        {
+            fileOperationProvider = new FileOperationProvider(configuration);
+            listReferenceProvider = OperationsFactory.GetOperations(type);
+            listReferenceProvider.ConnectionConfiguration = configuration;
+        }
 
         public void Synchronize()
         {
-            List<MetadataModel> spData = GetUserUrlsWithDate();
-            //TODO [CR RT]: Use string.Format
-            List<MetadataModel> currentData = CsvFileManipulator.ReadMetadata<MetadataModel>(DataAccessOperations.ConnectionConfiguration.DirectoryPath +
-                $"\\data-{DataAccessOperations.ConnectionConfiguration.Connection.GetSharepointIdentifier()}.csv",DataAccessOperations);
-            foreach (MetadataModel model in spData)
+            var spData = GetUserUrlsWithDate();
+            var currentData = CsvFileManipulator.ReadMetadata<MetadataModel>(string.Format(HelpersConstant.MetadataFileLocation,
+                listReferenceProvider.ConnectionConfiguration.DirectoryPath,
+                listReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
+                listReferenceProvider);
+            foreach (var model in spData)
             {
-                //TODO [CR RT]: Extract to new method named e.g. EnsureFile
-                MetadataModel match = currentData.FirstOrDefault(x => x.Url == model.Url);
-                if (match != null && match.ModifiedDate < model.ModifiedDate)
-                {
-                    DataAccessOperations.FilesGetter.DownloadFile(match.Url, DataAccessOperations.ConnectionConfiguration.DirectoryPath);
-                    currentData.Remove(match);
-                    currentData.Add(model);
-                }
-                else
-                {
-                    if (!System.IO.File.Exists(DataAccessOperations.ConnectionConfiguration.DirectoryPath + "\\" + FilesGetter.ParseURLFileName(model.Url)))
-                    {
-                        DataAccessOperations.FilesGetter.DownloadFile(model.Url, DataAccessOperations.ConnectionConfiguration.DirectoryPath);
-                        currentData.Add(model);
-                    }
-                }
+                EnsureFile(model, currentData);
             }
-            CsvFileManipulator.WriteMetadata(DataAccessOperations.ConnectionConfiguration.DirectoryPath +
-                $"\\data-{DataAccessOperations.ConnectionConfiguration.Connection.GetSharepointIdentifier()}.csv", currentData);
+            CsvFileManipulator.WriteMetadata(string.Format(HelpersConstant.MetadataFileLocation,
+                listReferenceProvider.ConnectionConfiguration.DirectoryPath,
+                listReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()), 
+                currentData);
         }
 
-        //TODO [CR RT]: Let methods to be public just when realy needed
-        public List<MetadataModel> GetUserUrlsWithDate()
+        public void EnsureFile(MetadataModel model, List<MetadataModel> currentData)
         {
-            List<MetadataModel> metadatas = new List<MetadataModel>();
-            List<string> userURLs = DataAccessOperations.Operations.GetCurrentUserUrls();
-            foreach (string url in userURLs)
+            var match = currentData.FirstOrDefault(x => x.Url == model.Url);
+            if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
-                DateTime dateTime = DataAccessOperations.Operations.GetMetadataItem(url);
+                fileOperationProvider.Download(match.Url, listReferenceProvider.ConnectionConfiguration.DirectoryPath);
+                currentData.Remove(match);
+                currentData.Add(model);
+            }
+            else
+            {
+                if (!File.Exists(listReferenceProvider.ConnectionConfiguration.DirectoryPath + "\\" + ParsingHelpers.ParseUrlFileName(model.Url)))
+                {
+                    fileOperationProvider.Download(model.Url, listReferenceProvider.ConnectionConfiguration.DirectoryPath);
+                    currentData.Add(model);
+                }
+            }
+        }
+
+        private List<MetadataModel> GetUserUrlsWithDate()
+        {
+            var metadatas = new List<MetadataModel>();
+            List<string> userUrLs = listReferenceProvider.GetCurrentUserUrls();
+            foreach (var url in userUrLs)
+            {
+                DateTime dateTime = listReferenceProvider.GetMetadataItem(url);
                 metadatas.Add(new MetadataModel { Url = url, ModifiedDate = dateTime });
             }
             return metadatas;

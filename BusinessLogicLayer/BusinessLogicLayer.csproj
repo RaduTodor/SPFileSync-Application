@@ -49,12 +49,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CsvFileManipulator.cs" />
-    <Compile Include="DataAccessOperations.cs" />
+    <Compile Include="FilesManager.cs" />
     <Compile Include="FileSynchronizer.cs" />
+    <Compile Include="ListReferenceManager.cs" />
     <Compile Include="OperationsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{478a5e61-3060-41c2-8954-499f8da56fd1}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Configuration\Configuration.csproj">
       <Project>{1D7EECC5-411E-40E0-9D6B-FF15EDE1FECB}</Project>
       <Name>Configuration</Name>

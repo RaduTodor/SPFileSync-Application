@@ -46,15 +46,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ListGetter.cs" />
-    <Compile Include="CRUD_OperationsClass.cs" />
-    <Compile Include="CSOM_Operations.cs" />
-    <Compile Include="FilesGetter.cs" />
-    <Compile Include="MetadataGetter.cs" />
+    <Compile Include="ListProvider.cs" />
+    <Compile Include="BaseListReferenceProvider.cs" />
+    <Compile Include="CsomListReferenceProvider.cs" />
+    <Compile Include="FileOperationProvider.cs" />
+    <Compile Include="MetadataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="REST_Operations.cs" />
+    <Compile Include="RestListReferenceProvider.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{478A5E61-3060-41C2-8954-499F8DA56FD1}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Configuration\Configuration.csproj">
       <Project>{1d7eecc5-411e-40e0-9d6b-ff15ede1fecb}</Project>
       <Name>Configuration</Name>

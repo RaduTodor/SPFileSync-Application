@@ -1,30 +1,29 @@
-﻿using DataAccessLayer;
-
-namespace BusinessLogicLayer
+﻿namespace BusinessLogicLayer
 {
-    //TODO [CR RT]: Make enum for application operation types. Think in advance, for 2 options int values is okay but what will happen for 10 options? Also, 1 - 2 options do not really say samething specific
-    //TODO [CR RT]: Rename ObjSelector/ Give more intuitive name e.g. use naming of returned class 
+    using Common.Constants;
+    using DataAccessLayer;
     //TODO [CR RT]: Add class and methods documentation
 
     public static class OperationsFactory
     {
-        public static CRUD_OperationsClass GetOperations(int choiceNumber)
+        public static BaseListReferenceProvider GetOperations(ApplicationEnums.ListReferenceProviderType choice)
         {
-            CRUD_OperationsClass ObjSelector = null;
+            BaseListReferenceProvider listReferenceProvider = null;
 
-            switch (choiceNumber)
+            switch (choice)
             {
-                case 1:
-                    ObjSelector = new REST_Operations();
+                case ApplicationEnums.ListReferenceProviderType.REST:
+                    listReferenceProvider = new RestListReferenceProvider();
                     break;
-                case 2:
-                    ObjSelector = new CSOM_Operations();
+                case ApplicationEnums.ListReferenceProviderType.CSOM:
+                    listReferenceProvider = new CsomListReferenceProvider();
                     break;
                 default:
-                    ObjSelector = new REST_Operations();
+                    listReferenceProvider = new RestListReferenceProvider();
                     break;
             }
-            return ObjSelector;
+
+            return listReferenceProvider;
         }
     }
 }

@@ -1,15 +1,12 @@
-﻿using System;
-using System.ComponentModel;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using System.Xml.Serialization;
-
-namespace Models
+﻿namespace Models
 {
+    using System.IO;
+    using System.Security.Cryptography;
+    using System.Text;
+
     public class Credentials
     {
-        private const string encodingString = "ABCDEFGH";
+        private const string EncodingString = "ABCDEFGH";
 
         public string UserName { get; set; }
 
@@ -26,37 +23,37 @@ namespace Models
 
         private string Encrypt(string value)
         {
-            DESCryptoServiceProvider cryptic = new DESCryptoServiceProvider();
-            cryptic.Key = ASCIIEncoding.ASCII.GetBytes(encodingString);
-            cryptic.IV = ASCIIEncoding.ASCII.GetBytes(encodingString);
+            var cryptic = new DESCryptoServiceProvider();
+            cryptic.Key = Encoding.ASCII.GetBytes(EncodingString);
+            cryptic.IV = Encoding.ASCII.GetBytes(EncodingString);
 
             byte[] data = null;
-            string empty = "";
+            var empty = "";
             using (var stream = new MemoryStream())
             {
-                CryptoStream cryptoStream = new CryptoStream(stream, cryptic.CreateEncryptor(), CryptoStreamMode.Write);
-                data = ASCIIEncoding.ASCII.GetBytes(value);
+                var cryptoStream = new CryptoStream(stream, cryptic.CreateEncryptor(), CryptoStreamMode.Write);
+                data = Encoding.ASCII.GetBytes(value);
                 cryptoStream.Write(data, 0, data.Length);
                 cryptoStream.Close();
-                return System.Text.Encoding.UTF8.GetString(stream.GetBuffer());
+                return Encoding.UTF8.GetString(stream.GetBuffer());
             }
         }
 
         private string Decrypt(string value)
         {
-            DESCryptoServiceProvider cryptic = new DESCryptoServiceProvider();
+            var cryptic = new DESCryptoServiceProvider();
 
-            cryptic.Key = ASCIIEncoding.ASCII.GetBytes(encodingString);
-            cryptic.IV = ASCIIEncoding.ASCII.GetBytes(encodingString);
+            cryptic.Key = Encoding.ASCII.GetBytes(EncodingString);
+            cryptic.IV = Encoding.ASCII.GetBytes(EncodingString);
 
             using (var stream = GenerateStreamFromString(value))
             {
-                CryptoStream cryptoStream = new CryptoStream(stream,
+                var cryptoStream = new CryptoStream(stream,
                     cryptic.CreateDecryptor(), CryptoStreamMode.Read);
 
-                StreamReader reader = new StreamReader(cryptoStream);
-                MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(reader.ReadToEnd()));
-                return System.Text.Encoding.UTF8.GetString(memoryStream.ToArray());
+                var reader = new StreamReader(cryptoStream);
+                var memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(reader.ReadToEnd()));
+                return Encoding.UTF8.GetString(memoryStream.ToArray());
             }
         }
 
