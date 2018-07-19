@@ -6,8 +6,9 @@
     using System.Linq;
     using Common.Constants;
 
-    //TODO [CR RT]: Add class and methods documentation
-
+    /// <summary>
+    /// It's the base of a ListReferenceProvider
+    /// </summary>
     public abstract class BaseListReferenceProvider
     {
         public ConnectionConfiguration ConnectionConfiguration { get; set; }
@@ -18,20 +19,34 @@
 
         public abstract void ChangeListReferenceItem(Uri uri, int itemId, string listName);
 
+        /// <summary>
+        /// Creates the querry needed for a new ReferenceListItem to be made
+        /// </summary>
+        /// <param name="listName"></param>
+        /// <param name="uri"></param>
+        /// <returns></returns>
         protected string CreateNewReferenceListItem(string listName, Uri uri)
         {
             var url = uri.AbsoluteUri;
             var listWithColumn = ConnectionConfiguration.ListsWithColumnsNames.First(list => list.ListName == listName);
-            return string.Format(QuerryTemplates.NewReferenceItem, listName, listWithColumn.UrlColumnName, url,
-                listWithColumn.UserColumnName, ConnectionConfiguration.Connection.GetCurrentUserId());
+            return string.Format(QuerryTemplates.NewReferenceItem, listName, listWithColumn.UrlColumnName, url, url, listWithColumn.UserColumnName, ConnectionConfiguration.Connection.GetCurrentUserId());
         }
 
+        /// <summary>
+        /// Returns the ModifiedDate of an listItem based on it's url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public DateTime GetMetadataItem(string url)
         {
             var metadataProvider = new MetadataProvider(ConnectionConfiguration);
             return metadataProvider.GetModifiedDateOfItem(url);
         }
 
+        /// <summary>
+        /// Gets all urls from all ReferenceListItem of CurrentUser
+        /// </summary>
+        /// <returns></returns>
         public List<string> GetCurrentUserUrls()
         {
             var metadataProvider = new MetadataProvider(ConnectionConfiguration);

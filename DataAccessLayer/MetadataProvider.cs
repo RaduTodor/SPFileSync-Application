@@ -1,5 +1,6 @@
 ﻿namespace DataAccessLayer
 {
+    using Common.Helpers;
     using Configuration;
     using System;
     using System.Collections.Generic;
@@ -9,10 +10,9 @@
     using System.Xml.Linq;
     using Common.Constants;
 
-    //TODO [CR RT]: Add class and methods documentation
-    //TODO [CR RT]: Extract constants
-    //TODO [CR RT]: Exception handling
-
+    /// <summary>
+    /// Can get MetadataModel(Url with ModifiedDate)
+    /// </summary>
     public class MetadataProvider
     {
         private ConnectionConfiguration connectionConfiguration { get; }
@@ -22,70 +22,110 @@
             connectionConfiguration = configuration;
         }
 
+        /// <summary>
+        /// Adds Credentials, method name and accept form to a request)
+        /// </summary>
+        /// <param name="request"></param>
         private void AddGetHeadersToRequest(HttpWebRequest request)
         {
-            request.Method = "GET";
+            request.Method = QuerryTemplates.Get;
             request.Credentials = new NetworkCredential(connectionConfiguration.Connection.Credentials.UserName, connectionConfiguration.Connection.Credentials.Password);
-            request.Accept = "application/xml;odata=verbose";
+            request.Accept = DataAccessLayerConstants.ContentTypeXml;
         }
 
+        /// <summary>
+        /// Sends a request for getting the modification date of an ListItem
+        /// Calls GetModifiedDateInResponse
+        /// </summary>
+        /// <param name="fileUrl"></param>
+        /// <returns></returns>
         public DateTime GetModifiedDateOfItem(string fileUrl)
         {
-            fileUrl = fileUrl.Replace("%20", " ");
-            var listTitle = ParseUrlParentDirectory(fileUrl);
-            var endpointRequest = (HttpWebRequest)WebRequest.Create(connectionConfiguration.Connection.Uri.AbsoluteUri +
-                string.Format(QuerryTemplates.ModifiedDateOfUrlApi,listTitle,fileUrl));
-
-            AddGetHeadersToRequest(endpointRequest);
-            var endpointResponse = (HttpWebResponse)endpointRequest.GetResponse();
-            using (var stream = endpointResponse.GetResponseStream())
+            try
             {
-                var result = string.Empty;
-                if (stream != null)
-                    using (var sr = new System.IO.StreamReader(stream, Encoding.UTF8))
-                    {
-                        result = sr.ReadToEnd();
-                    }
-                return GetModifiedDateInResponse(result);
-            }
-        }
-
-        public List<string> GetCurrentUserUrls()
-        {
-            var allUrlsOfCurrentUser = new List<string>();
-            foreach (var listWithColumnsName in connectionConfiguration.ListsWithColumnsNames)
-            {
+                fileUrl = fileUrl.Replace(HelpersConstant.SpaceReplaceUtfCode, " ");
+                var listTitle = ParsingHelpers.ParseUrlParentDirectory(fileUrl);
                 var endpointRequest = (HttpWebRequest) WebRequest.Create(
                     connectionConfiguration.Connection.Uri.AbsoluteUri +
-                    string.Format(QuerryTemplates.SpecificListItemsOfUserApi, listWithColumnsName.ListName,
-                        listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
-                        connectionConfiguration.Connection.GetCurrentUserName()));
+                    string.Format(QuerryTemplates.ModifiedDateOfUrlApi, listTitle, fileUrl));
+
                 AddGetHeadersToRequest(endpointRequest);
-                var endpointResponse = (HttpWebResponse)endpointRequest.GetResponse();
-                
+                var endpointResponse = (HttpWebResponse) endpointRequest.GetResponse();
                 using (var stream = endpointResponse.GetResponseStream())
                 {
+                    var result = string.Empty;
                     if (stream != null)
                         using (var sr = new System.IO.StreamReader(stream, Encoding.UTF8))
                         {
-                            var result = sr.ReadToEnd().Trim();
-                            allUrlsOfCurrentUser.AddRange(GetAllUrlsInResponse(result,
-                                listWithColumnsName.UrlColumnName));
+                            result = sr.ReadToEnd();
                         }
+
+                    return GetModifiedDateInResponse(result);
                 }
             }
-            return allUrlsOfCurrentUser;
+            catch (Exception ex)
+            {
+
+            }
+
+            return new DateTime();
         }
 
+        /// <summary>
+        /// Sends a request for getting all urls from all ReferenceListItems of CurrentUser
+        /// Calls GetAllUrlsInResponse
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetCurrentUserUrls()
+        {
+            try
+            {
+                var allUrlsOfCurrentUser = new List<string>();
+                foreach (var listWithColumnsName in connectionConfiguration.ListsWithColumnsNames)
+                {
+                    var endpointRequest = (HttpWebRequest)WebRequest.Create(
+                        connectionConfiguration.Connection.Uri.AbsoluteUri +
+                        string.Format(QuerryTemplates.SpecificListItemsOfUserApi, listWithColumnsName.ListName,
+                            listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
+                            connectionConfiguration.Connection.GetCurrentUserName()));
+                    AddGetHeadersToRequest(endpointRequest);
+                    var endpointResponse = (HttpWebResponse)endpointRequest.GetResponse();
+
+                    using (var stream = endpointResponse.GetResponseStream())
+                    {
+                        if (stream != null)
+                            using (var sr = new System.IO.StreamReader(stream, Encoding.UTF8))
+                            {
+                                var result = sr.ReadToEnd().Trim();
+                                allUrlsOfCurrentUser.AddRange(GetAllUrlsInResponse(result,
+                                    listWithColumnsName.UrlColumnName));
+                            }
+                    }
+                }
+                return allUrlsOfCurrentUser;
+            }
+            catch (Exception e)
+            {
+
+            }
+            return new List<string>();          
+        }
+
+        /// <summary>
+        /// Gets every url from xml response
+        /// </summary>
+        /// <param name="xmlString"></param>
+        /// <param name="urlColumnName"></param>
+        /// <returns></returns>
         private List<string> GetAllUrlsInResponse(string xmlString, string urlColumnName)
         {
             var elements = XElement.Parse(xmlString);
-            var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + "entry")
-                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + "content")
-                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + "properties")
-                         from urlNameBody in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + urlColumnName)
-                         from url in urlNameBody.Elements(DataAccessLayerConstants.DNamespace + "Url")
-                         select url;
+            var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace+Entry)
+                from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace+Content)
+                from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace+Properties)
+                from urlNameBody in propertiesBody.Elements(DataAccessLayerConstants.DNamespace+urlColumnName)
+                from url in urlNameBody.Elements(DataAccessLayerConstants.DNamespace+Url)
+                select url;
             var urls = new List<string>();
             foreach (var element in result)
             {
@@ -94,25 +134,30 @@
             return urls;
         }
 
+        /// <summary>
+        /// Gets modified date from xml response
+        /// </summary>
+        /// <param name="xmlString"></param>
+        /// <returns></returns>
         private DateTime GetModifiedDateInResponse(string xmlString)
         {
             var elements = XElement.Parse(xmlString);
-            //TODO [CR RT]: use string.Format
-            var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + "entry")
-                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + "content")
-                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + "properties")
-                         from modifiedDate in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + "Modified")
+            var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
+                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace+Content)
+                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace+Properties)
+                         from modifiedDate in propertiesBody.Elements(DataAccessLayerConstants.DNamespace+Modified)
                          select modifiedDate;
             return Convert.ToDateTime(result.First().Value);
         }
 
-        private string ParseUrlParentDirectory(string url)
-        {
-            var uri = new Uri(url);
-            var libraryUri = new Uri(uri.AbsoluteUri.Remove(uri.AbsoluteUri.Length - uri.Segments.Last().Length));
-            var parentDirectory = libraryUri.Segments[DataAccessLayerConstants.LibrarySegmentNumber];
-            parentDirectory = parentDirectory.Remove(parentDirectory.Length - 1);
-            return parentDirectory.Replace("%20", " ");
-        }
+        private const string Entry = "entry";
+
+        private const string Content = "content";
+
+        private const string Properties = "properties";
+
+        private const string Url = "Url";
+
+        private const string Modified = "Modified";
     }
 }

@@ -28,7 +28,6 @@
             cryptic.IV = Encoding.ASCII.GetBytes(EncodingString);
 
             byte[] data = null;
-            var empty = "";
             using (var stream = new MemoryStream())
             {
                 var cryptoStream = new CryptoStream(stream, cryptic.CreateEncryptor(), CryptoStreamMode.Write);

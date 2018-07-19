@@ -6,7 +6,10 @@
     using Common.Helpers;
     using System.Net;
     using Common.Constants;
-    //TODO [CR RT]: Add class and methods documentation
+
+    /// <summary>
+    /// From given ConnectionConfiguration can access specific files 
+    /// </summary>
     public class FileOperationProvider
     {
         private ConnectionConfiguration ConnectionConfiguration { get; }
@@ -16,6 +19,11 @@
             ConnectionConfiguration = configuration;
         }
 
+        /// <summary>
+        /// Writes the file from <paramref name="url"/> in a directory given by <paramref name="directoryPath"/>
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="directoryPath"></param>
         public void Download(string url, string directoryPath)
         {
             try
@@ -47,6 +55,11 @@
             }
         }
 
+        /// <summary>
+        /// Gets the file from given sharepoint <paramref name="url"/>
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         private HttpWebRequest CreateDownloadRequest(string url)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);

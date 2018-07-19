@@ -4,10 +4,12 @@
     using Microsoft.SharePoint.Client;
     using System.Collections.Generic;
     using Common.Constants;
+    using System;
 
-    //TODO [CR RT]: Add class and methods documentation
-    //TODO [CR RT]: Exception handling on all public methods
-
+    /// <summary>
+    /// Has methods which get sharepoint Lists or ListItems.
+    /// Needs to be instanced
+    /// </summary>
     public class ListProvider
     {
         public ListProvider(ConnectionConfiguration configuration)
@@ -16,47 +18,88 @@
         }
         private ConnectionConfiguration ConnectionConfiguration { get; }
 
+        /// <summary>
+        /// Gets the List from a sharepoint site given by <paramref name="url"/>
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public List GetList(string url)
         {
-            using (var context = ConnectionConfiguration.Connection.CreateContext())
+            try
             {
-                var site = context.Web;
-                context.Load(site, currentWeb => currentWeb.Title);
-                context.ExecuteQuery();
-                return site.GetList(url);
+                using (var context = ConnectionConfiguration.Connection.CreateContext())
+                {
+                    var site = context.Web;
+                    context.Load(site, currentWeb => currentWeb.Title);
+                    context.ExecuteQuery();
+                    return site.GetList(url);
+                }
             }
+            catch (Exception e)
+            {
+                
+            }
+
+            return null;
         }
 
+        /// <summary>
+        /// Gets all Lists from a sharepoint site given by <paramref name="url"/>
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<List> GetLists()
         {
-            using (var context = ConnectionConfiguration.Connection.CreateContext())
+            try
             {
-                var site = context.Web;
-                context.Load(site, currentWeb => currentWeb.Title);
-                context.ExecuteQuery();
-                var lists = site.Lists;
-                var listsCollection =
-                    context.LoadQuery(lists.Include(currentList => currentList.Title, currentList => currentList.Id));
-                context.ExecuteQuery();
-                return listsCollection;
+                using (var context = ConnectionConfiguration.Connection.CreateContext())
+                {
+                    var site = context.Web;
+                    context.Load(site, currentWeb => currentWeb.Title);
+                    context.ExecuteQuery();
+                    var lists = site.Lists;
+                    var listsCollection =
+                        context.LoadQuery(lists.Include(currentList => currentList.Title, currentList => currentList.Id));
+                    context.ExecuteQuery();
+                    return listsCollection;
+                }
             }
+            catch (Exception e)
+            {
+
+            }
+
+            return null;
         }
 
+        /// <summary>
+        /// Gets all ListItems from a List given the <paramref name="listName"/>
+        /// </summary>
+        /// <param name="listName"></param>
+        /// <returns></returns>
         public IEnumerable<ListItem> GetAllListItems(string listName)
         {
-            using (var clientContext = ConnectionConfiguration.Connection.CreateContext())
+            try
             {
-                var query = new CamlQuery
+                using (var clientContext = ConnectionConfiguration.Connection.CreateContext())
                 {
-                    ViewXml = QuerryTemplates.AllListItems
-                };
+                    var query = new CamlQuery
+                    {
+                        ViewXml = QuerryTemplates.AllListItems
+                    };
 
-                var sourceList = clientContext.Web.Lists.GetByTitle(listName);
-                var items = sourceList.GetItems(query);
-                clientContext.Load(items);
-                clientContext.ExecuteQuery();
-                return items;
+                    var sourceList = clientContext.Web.Lists.GetByTitle(listName);
+                    var items = sourceList.GetItems(query);
+                    clientContext.Load(items);
+                    clientContext.ExecuteQuery();
+                    return items;
+                }
             }
+            catch (Exception e)
+            {
+
+            }
+
+            return null;
         }
     }
 }

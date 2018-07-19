@@ -2,10 +2,17 @@
 {
     using Common.Constants;
     using DataAccessLayer;
-    //TODO [CR RT]: Add class and methods documentation
 
+    /// <summary>
+    /// Implements the FactoryPattern for BaseListReferenceProvider
+    /// </summary>
     public static class OperationsFactory
     {
+        /// <summary>
+        /// Returns a specific instance of BaseListReferenceProvider from a given enum elements choice
+        /// </summary>
+        /// <param name="choice"></param>
+        /// <returns></returns>
         public static BaseListReferenceProvider GetOperations(ApplicationEnums.ListReferenceProviderType choice)
         {
             BaseListReferenceProvider listReferenceProvider = null;

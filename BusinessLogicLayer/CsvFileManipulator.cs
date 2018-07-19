@@ -4,18 +4,23 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Security.AccessControl;
-    using System.Security.Principal;
     using System.Text;
     using CsvHelper;
     using Models;
     using Common.Constants;
-    using DataAccessLayer;
+    using Common.Helpers;
 
-    //TODO [CR RT]: Add class and methods documentation
-
+    /// <summary>
+    /// This Class writes and reads Metadata needed for Synchronization check. It uses CsvHelper
+    /// </summary>
     public static class CsvFileManipulator
     {
+        /// <summary>
+        /// The writing method is generic
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filePath"></param>
+        /// <param name="list"></param>
         public static void WriteMetadata<T>(string filePath, List<T> list)
         {
             using (var csv = new CsvWriter(File.CreateText(filePath)))
@@ -25,9 +30,16 @@
             }
         }
 
-        public static List<T> ReadMetadata<T>(string filePath, BaseListReferenceProvider listReferenceProvider)
+        /// <summary>
+        /// The reading method also is generic and needs a directoryPath 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filePath"></param>
+        /// <param name="listReferenceProvider"></param>
+        /// <returns></returns>
+        public static List<T> ReadMetadata<T>(string filePath, string directoryPath)
         {
-            CreateAccesibleFile(filePath, listReferenceProvider);
+            FileEditingHelper.CreateAccesibleFile(filePath, directoryPath);
             var records = new List<T>();
             using (var file = File.OpenText(filePath))
             {
@@ -48,26 +60,6 @@
             }
 
             return records;
-        }
-
-        public static void CreateAccesibleFile(string filePath, BaseListReferenceProvider listReferenceProvider)
-        {
-            if (!File.Exists(filePath))
-            {
-                Directory.CreateDirectory(listReferenceProvider.ConnectionConfiguration.DirectoryPath);
-                var info = new DirectoryInfo(listReferenceProvider.ConnectionConfiguration.DirectoryPath);
-                var security = info.GetAccessControl();
-                security.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().Name,
-                    FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None,
-                    AccessControlType.Allow));
-                security.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().Name,
-                    FileSystemRights.Modify, InheritanceFlags.ObjectInherit, PropagationFlags.None,
-                    AccessControlType.Allow));
-                info.SetAccessControl(security);
-
-                var streamWriter = File.CreateText(filePath);
-                streamWriter.Close();
-            }
         }
     }
 }

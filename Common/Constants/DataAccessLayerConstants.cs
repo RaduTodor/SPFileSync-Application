@@ -10,10 +10,20 @@
 
         public const int LibrarySegmentNumber = 3;
 
-        public const XNamespace MetadataBaseNamespace = "http://www.w3.org/2005/Atom";
+        public static readonly XNamespace MetadataBaseNamespace = "http://www.w3.org/2005/Atom";
 
-        public const XNamespace MNamespace = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
+        public static readonly XNamespace MNamespace = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
 
-        public const XNamespace DNamespace = "http://schemas.microsoft.com/ado/2007/08/dataservices";
+        public static readonly XNamespace DNamespace = "http://schemas.microsoft.com/ado/2007/08/dataservices";
+
+        public const string ContentTypeXml = "application/xml;odata=verbose";
+
+        public const string ContentTypeJson = "application/json;odata=verbose";
+
+        public const string JTokenFirstLayer = "d";
+
+        public const string JTokenSecondLayer = "GetContextWebInformation";
+
+        public const string JTokenThirdLayer = "FormDigestValue";
     }
 }

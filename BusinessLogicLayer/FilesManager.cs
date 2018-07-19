@@ -5,7 +5,9 @@
     using Common.Constants;
     using Configuration;
 
-    //TODO [CR RT]: Add class and methods documentation
+    /// <summary>
+    /// An instance of FilesManager class can start the sync operations (check and download)
+    /// </summary>
     public class FilesManager
     {
         private List<ConnectionConfiguration> connectionConfigurations { get; }
@@ -18,6 +20,11 @@
             providerType = type;
         }
 
+        /// <summary>
+        /// Synchronize method iterates all ConnectionConfiguration in connectionConfigurations and creates a new Task
+        /// which calls and runs a FileSynchronizer instance Synchronize method.
+        /// This is basically the Application Synchronization start.
+        /// </summary>
         public void Synchronize()
         {
             foreach (var connection in connectionConfigurations)

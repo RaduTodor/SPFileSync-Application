@@ -8,7 +8,10 @@
     using System.ComponentModel;
     using Models;
 
-    //TODO [CR RT]: Add class and methods documentation
+    /// <summary>
+    /// Connection instance has an Uri and Credentials needed for a connection to be made
+    /// It also has some useful methods
+    /// </summary>
     public class Connection
     {
         private const char Backslash = '\\';
@@ -25,7 +28,11 @@
         }
 
         public Credentials Credentials { get; set; }
-
+        
+        /// <summary>
+        /// Returns a ClientContext for instance's Uri with instance's Credentials
+        /// </summary>
+        /// <returns></returns>
         public ClientContext CreateContext()
         {
             var context = new ClientContext(Uri);
@@ -33,17 +40,29 @@
             return context;
         }
 
+        /// <summary>
+        /// Gets the username part without domain (just the login name)
+        /// </summary>
+        /// <returns></returns>
         public string GetCurrentUserName()
         {
             return Credentials != null ? Credentials.UserName.Split(Backslash)[1].Split(Backslash)[0] : "";
         }
 
+        /// <summary>
+        /// Returns last part of a sharepoint uri
+        /// </summary>
+        /// <returns></returns>
         public string GetSharepointIdentifier()
         {
             var result = Uri.Segments.Last();
             return result.Substring(0, result.Length - 1);
         }
 
+        /// <summary>
+        /// Loads a clientContext with instance's data and returns the current User Id's
+        /// </summary>
+        /// <returns></returns>
         public int GetCurrentUserId()
         {
             using (var clientContext = CreateContext())
