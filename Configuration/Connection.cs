@@ -99,5 +99,19 @@
 
             return -1;
         }
+
+        public void Login()
+        {
+            var context = CreateContext();
+            try
+            {
+
+                context.ExecuteQuery();
+            }
+            catch (HttpListenerException ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

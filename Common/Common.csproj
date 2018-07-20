@@ -33,8 +33,16 @@
     <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.7.1.1\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.5.7\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,16 +53,24 @@
   <ItemGroup>
     <Compile Include="ApplicationEnums\ListReferenceProviderType.cs" />
     <Compile Include="Constants\ApiConstants.cs" />
+    <Compile Include="Constants\ConfigurationMessages.cs" />
     <Compile Include="Constants\DataAccessLayerConstants.cs" />
     <Compile Include="Constants\HelpersConstants.cs" />
     <Compile Include="Constants\QuerryTemplates.cs" />
     <Compile Include="Constants\RequestHeaderConstants.cs" />
+    <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\XmlFileManipulator.cs" />
     <Compile Include="Helpers\FileEditingHelper.cs" />
     <Compile Include="Helpers\ParsingHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

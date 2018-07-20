@@ -1,0 +1,34 @@
+﻿<Window x:Class="SPFileSync_Application.EditConfigurationPanel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SPFileSync_Application"
+        mc:Ignorable="d"
+        Title="EditConfigurationPanel" Height="550" Width="800">
+    <Window.Background>
+        <ImageBrush ImageSource="/Utils/background.jpg"></ImageBrush>
+    </Window.Background>
+    <Grid>
+        <Button Content="FilesDestination" Height="32" HorizontalAlignment="Left" Margin="100,215,0,0"
+                VerticalAlignment="Top" Width="99" Click="SetFileDestination" />
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="98,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Name="userNameTextBox"/>
+        <PasswordBox HorizontalAlignment="Left" Margin="100,97,0,0" VerticalAlignment="Top" Width="120" Name="passwordText"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="100,283,0,0" TextWrapping="Wrap" Name="syncTextBox"  VerticalAlignment="Top" Width="120"/>
+        <Label Content="Username" HorizontalAlignment="Left" Margin="12,37,0,0" VerticalAlignment="Top" Foreground="#FFFBFBFB"/>
+        <Label Content="Password" HorizontalAlignment="Left" Margin="11,97,0,0" VerticalAlignment="Top" Foreground="#FFFBFBFB"/>
+        <Label HorizontalAlignment="Left" Margin="98,65,0,0" VerticalAlignment="Top" Width="120" Foreground="White" Name="userNameErrorLabel" Height="21"/>
+        <Label HorizontalAlignment="Left" Margin="100,116,0,0" VerticalAlignment="Top" Width="120" Foreground="White" Name="passwordErrorLabel" Height="32"/>
+        <Label Content="Destination" HorizontalAlignment="Left" Margin="6,216,0,0" VerticalAlignment="Top" Foreground="White" FontSize="14"/>
+        <Label Content="SyncInterval" HorizontalAlignment="Left" Margin="3,281,0,0" VerticalAlignment="Top" Foreground="White" FontSize="14"/>
+        <Button Content="Save" HorizontalAlignment="Left" Margin="235,409,0,0" VerticalAlignment="Top" Width="85" Click="Save"/>
+        <ListBox HorizontalAlignment="Left" Height="189" Margin="293,121,0,0" VerticalAlignment="Top" Width="292" Name="errorList" Background="Transparent" ItemsSource="{Binding Source=GeneralUI,Path=errors}"/>
+        <Label HorizontalAlignment="Left" Margin="98,311,0,0" VerticalAlignment="Top" Width="120" Foreground="White" Name="syncLabel" Height="29"/>
+        <ComboBox HorizontalAlignment="Left" Margin="662,10,0,0" VerticalAlignment="Top" Width="120" Name="configComboBox" SelectedIndex="0"/>
+        <Label Content="Site url" HorizontalAlignment="Left" Margin="10,153,0,0" VerticalAlignment="Top" Foreground="#FFFFFBFB" FontSize="14"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="98,153,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" Name="siteUrlBox"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="405,409,0,0" VerticalAlignment="Top" Width="75" Click="Cancel"/>
+        <Label HorizontalAlignment="Left" Margin="98,176,0,0" VerticalAlignment="Top" Width="120" Background="Transparent" Foreground="White" Height="34" Name="siteErrorLabel"/>
+        <Button Content="ListEdit" HorizontalAlignment="Left" Margin="14,351,0,0" VerticalAlignment="Top" Width="61" Click="ListEdit"/>
+    </Grid>
+</Window>
