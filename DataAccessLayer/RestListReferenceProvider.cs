@@ -1,4 +1,6 @@
-﻿namespace DataAccessLayer
+﻿using Common.Exceptions;
+
+namespace DataAccessLayer
 {
     using Newtonsoft.Json.Linq;
     using System;
@@ -85,9 +87,9 @@
                 writer.Flush();
                 wreq.GetResponse();
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                throw new RestOperationException(DefaultExceptionMessages.RestAddExceptionMessage, exception);
             }
 
         }
@@ -105,19 +107,19 @@
         {
             if (itemId == -1)
             {
-                var httpWebRequest = WebRequestCommonBuilder(string.Format(ApiConstants.ListItemsApi, listName));
+                var httpWebRequest = BuildCommonRequest(string.Format(ApiConstants.ListItemsApi, listName));
                 BuildHttpRequestHeader(httpWebRequest, RequestHeaderConstants.Post);
                 return httpWebRequest;
             }
             else
             {
-                var httpWebRequest = WebRequestCommonBuilder(string.Format(ApiConstants.ListItemByIdApi, listName, itemId));
+                var httpWebRequest = BuildCommonRequest(string.Format(ApiConstants.ListItemByIdApi, listName, itemId));
                 BuildHttpRequestHeader(httpWebRequest, RequestHeaderConstants.Merge);
                 return httpWebRequest;
             }
         }
-        //TODO [CR: RT] please rename the method
-        private HttpWebRequest WebRequestCommonBuilder(string apiResult)
+
+        private HttpWebRequest BuildCommonRequest(string apiResult)
         {
             var connectionUri = new Uri(Path.Combine(ConnectionConfiguration.Connection.Uri.AbsoluteUri,
                 apiResult));
@@ -146,9 +148,9 @@
                 writer.Flush();
                 wreq.GetResponse();
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                throw new RestOperationException(DefaultExceptionMessages.RestChangeExceptionMessage, exception);
             }
         }
 
@@ -170,9 +172,9 @@
                 var endpointUri = new Uri(url);
                 webClient.UploadString(endpointUri, RequestHeaderConstants.Post);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                throw new RestOperationException(DefaultExceptionMessages.RestRemoveExceptionMessage, exception);
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace DataAccessLayer
+﻿using Common.Exceptions;
+
+namespace DataAccessLayer
 {
     using Common.Helpers;
     using Configuration;
@@ -53,15 +55,11 @@
         {
             try
             {
-                //TODO [CR: RT] Extract the next 5 lines to a separate method which builds the endpointRequest
                 fileUrl = fileUrl.Replace(HelpersConstants.SpaceReplaceUtfCode, " ");
                 var listTitle = ParsingHelpers.ParseUrlParentDirectory(fileUrl);
-                var endpointRequest = (HttpWebRequest) WebRequest.Create(
-                    connectionConfiguration.Connection.Uri.AbsoluteUri +
-                    string.Format(ApiConstants.ModifiedDateOfUrlApi, listTitle, fileUrl));
+                var endpointResponse =
+                    GetHttpWebResponse(string.Format(ApiConstants.ModifiedDateOfUrlApi, listTitle, fileUrl));
 
-                AddGetHeadersToRequest(endpointRequest);
-                var endpointResponse = (HttpWebResponse) endpointRequest.GetResponse();
                 using (var stream = endpointResponse.GetResponseStream())
                 {
                     var result = string.Empty;
@@ -74,12 +72,21 @@
                     return GetModifiedDateInResponse(result);
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-
+                throw new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
             }
+        }
 
-            return new DateTime();
+        private HttpWebResponse GetHttpWebResponse(string apiResult)
+        {
+            var endpointRequest = (HttpWebRequest)WebRequest.Create(
+                connectionConfiguration.Connection.Uri.AbsoluteUri +
+                apiResult);
+
+            AddGetHeadersToRequest(endpointRequest);
+
+            return (HttpWebResponse)endpointRequest.GetResponse();
         }
 
         /// <summary>
@@ -94,14 +101,10 @@
                 var allUrlsOfCurrentUser = new List<string>();
                 foreach (var listWithColumnsName in connectionConfiguration.ListsWithColumnsNames)
                 {
-                    //TODO [CR: RT] Extract the next 6 lines to a separate method which builds the endpointRequest
-                    var endpointRequest = (HttpWebRequest)WebRequest.Create(
-                        connectionConfiguration.Connection.Uri.AbsoluteUri +
-                        string.Format(ApiConstants.SpecificListItemsOfUserApi, listWithColumnsName.ListName,
-                            listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
-                            connectionConfiguration.Connection.GetCurrentUserName()));
-                    AddGetHeadersToRequest(endpointRequest);
-                    var endpointResponse = (HttpWebResponse)endpointRequest.GetResponse();
+                    var endpointResponse = GetHttpWebResponse(string.Format(ApiConstants.SpecificListItemsOfUserApi,
+                        listWithColumnsName.ListName,
+                        listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
+                        connectionConfiguration.Connection.GetCurrentUserName()));
 
                     using (var stream = endpointResponse.GetResponseStream())
                     {
@@ -116,11 +119,10 @@
                 }
                 return allUrlsOfCurrentUser;
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                throw new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage,exception);
             }
-            return new List<string>();          
         }
 
         /// <summary>
@@ -132,12 +134,12 @@
         private List<string> GetAllUrlsInResponse(string xmlString, string urlColumnName)
         {
             var elements = XElement.Parse(xmlString);
-            var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace+Entry)
-                from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace+Content)
-                from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace+Properties)
-                from urlNameBody in propertiesBody.Elements(DataAccessLayerConstants.DNamespace+urlColumnName)
-                from url in urlNameBody.Elements(DataAccessLayerConstants.DNamespace+Url)
-                select url;
+            var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
+                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
+                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
+                         from urlNameBody in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + urlColumnName)
+                         from url in urlNameBody.Elements(DataAccessLayerConstants.DNamespace + Url)
+                         select url;
             var urls = new List<string>();
             foreach (var element in result)
             {
@@ -155,9 +157,9 @@
         {
             var elements = XElement.Parse(xmlString);
             var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
-                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace+Content)
-                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace+Properties)
-                         from modifiedDate in propertiesBody.Elements(DataAccessLayerConstants.DNamespace+Modified)
+                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
+                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
+                         from modifiedDate in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + Modified)
                          select modifiedDate;
             return Convert.ToDateTime(result.First().Value);
         }

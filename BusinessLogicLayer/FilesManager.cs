@@ -1,4 +1,7 @@
-﻿namespace BusinessLogicLayer
+﻿using System;
+using Common.Helpers;
+
+namespace BusinessLogicLayer
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -29,8 +32,15 @@
         {
             foreach (var connection in connectionConfigurations)
             {
-                var fileSync = new FileSynchronizer(connection,providerType);
-                Task.Run(() => fileSync.Synchronize());
+                try
+                {
+                    var fileSync = new FileSynchronizer(connection, providerType);
+                    Task.Run(() => fileSync.Synchronize());
+                }
+                catch (Exception exception)
+                {
+                    MyLogger.Logger.Error(exception,exception.Message);
+                }
             }
         }
     }

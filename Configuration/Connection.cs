@@ -1,4 +1,7 @@
-﻿namespace Configuration
+﻿using Common.Constants;
+using Common.Exceptions;
+
+namespace Configuration
 {
     using System;
     using System.Net;
@@ -28,7 +31,7 @@
         }
 
         public Credentials Credentials { get; set; }
-        
+
         /// <summary>
         /// Returns a ClientContext for instance's Uri with instance's Credentials
         /// </summary>
@@ -36,7 +39,7 @@
         public ClientContext CreateContext()
         {
             var context = new ClientContext(Uri);
-            context.Credentials = new NetworkCredential(Credentials.UserName,Credentials.Password);
+            context.Credentials = new NetworkCredential(Credentials.UserName, Credentials.Password);
             return context;
         }
 
@@ -71,11 +74,10 @@
                 {
                     if (clientContext != null)
                     {
-                        //TODO [CR: RT] Please rename oWebsite and w
-                        var oWebsite = clientContext.Web;
+                        var contextWeb = clientContext.Web;
 
-                        clientContext.Load(oWebsite,
-                            w => w.CurrentUser);
+                        clientContext.Load(contextWeb,
+                            web => web.CurrentUser);
                     }
 
                     if (clientContext != null)
@@ -86,15 +88,17 @@
                         }
                         catch (Exception exception)
                         {
-
+                            throw new ClientContextOperationException(DefaultExceptionMessages.ClientContextOperationExceptionMessage,
+                                exception);
                         }
                         return clientContext.Web.CurrentUser.Id;
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                throw new CurrentUserIdUnaccesibleException(DefaultExceptionMessages.CurrentUserExceptionMessage,
+                    exception);
             }
 
             return -1;
@@ -105,12 +109,11 @@
             var context = CreateContext();
             try
             {
-
                 context.ExecuteQuery();
             }
-            catch (HttpListenerException ex)
+            catch (Exception exception)
             {
-                throw ex;
+                throw new LoginException(DefaultExceptionMessages.LoginExceptionMessage,exception);
             }
         }
     }

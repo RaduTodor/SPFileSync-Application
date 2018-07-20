@@ -1,4 +1,7 @@
-﻿namespace DataAccessLayer
+﻿using Common.Constants;
+using Common.Exceptions;
+
+namespace DataAccessLayer
 {
     using Microsoft.SharePoint.Client;
     using Models;
@@ -27,9 +30,9 @@
                 var listItem = referenceList.AddItem(itemCreateInfo);
                 UpdateListReferenceItem(listItem, list, uri, clientContext);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                throw new CsomOperationException(DefaultExceptionMessages.CsomAddExceptionMessage,exception);
             }
         }
 
@@ -50,9 +53,9 @@
                 var listItem = referenceList.GetItemById(itemId);
                 UpdateListReferenceItem(listItem, list, uri, clientContext);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                throw new CsomOperationException(DefaultExceptionMessages.CsomChangeExceptionMessage, exception);
             }
         }
 
@@ -85,9 +88,9 @@
                 referenceList.GetItemById(itemId).DeleteObject();
                 clientContext.ExecuteQuery();
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                throw new CsomOperationException(DefaultExceptionMessages.CsomRemoveExceptionMessage, exception);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿namespace DataAccessLayer
 {
+    using Common.Exceptions;
     using Configuration;
     using System;
     using System.IO;
@@ -49,9 +50,9 @@
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception exception)
             {
-                //TODO [CR RT]: Log exception in document log
+                MyLogger.Logger.Error(new DownloadFileException(DefaultExceptionMessages.FileDownloadExceptionMessage,exception));
             }
         }
 

@@ -3,6 +3,11 @@
     using System.IO;
     using System.Security.AccessControl;
     using System.Security.Principal;
+    using System;
+    using Common.Constants;
+    using Common.Exceptions;
+
+
     /// <summary>
     /// Useful methods for File interaction
     /// </summary>
@@ -15,22 +20,30 @@
         /// <param name="DirectoryPath"></param>
         public static void CreateAccesibleFile(string filePath,string DirectoryPath)
         {
-            if (!File.Exists(filePath))
+            try
             {
-                Directory.CreateDirectory(DirectoryPath);
-                var info = new DirectoryInfo(DirectoryPath);
-                var security = info.GetAccessControl();
-                security.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().Name,
-                    FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None,
-                    AccessControlType.Allow));
-                security.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().Name,
-                    FileSystemRights.Modify, InheritanceFlags.ObjectInherit, PropagationFlags.None,
-                    AccessControlType.Allow));
-                info.SetAccessControl(security);
+                if (!File.Exists(filePath))
+                {
+                    Directory.CreateDirectory(DirectoryPath);
+                    var info = new DirectoryInfo(DirectoryPath);
+                    var security = info.GetAccessControl();
+                    security.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().Name,
+                        FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None,
+                        AccessControlType.Allow));
+                    security.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().Name,
+                        FileSystemRights.Modify, InheritanceFlags.ObjectInherit, PropagationFlags.None,
+                        AccessControlType.Allow));
+                    info.SetAccessControl(security);
 
-                var streamWriter = File.CreateText(filePath);
-                streamWriter.Close();
+                    var streamWriter = File.CreateText(filePath);
+                    streamWriter.Close();
+                }
             }
+            catch (Exception exception)
+            {
+                throw new CreateFileException(DefaultExceptionMessages.CreateFileExceptionMessage, exception);
+            }
+
         }
     }
 }
