@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Models
+﻿namespace Models
 {
+    using System;
+
     public class MetadataModel
     {
         public string Url { get; set; }

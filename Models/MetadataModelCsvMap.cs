@@ -6,9 +6,9 @@
     {
         public MetadataModelCsvMap()
         {
-            Map(m => m.ModifiedDate).Name(HelpersConstant.CsvMetadataModifiedDateFieldName);
+            Map(m => m.Url).Name(HelpersConstants.CsvMetadataUrlFieldName);
 
-            Map(m => m.Url).Name(HelpersConstant.CsvMetadataUrlFieldName);
+            Map(m => m.ModifiedDate).Name(HelpersConstants.CsvMetadataModifiedDateFieldName);
         }
     }
 }

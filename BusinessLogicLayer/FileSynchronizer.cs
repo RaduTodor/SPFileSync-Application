@@ -9,6 +9,8 @@
     using Common.Helpers;
     using Configuration;
     using DataAccessLayer;
+    using Common.ApplicationEnums;
+
 
     /// <summary>
     /// The FileSynchronizer instance can Synchronize (check and download) all referenceListItems (theirs urls) from a current ConnectionConfiguration
@@ -19,7 +21,7 @@
 
         private BaseListReferenceProvider listReferenceProvider { get; }
 
-        public FileSynchronizer(ConnectionConfiguration configuration, ApplicationEnums.ListReferenceProviderType type)
+        public FileSynchronizer(ConnectionConfiguration configuration, ListReferenceProviderType type)
         {
             fileOperationProvider = new FileOperationProvider(configuration);
             listReferenceProvider = OperationsFactory.GetOperations(type);
@@ -32,7 +34,7 @@
         public void Synchronize()
         {
             var spData = GetUserUrlsWithDate();
-            var currentData = CsvFileManipulator.ReadMetadata<MetadataModel>(string.Format(HelpersConstant.MetadataFileLocation,
+            var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(string.Format(HelpersConstants.MetadataFileLocation,
                 listReferenceProvider.ConnectionConfiguration.DirectoryPath,
                 listReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
                 listReferenceProvider.ConnectionConfiguration.DirectoryPath);
@@ -40,7 +42,7 @@
             {
                 EnsureFile(model, currentData);
             }
-            CsvFileManipulator.WriteMetadata(string.Format(HelpersConstant.MetadataFileLocation,
+            CsvMetadataFileManipulator.WriteMetadata(string.Format(HelpersConstants.MetadataFileLocation,
                 listReferenceProvider.ConnectionConfiguration.DirectoryPath,
                 listReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()), 
                 currentData);
@@ -51,7 +53,7 @@
         /// </summary>
         /// <param name="model"></param>
         /// <param name="currentData"></param>
-        public void EnsureFile(MetadataModel model, List<MetadataModel> currentData)
+        private void EnsureFile(MetadataModel model, List<MetadataModel> currentData)
         {
             var match = currentData.FirstOrDefault(x => x.Url == model.Url);
             if (match != null && match.ModifiedDate < model.ModifiedDate)

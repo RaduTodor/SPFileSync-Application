@@ -11,6 +11,10 @@
     /// </summary>
     public class RestListReferenceProvider : BaseListReferenceProvider
     {
+        private const string StarAll = "*";
+
+        private const string F = "f";
+
         /// <summary>
         /// Gets the Digest Value needed for authentication
         /// </summary>
@@ -18,9 +22,9 @@
         private string RequestFormDigest()
         {
             var webClient = BuildWebClientWithHeader();
-            var url = ConnectionConfiguration.Connection.Uri + QuerryTemplates.ContextInfo;
+            var url = ConnectionConfiguration.Connection.Uri + ApiConstants.ContextInfo;
             var endpointUri = new Uri(url);
-            var result = webClient.UploadString(endpointUri, QuerryTemplates.Post);
+            var result = webClient.UploadString(endpointUri, RequestHeaderConstants.Post);
             JToken token = JToken.Parse(result);
             if (token != null)
             {
@@ -37,13 +41,13 @@
         /// <param name="operationType"></param>
         private void BuildHttpRequestHeader(HttpWebRequest request, string operationType)
         {
-            request.Method = QuerryTemplates.Post;
+            request.Method = RequestHeaderConstants.Post;
             request.Accept = DataAccessLayerConstants.ContentTypeJson;
             request.ContentType = DataAccessLayerConstants.ContentTypeJson;
-            request.Headers.Add(QuerryTemplates.Method, operationType);
-            if (operationType == QuerryTemplates.Merge)
-                request.Headers.Add(QuerryTemplates.IfMatch, StarAll);
-            request.Headers.Add(QuerryTemplates.Digest, RequestFormDigest());
+            request.Headers.Add(RequestHeaderConstants.Method, operationType);
+            if (operationType == RequestHeaderConstants.Merge)
+                request.Headers.Add(RequestHeaderConstants.IfMatch, StarAll);
+            request.Headers.Add(RequestHeaderConstants.Digest, RequestFormDigest());
         }
 
         /// <summary>
@@ -57,7 +61,7 @@
                 Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName,
                     ConnectionConfiguration.Connection.Credentials.Password)
             };
-            webClient.Headers.Add(QuerryTemplates.AuthAccept, F);
+            webClient.Headers.Add(RequestHeaderConstants.AuthAccept, F);
             webClient.Headers.Add(HttpRequestHeader.ContentType, DataAccessLayerConstants.ContentTypeJson);
             webClient.Headers.Add(HttpRequestHeader.Accept, DataAccessLayerConstants.ContentTypeJson);
             return webClient;
@@ -73,7 +77,7 @@
             try
             {
                 var listItem = CreateNewReferenceListItem(listName, uri);
-                var wreq = CreateRequest(uri, -1, listName);
+                var wreq = CreateRequest(-1, listName);
                 wreq.ContentLength = listItem.Length;
 
                 var writer = new StreamWriter(wreq.GetRequestStream());
@@ -97,26 +101,30 @@
         /// <param name="itemId"></param>
         /// <param name="listName"></param>
         /// <returns></returns>
-        private HttpWebRequest CreateRequest(Uri uri, int itemId, string listName)
+        private HttpWebRequest CreateRequest(int itemId, string listName)
         {
             if (itemId == -1)
             {
-                var connectionUri = new Uri(Path.Combine(ConnectionConfiguration.Connection.Uri.AbsoluteUri, 
-                                        string.Format(QuerryTemplates.ListItemsApi, listName)));
-                var wreq = (HttpWebRequest)WebRequest.Create(connectionUri);
-                wreq.Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName, ConnectionConfiguration.Connection.Credentials.Password);
-                BuildHttpRequestHeader(wreq, QuerryTemplates.Post);
-                return wreq;
+                var httpWebRequest = WebRequestCommonBuilder(string.Format(ApiConstants.ListItemsApi, listName));
+                BuildHttpRequestHeader(httpWebRequest, RequestHeaderConstants.Post);
+                return httpWebRequest;
             }
             else
             {
-                var connectionUri = new Uri(Path.Combine(ConnectionConfiguration.Connection.Uri.AbsoluteUri,
-                                        string.Format(QuerryTemplates.ListItemByIdApi, listName, itemId)));
-                var wreq = (HttpWebRequest)WebRequest.Create(connectionUri);
-                wreq.Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName, ConnectionConfiguration.Connection.Credentials.Password);
-                BuildHttpRequestHeader(wreq, QuerryTemplates.Merge);
-                return wreq;
+                var httpWebRequest = WebRequestCommonBuilder(string.Format(ApiConstants.ListItemByIdApi, listName, itemId));
+                BuildHttpRequestHeader(httpWebRequest, RequestHeaderConstants.Merge);
+                return httpWebRequest;
             }
+        }
+
+        private HttpWebRequest WebRequestCommonBuilder(string apiResult)
+        {
+            var connectionUri = new Uri(Path.Combine(ConnectionConfiguration.Connection.Uri.AbsoluteUri,
+                apiResult));
+            var httpWebRequest = (HttpWebRequest) WebRequest.Create(connectionUri);
+            httpWebRequest.Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName,
+                ConnectionConfiguration.Connection.Credentials.Password);
+            return httpWebRequest;
         }
 
         /// <summary>
@@ -125,12 +133,12 @@
         /// <param name="uri"></param>
         /// <param name="itemId"></param>
         /// <param name="listName"></param>
-        public override void ChangeListReferenceItem(Uri uri, int itemId, string listName)
+        public override void ChangeListReferenceItem(Uri uri,int itemId, string listName)
         {
             try
             {
                 var listItem = CreateNewReferenceListItem(listName, uri);
-                var wreq = CreateRequest(uri, itemId, listName);
+                var wreq = CreateRequest(itemId, listName);
                 wreq.ContentLength = listItem.Length;
 
                 var writer = new StreamWriter(wreq.GetRequestStream());
@@ -154,22 +162,18 @@
             try
             {
                 var webClient = BuildWebClientWithHeader();
-                webClient.Headers.Add(QuerryTemplates.Digest, RequestFormDigest());
+                webClient.Headers.Add(RequestHeaderConstants.Digest, RequestFormDigest());
                 webClient.Headers.Add(HttpRequestHeader.IfMatch, StarAll);
-                webClient.Headers.Add(QuerryTemplates.Method, QuerryTemplates.Delete);
+                webClient.Headers.Add(RequestHeaderConstants.Method, RequestHeaderConstants.Delete);
                 webClient.Headers.Add(HttpRequestHeader.ContentType, DataAccessLayerConstants.ContentTypeJson);
-                var url = ConnectionConfiguration.Connection.Uri + string.Format(QuerryTemplates.ListItemByIdApi, listName, itemId);
+                var url = ConnectionConfiguration.Connection.Uri + string.Format(ApiConstants.ListItemByIdApi, listName, itemId);
                 var endpointUri = new Uri(url);
-                webClient.UploadString(endpointUri, QuerryTemplates.Post);
+                webClient.UploadString(endpointUri, RequestHeaderConstants.Post);
             }
             catch (Exception e)
             {
 
             }
         }
-
-        private const string StarAll = "*";
-
-        private const string F = "f";
     }
 }

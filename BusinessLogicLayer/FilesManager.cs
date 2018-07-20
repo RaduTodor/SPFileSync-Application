@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Common.Constants;
     using Configuration;
+    using Common.ApplicationEnums;
 
     /// <summary>
     /// An instance of FilesManager class can start the sync operations (check and download)
@@ -12,9 +12,9 @@
     {
         private List<ConnectionConfiguration> connectionConfigurations { get; }
 
-        private ApplicationEnums.ListReferenceProviderType providerType { get; }
+        private ListReferenceProviderType providerType { get; }
 
-        public FilesManager(List<ConnectionConfiguration> configurations, ApplicationEnums.ListReferenceProviderType type)
+        public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type)
         {
             connectionConfigurations = configurations;
             providerType = type;
@@ -30,7 +30,7 @@
             foreach (var connection in connectionConfigurations)
             {
                 var fileSync = new FileSynchronizer(connection,providerType);
-                var t = Task.Run(() => fileSync.Synchronize());
+                Task.Run(() => fileSync.Synchronize());
             }
         }
     }

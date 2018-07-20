@@ -1,10 +1,10 @@
 ﻿namespace Common.Constants
 {
-    public static class HelpersConstant
+    public static class HelpersConstants
     {
         public const string CsvDelimiter = ";";
 
-        public const string CsvMetadataModifiedDateFieldName = "ModifiedName";
+        public const string CsvMetadataModifiedDateFieldName = "ModifiedDate";
 
         public const string CsvMetadataUrlFieldName = "Url";
 

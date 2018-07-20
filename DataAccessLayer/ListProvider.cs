@@ -44,9 +44,8 @@
         }
 
         /// <summary>
-        /// Gets all Lists from a sharepoint site given by <paramref name="url"/>
+        /// Gets all Lists from the sharepoint site devined in configuration
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<List> GetLists()
         {
             try

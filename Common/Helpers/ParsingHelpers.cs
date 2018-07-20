@@ -20,7 +20,7 @@
         /// <returns></returns>
         public static string ParseUrlFileName(string url)
         {
-            url = url.Replace(HelpersConstant.SpaceReplaceUtfCode, Space);
+            url = url.Replace(HelpersConstants.SpaceReplaceUtfCode, Space);
             return url.Split(Slash).Last();
         }
 
@@ -35,7 +35,7 @@
             var libraryUri = new Uri(uri.AbsoluteUri.Remove(uri.AbsoluteUri.Length - uri.Segments.Last().Length));
             var parentDirectory = libraryUri.Segments[DataAccessLayerConstants.LibrarySegmentNumber];
             parentDirectory = parentDirectory.Remove(parentDirectory.Length - 1);
-            return parentDirectory.Replace(HelpersConstant.SpaceReplaceUtfCode, " ");
+            return parentDirectory.Replace(HelpersConstants.SpaceReplaceUtfCode, " ");
         }
     }
 }

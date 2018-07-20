@@ -65,28 +65,35 @@
         /// <returns></returns>
         public int GetCurrentUserId()
         {
-            using (var clientContext = CreateContext())
+            try
             {
-                if (clientContext != null)
+                using (var clientContext = CreateContext())
                 {
-                    var oWebsite = clientContext.Web;
-
-                    clientContext.Load(oWebsite,
-                        w => w.CurrentUser);
-                }
-
-                if (clientContext != null)
-                {
-                    try
+                    if (clientContext != null)
                     {
-                        clientContext.ExecuteQuery();
-                    }
-                    catch (Exception exception)
-                    {
+                        var oWebsite = clientContext.Web;
 
+                        clientContext.Load(oWebsite,
+                            w => w.CurrentUser);
                     }
-                    return clientContext.Web.CurrentUser.Id;
+
+                    if (clientContext != null)
+                    {
+                        try
+                        {
+                            clientContext.ExecuteQuery();
+                        }
+                        catch (Exception exception)
+                        {
+
+                        }
+                        return clientContext.Web.CurrentUser.Id;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+
             }
 
             return -1;

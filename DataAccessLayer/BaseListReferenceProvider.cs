@@ -29,7 +29,7 @@
         {
             var url = uri.AbsoluteUri;
             var listWithColumn = ConnectionConfiguration.ListsWithColumnsNames.First(list => list.ListName == listName);
-            return string.Format(QuerryTemplates.NewReferenceItem, listName, listWithColumn.UrlColumnName, url, url, listWithColumn.UserColumnName, ConnectionConfiguration.Connection.GetCurrentUserId());
+            return string.Format(ApiConstants.NewReferenceItem, listName, listWithColumn.UrlColumnName, url, url, listWithColumn.UserColumnName, ConnectionConfiguration.Connection.GetCurrentUserId());
         }
 
         /// <summary>

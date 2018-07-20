@@ -1,7 +1,7 @@
 ﻿namespace BusinessLogicLayer
 {
-    using Common.Constants;
     using DataAccessLayer;
+    using Common.ApplicationEnums;
 
     /// <summary>
     /// Implements the FactoryPattern for BaseListReferenceProvider
@@ -13,16 +13,16 @@
         /// </summary>
         /// <param name="choice"></param>
         /// <returns></returns>
-        public static BaseListReferenceProvider GetOperations(ApplicationEnums.ListReferenceProviderType choice)
+        public static BaseListReferenceProvider GetOperations(ListReferenceProviderType choice)
         {
             BaseListReferenceProvider listReferenceProvider = null;
 
             switch (choice)
             {
-                case ApplicationEnums.ListReferenceProviderType.REST:
+                case ListReferenceProviderType.Rest:
                     listReferenceProvider = new RestListReferenceProvider();
                     break;
-                case ApplicationEnums.ListReferenceProviderType.CSOM:
+                case ListReferenceProviderType.Csom:
                     listReferenceProvider = new CsomListReferenceProvider();
                     break;
                 default:

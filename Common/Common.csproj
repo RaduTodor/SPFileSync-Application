@@ -43,10 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants\ApplicationEnums.cs" />
+    <Compile Include="ApplicationEnums\ListReferenceProviderType.cs" />
+    <Compile Include="Constants\ApiConstants.cs" />
     <Compile Include="Constants\DataAccessLayerConstants.cs" />
-    <Compile Include="Constants\HelpersConstant.cs" />
+    <Compile Include="Constants\HelpersConstants.cs" />
     <Compile Include="Constants\QuerryTemplates.cs" />
+    <Compile Include="Constants\RequestHeaderConstants.cs" />
     <Compile Include="Helpers\XmlFileManipulator.cs" />
     <Compile Include="Helpers\FileEditingHelper.cs" />
     <Compile Include="Helpers\ParsingHelpers.cs" />

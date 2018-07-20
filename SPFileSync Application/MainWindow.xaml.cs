@@ -1,9 +1,10 @@
-﻿namespace SPFileSync_Application
+﻿
+namespace SPFileSync_Application
 {
     using Configuration;
     using System.Windows;
     using BusinessLogicLayer;
-    using Common.Constants;
+    using Common.ApplicationEnums;
     using Common.Helpers;
 
     /// <summary>
@@ -16,7 +17,7 @@
             InitializeComponent();
 
             var connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
-            FilesManager filesManager = new FilesManager(connectionConfigurations, ApplicationEnums.ListReferenceProviderType.REST);
+            FilesManager filesManager = new FilesManager(connectionConfigurations, ListReferenceProviderType.Rest);
             filesManager.Synchronize();
         }
     }

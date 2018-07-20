@@ -13,7 +13,7 @@
     /// <summary>
     /// This Class writes and reads Metadata needed for Synchronization check. It uses CsvHelper
     /// </summary>
-    public static class CsvFileManipulator
+    public static class CsvMetadataFileManipulator
     {
         /// <summary>
         /// The writing method is generic
@@ -25,7 +25,7 @@
         {
             using (var csv = new CsvWriter(File.CreateText(filePath)))
             {
-                csv.Configuration.Delimiter = HelpersConstant.CsvDelimiter;
+                csv.Configuration.Delimiter = HelpersConstants.CsvDelimiter;
                 csv.WriteRecords(list);
             }
         }
@@ -35,7 +35,7 @@
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="filePath"></param>
-        /// <param name="listReferenceProvider"></param>
+        /// <param name="directoryPath"></param>
         /// <returns></returns>
         public static List<T> ReadMetadata<T>(string filePath, string directoryPath)
         {
@@ -46,7 +46,7 @@
                 using (var csv = new CsvReader(file))
                 {
                     csv.Configuration.RegisterClassMap<MetadataModelCsvMap>();
-                    csv.Configuration.Delimiter = HelpersConstant.CsvDelimiter;
+                    csv.Configuration.Delimiter = HelpersConstants.CsvDelimiter;
                     csv.Configuration.Encoding = Encoding.UTF8;
                     try
                     {

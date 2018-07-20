@@ -1,9 +1,10 @@
 ﻿namespace BusinessLogicLayer
 {
     using System;
-    using Common.Constants;
     using Configuration;
     using DataAccessLayer;
+    using Common.ApplicationEnums;
+
 
     /// <summary>
     /// Manages ListReference with an instance of BaseListReferenceProvider
@@ -12,9 +13,9 @@
     {
         private ConnectionConfiguration connectionConfiguration { get; }
 
-        private ApplicationEnums.ListReferenceProviderType providerType { get; }
+        private ListReferenceProviderType providerType { get; }
 
-        public ListReferenceManager(ConnectionConfiguration configuration, ApplicationEnums.ListReferenceProviderType type)
+        public ListReferenceManager(ConnectionConfiguration configuration, ListReferenceProviderType type)
         {
             connectionConfiguration = configuration;
             providerType = type;

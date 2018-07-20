@@ -17,6 +17,16 @@
     {
         private ConnectionConfiguration connectionConfiguration { get; }
 
+        private const string Entry = "entry";
+
+        private const string Content = "content";
+
+        private const string Properties = "properties";
+
+        private const string Url = "Url";
+
+        private const string Modified = "Modified";
+
         public MetadataProvider(ConnectionConfiguration configuration)
         {
             connectionConfiguration = configuration;
@@ -28,7 +38,7 @@
         /// <param name="request"></param>
         private void AddGetHeadersToRequest(HttpWebRequest request)
         {
-            request.Method = QuerryTemplates.Get;
+            request.Method = RequestHeaderConstants.Get;
             request.Credentials = new NetworkCredential(connectionConfiguration.Connection.Credentials.UserName, connectionConfiguration.Connection.Credentials.Password);
             request.Accept = DataAccessLayerConstants.ContentTypeXml;
         }
@@ -43,11 +53,11 @@
         {
             try
             {
-                fileUrl = fileUrl.Replace(HelpersConstant.SpaceReplaceUtfCode, " ");
+                fileUrl = fileUrl.Replace(HelpersConstants.SpaceReplaceUtfCode, " ");
                 var listTitle = ParsingHelpers.ParseUrlParentDirectory(fileUrl);
                 var endpointRequest = (HttpWebRequest) WebRequest.Create(
                     connectionConfiguration.Connection.Uri.AbsoluteUri +
-                    string.Format(QuerryTemplates.ModifiedDateOfUrlApi, listTitle, fileUrl));
+                    string.Format(ApiConstants.ModifiedDateOfUrlApi, listTitle, fileUrl));
 
                 AddGetHeadersToRequest(endpointRequest);
                 var endpointResponse = (HttpWebResponse) endpointRequest.GetResponse();
@@ -85,7 +95,7 @@
                 {
                     var endpointRequest = (HttpWebRequest)WebRequest.Create(
                         connectionConfiguration.Connection.Uri.AbsoluteUri +
-                        string.Format(QuerryTemplates.SpecificListItemsOfUserApi, listWithColumnsName.ListName,
+                        string.Format(ApiConstants.SpecificListItemsOfUserApi, listWithColumnsName.ListName,
                             listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
                             connectionConfiguration.Connection.GetCurrentUserName()));
                     AddGetHeadersToRequest(endpointRequest);
@@ -149,15 +159,5 @@
                          select modifiedDate;
             return Convert.ToDateTime(result.First().Value);
         }
-
-        private const string Entry = "entry";
-
-        private const string Content = "content";
-
-        private const string Properties = "properties";
-
-        private const string Url = "Url";
-
-        private const string Modified = "Modified";
     }
 }
