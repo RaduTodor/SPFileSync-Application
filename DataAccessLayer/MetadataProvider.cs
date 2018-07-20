@@ -53,6 +53,7 @@
         {
             try
             {
+                //TODO [CR: RT] Extract the next 5 lines to a separate method which builds the endpointRequest
                 fileUrl = fileUrl.Replace(HelpersConstants.SpaceReplaceUtfCode, " ");
                 var listTitle = ParsingHelpers.ParseUrlParentDirectory(fileUrl);
                 var endpointRequest = (HttpWebRequest) WebRequest.Create(
@@ -93,6 +94,7 @@
                 var allUrlsOfCurrentUser = new List<string>();
                 foreach (var listWithColumnsName in connectionConfiguration.ListsWithColumnsNames)
                 {
+                    //TODO [CR: RT] Extract the next 6 lines to a separate method which builds the endpointRequest
                     var endpointRequest = (HttpWebRequest)WebRequest.Create(
                         connectionConfiguration.Connection.Uri.AbsoluteUri +
                         string.Format(ApiConstants.SpecificListItemsOfUserApi, listWithColumnsName.ListName,

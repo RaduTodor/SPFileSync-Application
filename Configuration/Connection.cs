@@ -71,6 +71,7 @@
                 {
                     if (clientContext != null)
                     {
+                        //TODO [CR: RT] Please rename oWebsite and w
                         var oWebsite = clientContext.Web;
 
                         clientContext.Load(oWebsite,

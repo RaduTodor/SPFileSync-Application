@@ -116,7 +116,7 @@
                 return httpWebRequest;
             }
         }
-
+        //TODO [CR: RT] please rename the method
         private HttpWebRequest WebRequestCommonBuilder(string apiResult)
         {
             var connectionUri = new Uri(Path.Combine(ConnectionConfiguration.Connection.Uri.AbsoluteUri,
