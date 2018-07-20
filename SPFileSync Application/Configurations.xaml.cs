@@ -35,8 +35,9 @@ namespace SPFileSync_Application
 
         private void Edit(object sender, RoutedEventArgs e)
         {
-            EditConfigurationPanel window = new EditConfigurationPanel((ConnectionConfiguration)allConfigsList.SelectedItem,connections);
+            EditConfigurationPanel window = new EditConfigurationPanel((ConnectionConfiguration)allConfigsList.SelectedItem,connections,this);
             window.Show();
+            this.Hide();
         }
 
         private void Remove(object sender, RoutedEventArgs e)

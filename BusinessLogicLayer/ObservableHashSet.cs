@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SPFileSync_Application.Utils
+namespace BusinessLogicLayer
 {
     public class ObservableHashSet<T> : ObservableCollection<T>
     {
@@ -14,8 +14,7 @@ namespace SPFileSync_Application.Utils
             if (!Contains(item))
             {
                 base.Add(item);
-            }
-            
+            }            
         }       
     }
 }

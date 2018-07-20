@@ -1,4 +1,5 @@
-﻿using Configuration;
+﻿using Common.Constants;
+using Configuration;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,38 @@ namespace SPFileSync_Application
 {
     public class GeneralUI
     {
+        //Should i move it to Business Logic Layer?
+
         private Window window;
-        private Utils.ObservableHashSet<string> errors = new Utils.ObservableHashSet<string>();
+        private BusinessLogicLayer.ObservableHashSet<string> errors = new BusinessLogicLayer.ObservableHashSet<string>();
         public GeneralUI(Window window)
         {
             this.window = window;
+        }
+
+        public GeneralUI()
+        {
+
+        }
+
+        public static void checkConfiguration(ConnectionConfiguration configuration)
+        {
+            if (configuration == null)
+            {
+                configuration = new ConnectionConfiguration();
+            }
+            if (configuration.ListsWithColumnsNames == null)
+            {
+                configuration.ListsWithColumnsNames = new List<ListWithColumnsName>();
+            }
+        }
+
+        public static string GetResourcesFolder(string wantedResource)
+        {
+            var path = Directory.GetCurrentDirectory();
+            var removeSegment = path.IndexOf("bin");
+            var resourceFolderPath = $@"{path.Remove(removeSegment)}{wantedResource}";
+            return resourceFolderPath;
         }
 
         public bool FieldValidation(string data, System.Windows.Controls.Label displayError)
@@ -28,7 +56,7 @@ namespace SPFileSync_Application
             if (string.IsNullOrEmpty(data))
             {
                 verifyData = false;
-                DisplayWarning(displayError, "Empty field");
+                DisplayWarning(displayError, ConfigurationMessages.EmptyField);
             }
             return verifyData;
         }
@@ -52,7 +80,7 @@ namespace SPFileSync_Application
             notifyIcon.BalloonTipTitle = notificationTitle;
             notifyIcon.BalloonTipText = notificationMessage;
             var path = Directory.GetCurrentDirectory();
-            var pathCombine = Path.Combine(path, "error.ico");
+            var pathCombine = Path.Combine(GetResourcesFolder(ConfigurationMessages.ResourceFolderErrorIcon));
             notifyIcon.Icon = new Icon(pathCombine);
             notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
             notifyIcon.Visible = true;
@@ -70,7 +98,10 @@ namespace SPFileSync_Application
         public void AddToListButton(string logMessage)
         {
             errors.AddItem(logMessage);
-            (window as ConfigurationWindow).errorList.ItemsSource = errors;
+            if (window is ConfigurationWindow)
+            {
+                (window as ConfigurationWindow).errorList.ItemsSource = errors;
+            }
         }
     }
 }

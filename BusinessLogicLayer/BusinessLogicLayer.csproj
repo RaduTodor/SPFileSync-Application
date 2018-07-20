@@ -52,6 +52,7 @@
     <Compile Include="FilesManager.cs" />
     <Compile Include="FileSynchronizer.cs" />
     <Compile Include="ListReferenceManager.cs" />
+    <Compile Include="ObservableHashSet.cs" />
     <Compile Include="OperationsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,0 +1,21 @@
+﻿<Window x:Class="SPFileSync_Application.ConfigurationListsEdit"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SPFileSync_Application"
+        mc:Ignorable="d"
+        Title="ConfigurationListsEdit" Height="400" Width="450">
+    <Window.Background>
+        <ImageBrush ImageSource="/Utils/background.jpg"></ImageBrush>
+    </Window.Background>
+    <Grid>
+        <Button Content="Remove" HorizontalAlignment="Left" Margin="34,138,0,0" VerticalAlignment="Top" Width="75" Click="RemoveItemList" Name="removeButton" IsEnabled="{Binding ElementName=itemListBox, Path=SelectedItems.Count}" />
+
+        <Button Content="Edit" HorizontalAlignment="Left" Margin="34,218,0,0" VerticalAlignment="Top" Width="75" Click="EditItemList" Name="editButton" IsEnabled="{Binding ElementName=itemListBox, Path=SelectedItems.Count}" />
+        <ListBox HorizontalAlignment="Left" Height="201" Margin="158,84,0,0" VerticalAlignment="Top" Width="235" Name="itemListBox"/>
+        <Button Content="Close" HorizontalAlignment="Left" Margin="300,312,0,0" VerticalAlignment="Top" Width="75" Click="Close"/>
+        <Button Content="Save" HorizontalAlignment="Left" Margin="158,312,0,0" VerticalAlignment="Top" Width="75" Click="Save" Name="saveButton"/>
+
+    </Grid>
+</Window>

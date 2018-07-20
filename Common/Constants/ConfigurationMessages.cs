@@ -20,6 +20,14 @@ namespace Common.Constants
 
         public const string generalConfigError = "There was an error with the configuration";
 
+        public const string ResourceFolderAppIcon = @"Utils\UFO.ico";
+
+        public const string ResourceFolderErrorIcon = @"Utils\error.ico";
+
+        public const string AppName = "SPFileSync";
+
+        public const string EmptyField = "Empty field";
+
 
     }
 }

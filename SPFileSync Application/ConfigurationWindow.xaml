@@ -25,7 +25,7 @@
         <TextBox HorizontalAlignment="Left" Height="23" Margin="98,210,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Name="listTextBox" Text="SyncList"/>
         <Label Content="URL Column" HorizontalAlignment="Left" Margin="6,263,0,0" VerticalAlignment="Top" Foreground="#FFFFFBFB" FontSize="14"/>
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="498,473,0,0" VerticalAlignment="Top" Width="75" Click="Cancel"/>
-        <Label Content="List url" HorizontalAlignment="Left" Margin="11,206,0,0" VerticalAlignment="Top" Foreground="#FFFFFBFB" FontSize="14"/>
+        <Label Content="List name" HorizontalAlignment="Left" Margin="11,206,0,0" VerticalAlignment="Top" Foreground="#FFFFFBFB" FontSize="14"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="98,263,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Name="urlColumnTextBox" Text="URL"/>
         <Label HorizontalAlignment="Left" Margin="98,176,0,0" VerticalAlignment="Top" Width="120" Background="Transparent" Foreground="White" Height="34" Name="siteErrorLabel"/>
         <Label HorizontalAlignment="Left" Margin="98,233,0,0" VerticalAlignment="Top" Width="120" Background="Transparent" Foreground="White" Height="30" Name="listErrorLabel"/>

@@ -29,11 +29,9 @@ namespace SPFileSync_Application
             configComboBox.Items.Add(ConfigurationMessages.comboBoxCsom);                     
             GeneralUI uIFunctions = new GeneralUI(this);
             NotifyIcon ni = new NotifyIcon();
-            var path = Directory.GetCurrentDirectory();
-            var pathCombine = Path.Combine(path, "UFO.ico");
-            ni.Icon = new Icon(pathCombine);
+            ni.Icon = new Icon(GeneralUI.GetResourcesFolder(ConfigurationMessages.ResourceFolderAppIcon));
             ni.Visible = true;
-            ni.Text = "SPFileSync";
+            ni.Text = ConfigurationMessages.AppName;
             ni.DoubleClick +=
                 delegate (object sender, EventArgs args)
                 {
@@ -42,7 +40,14 @@ namespace SPFileSync_Application
                 };
             connectionConfigurations = Common.Helpers.XmlFileManipulator.Deserialize<ConnectionConfiguration>();          
         }
-     
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+                Hide();
+            base.OnStateChanged(e);
+        }
+
         private void AddConfig(object sender, RoutedEventArgs e)
         {
             ConfigurationWindow window = new ConfigurationWindow(connectionConfigurations);
@@ -64,11 +69,11 @@ namespace SPFileSync_Application
 
        public static Common.ApplicationEnums.ListReferenceProviderType GetProviderType(string choice)
         {
-            if(choice == "Rest")
+            if(choice == ConfigurationMessages.comboBoxRest)
             {
                 return Common.ApplicationEnums.ListReferenceProviderType.Rest;
             }
-            else if(choice == "Csom")
+            else if(choice == ConfigurationMessages.comboBoxCsom)
             {
                 return Common.ApplicationEnums.ListReferenceProviderType.Csom;
             }

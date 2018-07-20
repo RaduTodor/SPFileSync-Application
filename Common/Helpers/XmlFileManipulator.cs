@@ -22,6 +22,9 @@
             FileEditingHelper.CreateAccesibleFile(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile, Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectory);
             TextWriter textWriter = File.CreateText(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile);
             xmlSerializer.Serialize(textWriter, list);
+            //             ||
+            //modification \/
+            textWriter.Close();
         }
 
         /// <summary>

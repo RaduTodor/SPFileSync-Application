@@ -23,6 +23,9 @@ namespace SPFileSync_Application
     /// </summary>
     public partial class ConfigurationWindow : Window
     {
+
+        //Should i move the buttons logic in methods and move them into Business Logic Layer?
+
         private string path;
         private NotifyIcon notifyIcon = new NotifyIcon();
         private ConnectionConfiguration configuration;
@@ -71,7 +74,7 @@ namespace SPFileSync_Application
                     Connection connection = new Connection() { Credentials = new Credentials() { UserName = userNameTextBox.Text, Password = passwordText.Password }, Uri = new Uri(siteUrlBox.Text) };
                     var minutes = int.Parse(syncTextBox.Text);
                     connection.Login();
-                    checkConfiguration();
+                    GeneralUI.checkConfiguration(configuration);
                     configuration.Connection = connection;
                     configuration.DirectoryPath = path;
                     configuration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);                      
@@ -110,23 +113,11 @@ namespace SPFileSync_Application
         {            
             this.Close();           
         }
-
-        private void checkConfiguration()
-        {
-            if (configuration == null)
-            {
-                configuration = new ConnectionConfiguration();
-            }
-            if (configuration.ListsWithColumnsNames == null)
-            {
-                configuration.ListsWithColumnsNames = new List<ListWithColumnsName>();
-            }
-        }
-
+      
         private void AddListWithColumns(object sender, RoutedEventArgs e)
         {
 
-            checkConfiguration();
+            GeneralUI.checkConfiguration(configuration);
             ListWithColumns window = new ListWithColumns(configuration.ListsWithColumnsNames);
             window.Show();
         }        
