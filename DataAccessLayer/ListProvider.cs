@@ -1,4 +1,6 @@
-﻿namespace DataAccessLayer
+﻿using Common.Exceptions;
+
+namespace DataAccessLayer
 {
     using Configuration;
     using Microsoft.SharePoint.Client;
@@ -35,12 +37,10 @@
                     return site.GetList(url);
                 }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                
+                throw new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
             }
-
-            return null;
         }
 
         /// <summary>
@@ -62,12 +62,10 @@
                     return listsCollection;
                 }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                throw new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
             }
-
-            return null;
         }
 
         /// <summary>
@@ -93,12 +91,10 @@
                     return items;
                 }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                throw new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
             }
-
-            return null;
         }
     }
 }

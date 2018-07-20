@@ -33,19 +33,27 @@
         /// </summary>
         public void Synchronize()
         {
-            var spData = GetUserUrlsWithDate();
-            var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(string.Format(HelpersConstants.MetadataFileLocation,
-                listReferenceProvider.ConnectionConfiguration.DirectoryPath,
-                listReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
-                listReferenceProvider.ConnectionConfiguration.DirectoryPath);
-            foreach (var model in spData)
+            try
             {
-                EnsureFile(model, currentData);
+                var spData = GetUserUrlsWithDate();
+                var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(string.Format(HelpersConstants.MetadataFileLocation,
+                        listReferenceProvider.ConnectionConfiguration.DirectoryPath,
+                        listReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
+                    listReferenceProvider.ConnectionConfiguration.DirectoryPath);
+                foreach (var model in spData)
+                {
+                    EnsureFile(model, currentData);
+                }
+                CsvMetadataFileManipulator.WriteMetadata(string.Format(HelpersConstants.MetadataFileLocation,
+                        listReferenceProvider.ConnectionConfiguration.DirectoryPath,
+                        listReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
+                    currentData);
             }
-            CsvMetadataFileManipulator.WriteMetadata(string.Format(HelpersConstants.MetadataFileLocation,
-                listReferenceProvider.ConnectionConfiguration.DirectoryPath,
-                listReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()), 
-                currentData);
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+
         }
 
         /// <summary>

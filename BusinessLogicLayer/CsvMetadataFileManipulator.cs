@@ -9,6 +9,8 @@
     using Models;
     using Common.Constants;
     using Common.Helpers;
+    using Common.Exceptions;
+
 
     /// <summary>
     /// This Class writes and reads Metadata needed for Synchronization check. It uses CsvHelper
@@ -39,24 +41,31 @@
         /// <returns></returns>
         public static List<T> ReadMetadata<T>(string filePath, string directoryPath)
         {
-            FileEditingHelper.CreateAccesibleFile(filePath, directoryPath);
             var records = new List<T>();
-            using (var file = File.OpenText(filePath))
+            try
             {
-                using (var csv = new CsvReader(file))
+                FileEditingHelper.CreateAccesibleFile(filePath, directoryPath);
+                using (var file = File.OpenText(filePath))
                 {
-                    csv.Configuration.RegisterClassMap<MetadataModelCsvMap>();
-                    csv.Configuration.Delimiter = HelpersConstants.CsvDelimiter;
-                    csv.Configuration.Encoding = Encoding.UTF8;
-                    try
+                    using (var csv = new CsvReader(file))
                     {
-                        records = csv.GetRecords<T>().ToList();
-                    }
-                    catch (Exception ex)
-                    {
-                        //TODO [CR RT]: Log exception
+                        csv.Configuration.RegisterClassMap<MetadataModelCsvMap>();
+                        csv.Configuration.Delimiter = HelpersConstants.CsvDelimiter;
+                        csv.Configuration.Encoding = Encoding.UTF8;
+                        try
+                        {
+                            records = csv.GetRecords<T>().ToList();
+                        }
+                        catch (Exception exception)
+                        {
+                            throw new MetadataReadException(DefaultExceptionMessages.ErrorMetadataReadExceptionMessage, exception);
+                        }
                     }
                 }
+            }
+            catch (Exception exception)
+            {
+                throw exception;
             }
 
             return records;
