@@ -32,6 +32,7 @@ namespace SPFileSync_Application
             configurations = connectionConfigurations;
         }
 
+        //TODO [CR BT] : Remove result variable. Just call the showDialog method.
         private void SetFileDestination(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog folder = new FolderBrowserDialog();

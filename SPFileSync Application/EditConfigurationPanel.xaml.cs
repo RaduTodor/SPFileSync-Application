@@ -95,6 +95,7 @@ namespace SPFileSync_Application
             }
             catch(UriFormatException uriException)                          
             {
+                //TODO [CR BT] : Extract constant
                 generalUI.NotifyError(notifyIcon, Common.Constants.ConfigurationMessages.badConfigurationTitle, Common.Constants.ConfigurationMessages.invalidSiteUrl);               
                 Common.Helpers.MyLogger.Logger.Debug(uriException,"error");
             }
@@ -105,6 +106,7 @@ namespace SPFileSync_Application
             }
         }
         //TODO [CR BT] : Remove unused variable "result".
+        //TODO [CR BT] : Move method in another location, existing class/new one.
         private void SetFileDestination(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog folder = new FolderBrowserDialog();

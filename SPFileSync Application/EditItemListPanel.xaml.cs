@@ -41,7 +41,7 @@ namespace SPFileSync_Application
             window.Show();
             Close();
         }
-
+        //TODO [CR BT] : Move validations into ConfigurationValidator class.
         private void Save(object sender, RoutedEventArgs e)
         {
             var listvalidation = generalUI.FieldValidation(listTextBox.Text, listErrorLabel);
