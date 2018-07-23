@@ -1,48 +1,51 @@
-﻿using System;
-using Common.Helpers;
-
-namespace BusinessLogicLayer
+﻿namespace BusinessLogicLayer
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Configuration;
     using Common.ApplicationEnums;
+    using Common.Helpers;
+    using Configuration;
 
     /// <summary>
-    /// An instance of FilesManager class can start the sync operations (check and download)
+    ///     An instance of FilesManager class can start the sync operations (check and download)
     /// </summary>
     public class FilesManager
     {
-        //TODO [CR RT] : Use capital letters for properties connectionConfigurations - > ConnectionConfigurations
-        private List<ConnectionConfiguration> connectionConfigurations { get; }
-
-        private ListReferenceProviderType providerType { get; }
-
         public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type)
         {
-            connectionConfigurations = configurations;
-            providerType = type;
+            ConnectionConfigurations = configurations;
+            ProviderType = type;
         }
 
+        private List<ConnectionConfiguration> ConnectionConfigurations { get; }
+
+        private ListReferenceProviderType ProviderType { get; }
+
         /// <summary>
-        /// Synchronize method iterates all ConnectionConfiguration in connectionConfigurations and creates a new Task
-        /// which calls and runs a FileSynchronizer instance Synchronize method.
-        /// This is basically the Application Synchronization start.
+        ///     Synchronize method iterates all ConnectionConfiguration in connectionConfigurations and creates a new Task
+        ///     which calls and runs a FileSynchronizer instance Synchronize method.
+        ///     This is basically the Application Synchronization start.
         /// </summary>
         public void Synchronize()
         {
-            foreach (var connection in connectionConfigurations)
-            {
+            foreach (var connection in ConnectionConfigurations)
                 try
                 {
-                    var fileSync = new FileSynchronizer(connection, providerType);
+                    var fileSync = new FileSynchronizer(connection, ProviderType);
+                    fileSync.ExceptionUpdate += (sender, exception) =>
+                    {
+                        //SOMETHING
+                    };
                     Task.Run(() => fileSync.Synchronize());
                 }
                 catch (Exception exception)
                 {
-                    MyLogger.Logger.Error(exception,exception.Message);
+                    MyLogger.Logger.Error(exception, exception.Message);
+                    {
+                        //Same SOMETHING
+                    }
                 }
-            }
         }
     }
 }

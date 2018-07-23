@@ -11,15 +11,14 @@
     /// </summary>
     public class ListReferenceManager
     {
-        //TODO [CR RT] : Use capital letters for properties connectionConfiguration - > ConnectionConfiguration
-        private ConnectionConfiguration connectionConfiguration { get; }
+        private ConnectionConfiguration ConnectionConfiguration { get; }
 
-        private ListReferenceProviderType providerType { get; }
+        private ListReferenceProviderType ProviderType { get; }
 
         public ListReferenceManager(ConnectionConfiguration configuration, ListReferenceProviderType type)
         {
-            connectionConfiguration = configuration;
-            providerType = type;
+            ConnectionConfiguration = configuration;
+            ProviderType = type;
         }
 
         /// <summary>
@@ -29,8 +28,8 @@
         /// <param name="listName"></param>
         public void AddSyncListItem(string url, string listName)
         {
-            BaseListReferenceProvider listReferenceProvider = OperationsFactory.GetOperations(providerType);
-            listReferenceProvider.ConnectionConfiguration = connectionConfiguration;
+            BaseListReferenceProvider listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
+            listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
             listReferenceProvider.AddListReferenceItem(listName, new Uri(url));
         }
 
@@ -41,8 +40,8 @@
         /// <param name="listName"></param>
         public void RemoveSyncListItem(int id, string listName)
         {
-            BaseListReferenceProvider listReferenceProvider = OperationsFactory.GetOperations(providerType);
-            listReferenceProvider.ConnectionConfiguration = connectionConfiguration;
+            BaseListReferenceProvider listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
+            listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
             listReferenceProvider.RemoveListReferenceItem(listName, id);
         }
 
@@ -54,8 +53,8 @@
         /// <param name="listName"></param>
         public void ChangeSyncListItem(string url, int id, string listName)
         {
-            BaseListReferenceProvider listReferenceProvider = OperationsFactory.GetOperations(providerType);
-            listReferenceProvider.ConnectionConfiguration = connectionConfiguration;
+            BaseListReferenceProvider listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
+            listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
             listReferenceProvider.ChangeListReferenceItem(new Uri(url), id, listName);
         }
     }

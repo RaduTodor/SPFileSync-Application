@@ -25,7 +25,8 @@
         /// </summary>
         /// <param name="url"></param>
         /// <param name="directoryPath"></param>
-        public void Download(string url, string directoryPath)
+        /// <param name="exceptionHandler"></param>
+        public void Download(string url, string directoryPath, EventHandler<Exception> exceptionHandler)
         {
             try
             {
@@ -52,7 +53,10 @@
             }
             catch (Exception exception)
             {
-                MyLogger.Logger.Error(new DownloadFileException(DefaultExceptionMessages.FileDownloadExceptionMessage,exception));
+                DownloadFileException downloadFileExceptionexception =
+                    new DownloadFileException(DefaultExceptionMessages.FileDownloadExceptionMessage, exception);
+                MyLogger.Logger.Error(downloadFileExceptionexception);
+                exceptionHandler?.Invoke(this, downloadFileExceptionexception);
             }
         }
 

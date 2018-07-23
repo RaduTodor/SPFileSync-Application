@@ -17,8 +17,7 @@ namespace DataAccessLayer
     /// </summary>
     public class MetadataProvider
     {
-        //TODO [CR RT] : Use capital letters for properties connectionConfigurations - > ConnectionConfigurations
-        private ConnectionConfiguration connectionConfiguration { get; }
+        private ConnectionConfiguration ConnectionConfiguration { get; }
 
         private const string Entry = "entry";
 
@@ -32,7 +31,7 @@ namespace DataAccessLayer
 
         public MetadataProvider(ConnectionConfiguration configuration)
         {
-            connectionConfiguration = configuration;
+            ConnectionConfiguration = configuration;
         }
 
         /// <summary>
@@ -42,7 +41,7 @@ namespace DataAccessLayer
         private void AddGetHeadersToRequest(HttpWebRequest request)
         {
             request.Method = RequestHeaderConstants.Get;
-            request.Credentials = new NetworkCredential(connectionConfiguration.Connection.Credentials.UserName, connectionConfiguration.Connection.Credentials.Password);
+            request.Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName, ConnectionConfiguration.Connection.Credentials.Password);
             request.Accept = DataAccessLayerConstants.ContentTypeXml;
         }
 
@@ -82,7 +81,7 @@ namespace DataAccessLayer
         private HttpWebResponse GetHttpWebResponse(string apiResult)
         {
             var endpointRequest = (HttpWebRequest)WebRequest.Create(
-                connectionConfiguration.Connection.Uri.AbsoluteUri +
+                ConnectionConfiguration.Connection.Uri.AbsoluteUri +
                 apiResult);
 
             AddGetHeadersToRequest(endpointRequest);
@@ -100,12 +99,12 @@ namespace DataAccessLayer
             try
             {
                 var allUrlsOfCurrentUser = new List<string>();
-                foreach (var listWithColumnsName in connectionConfiguration.ListsWithColumnsNames)
+                foreach (var listWithColumnsName in ConnectionConfiguration.ListsWithColumnsNames)
                 {
                     var endpointResponse = GetHttpWebResponse(string.Format(ApiConstants.SpecificListItemsOfUserApi,
                         listWithColumnsName.ListName,
                         listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
-                        connectionConfiguration.Connection.GetCurrentUserName()));
+                        ConnectionConfiguration.Connection.GetCurrentUserName()));
 
                     using (var stream = endpointResponse.GetResponseStream())
                     {

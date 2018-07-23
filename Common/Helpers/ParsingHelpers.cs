@@ -9,10 +9,9 @@
     /// </summary>
     public static class ParsingHelpers
     {
-        //TODO [CR RT] : These constants are used only on this class which means that they should be private.
-        public const char Slash = '/';
+        private const char Slash = '/';
 
-        public const string Space = " ";
+        private const string Space = " ";
 
         /// <summary>
         /// From an url get the last part (filename...with extension)

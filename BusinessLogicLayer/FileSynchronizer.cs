@@ -5,6 +5,7 @@
     using System.Linq;
     using Models;
     using System.IO;
+    using System.Runtime.Remoting.Channels;
     using Common.Constants;
     using Common.Helpers;
     using Configuration;
@@ -17,17 +18,22 @@
     /// </summary>
     public class FileSynchronizer
     {
-        //TODO [CR RT] : Use capital letters for properties fileOperationProvider - > FileOperationProvider
-        private FileOperationProvider fileOperationProvider { get; }
+        private const string Backslash = "\\";
 
-        private BaseListReferenceProvider listReferenceProvider { get; }
+        private FileOperationProvider FileOperationProvider { get; }
+
+        private BaseListReferenceProvider ListReferenceProvider { get; }
+
+        public event EventHandler<Exception> ExceptionUpdate;
 
         public FileSynchronizer(ConnectionConfiguration configuration, ListReferenceProviderType type)
         {
-            fileOperationProvider = new FileOperationProvider(configuration);
-            listReferenceProvider = OperationsFactory.GetOperations(type);
-            listReferenceProvider.ConnectionConfiguration = configuration;
+            FileOperationProvider = new FileOperationProvider(configuration);
+            ListReferenceProvider = OperationsFactory.GetOperations(type);
+            ListReferenceProvider.ConnectionConfiguration = configuration;
         }
+
+
 
         /// <summary>
         /// Gets sharepoint listReferenceItems, compares with the local infos, downloads if case and writes the modified infos locally
@@ -38,21 +44,22 @@
             {
                 var spData = GetUserUrlsWithDate();
                 var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(string.Format(HelpersConstants.MetadataFileLocation,
-                        listReferenceProvider.ConnectionConfiguration.DirectoryPath,
-                        listReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
-                    listReferenceProvider.ConnectionConfiguration.DirectoryPath);
+                        ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
+                        ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
+                    ListReferenceProvider.ConnectionConfiguration.DirectoryPath);
                 foreach (var model in spData)
                 {
-                    EnsureFile(model, currentData);
+                    EnsureFile(model, currentData, ExceptionUpdate);
                 }
                 CsvMetadataFileManipulator.WriteMetadata(string.Format(HelpersConstants.MetadataFileLocation,
-                        listReferenceProvider.ConnectionConfiguration.DirectoryPath,
-                        listReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
+                        ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
+                        ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
                     currentData);
             }
             catch (Exception exception)
             {
-                throw exception;
+                MyLogger.Logger.Error(exception);
+                ExceptionUpdate?.Invoke(this, exception);
             }
 
         }
@@ -62,20 +69,21 @@
         /// </summary>
         /// <param name="model"></param>
         /// <param name="currentData"></param>
-        private void EnsureFile(MetadataModel model, List<MetadataModel> currentData)
+        /// <param name="exceptionHandler"></param>
+        private void EnsureFile(MetadataModel model, List<MetadataModel> currentData, EventHandler<Exception> exceptionHandler)
         {
             var match = currentData.FirstOrDefault(x => x.Url == model.Url);
             if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
-                fileOperationProvider.Download(match.Url, listReferenceProvider.ConnectionConfiguration.DirectoryPath);
+                FileOperationProvider.Download(match.Url, ListReferenceProvider.ConnectionConfiguration.DirectoryPath, exceptionHandler);
                 currentData.Remove(match);
                 currentData.Add(model);
             }
             else
             {
-                if (!File.Exists(listReferenceProvider.ConnectionConfiguration.DirectoryPath + "\\" + ParsingHelpers.ParseUrlFileName(model.Url)))
+                if (!File.Exists(ListReferenceProvider.ConnectionConfiguration.DirectoryPath + Backslash + ParsingHelpers.ParseUrlFileName(model.Url)))
                 {
-                    fileOperationProvider.Download(model.Url, listReferenceProvider.ConnectionConfiguration.DirectoryPath);
+                    FileOperationProvider.Download(model.Url, ListReferenceProvider.ConnectionConfiguration.DirectoryPath, exceptionHandler);
                     currentData.Add(model);
                 }
             }
@@ -88,10 +96,10 @@
         private List<MetadataModel> GetUserUrlsWithDate()
         {
             var metadatas = new List<MetadataModel>();
-            List<string> userUrLs = listReferenceProvider.GetCurrentUserUrls();
+            List<string> userUrLs = ListReferenceProvider.GetCurrentUserUrls();
             foreach (var url in userUrLs)
             {
-                DateTime dateTime = listReferenceProvider.GetMetadataItem(url);
+                DateTime dateTime = ListReferenceProvider.GetMetadataItem(url);
                 metadatas.Add(new MetadataModel { Url = url, ModifiedDate = dateTime });
             }
             return metadatas;
