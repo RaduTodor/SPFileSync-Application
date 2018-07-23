@@ -49,11 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationValidator.cs" />
     <Compile Include="CsvMetadataFileManipulator.cs" />
     <Compile Include="FilesManager.cs" />
     <Compile Include="FileSynchronizer.cs" />
     <Compile Include="ListReferenceManager.cs" />
-    <Compile Include="ObservableHashSet.cs" />
     <Compile Include="OperationsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

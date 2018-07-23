@@ -20,7 +20,7 @@ namespace SPFileSync_Application
         //Should i move it to Business Logic Layer?
 
         private Window window;
-        private BusinessLogicLayer.ObservableHashSet<string> errors = new BusinessLogicLayer.ObservableHashSet<string>();
+        private Common.Helpers.ObservableHashSet<string> errors = new Common.Helpers.ObservableHashSet<string>();
         public GeneralUI(Window window)
         {
             this.window = window;
@@ -31,7 +31,7 @@ namespace SPFileSync_Application
 
         }
         //TODO [CR BT] : Methods should start with Capital letter. Move this into another class in Configuration DLL.
-        public static void checkConfiguration(ConnectionConfiguration configuration)
+        public static void checkConfiguration(ref ConnectionConfiguration configuration)
         {
             if (configuration == null)
             {

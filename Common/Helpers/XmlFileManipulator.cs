@@ -20,11 +20,10 @@
             XmlSerializer xmlSerializer = new XmlSerializer(list.GetType());
             Directory.GetCurrentDirectory();
             FileEditingHelper.CreateAccesibleFile(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile, Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectory);
-            TextWriter textWriter = File.CreateText(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile);
-            xmlSerializer.Serialize(textWriter, list);
-            //             ||
-            //modification \/
-            textWriter.Close();
+            using (TextWriter textWriter = File.CreateText(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile))
+            {
+                xmlSerializer.Serialize(textWriter, list);
+            }                     
         }
 
         /// <summary>
@@ -35,10 +34,10 @@
         public static List<T> Deserialize<T>()
         {
             XmlSerializer xmlSerializer = new XmlSerializer(new List<T>().GetType());
-            TextReader textReader = File.OpenText(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile);
-
-            return (List<T>)xmlSerializer.Deserialize(textReader);
-
+            using (TextReader textReader = File.OpenText(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile))
+            {
+                return (List<T>)xmlSerializer.Deserialize(textReader);
+            }               
         }
     }
 }

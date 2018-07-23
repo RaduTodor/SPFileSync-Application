@@ -1,63 +1,67 @@
-﻿using Configuration;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Windows;
-using System.Windows.Forms;
-
+﻿
 namespace SPFileSync_Application
 {
-    /// <summary>
-    /// Interaction logic for EditConfigurationPanel.xaml
-    /// </summary>
-    //TODO [CR BT] : Move usings inside the namespace.
-    //TODO [CR BT] : Remove Window inheritance.
-    public partial class EditConfigurationPanel : Window
-    {
-        //TODO [CR BT] : Private proprties should be named starting with "_".
-        private ConnectionConfiguration configuration;
-        private List<ConnectionConfiguration> configurations;
-        private GeneralUI generalUI;
-        private NotifyIcon notifyIcon = new NotifyIcon();       
-        private string path="";
-        Window window;
+    using Configuration;
+    using System;
+    using System.Collections.Generic;
+    using System.Net;
+    using System.Windows;
+    using System.Windows.Forms;
 
-        //TODO [CR BT] : Extract logic in multiple methods. 
-        public EditConfigurationPanel(ConnectionConfiguration configurationItem,List<ConnectionConfiguration> configurations,Window window)
+    public partial class EditConfigurationPanel
+    {
+        private ConnectionConfiguration _configuration;
+        private List<ConnectionConfiguration> _configurations;
+        private GeneralUI _generalUI;
+        private NotifyIcon _notifyIcon = new NotifyIcon();
+        private string _path = "";
+        Window _window;
+
+        public EditConfigurationPanel(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
         {
             InitializeComponent();
-            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.comboBoxRest);
-            generalUI = new GeneralUI(this);
-            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.comboBoxCsom);
-            configuration = configurationItem;
-            path = configuration.DirectoryPath;       
-            this.configurations = configurations;
-            siteUrlBox.Text = configuration.Connection.Uri.ToString();
-            syncTextBox.Text = configuration.SyncTimeSpan.TotalMinutes.ToString();
-            this.window = window;
-            userNameTextBox.Text = configuration.Connection.Credentials.UserName;
-            passwordText.Password = configuration.Connection.Credentials.Password;
+            InitializeFields(configurationItem, configurations, window);
+            UpdateUI();
+        }
+
+        private void InitializeFields(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
+        {
+            _generalUI = new GeneralUI(this);
+            _configuration = configurationItem;
+            this._configurations = configurations;
+            this._window = window;
+        }
+
+        private void UpdateUI()
+        {
+            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxRest);
+            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxCsom);
+            _path = _configuration.DirectoryPath;
+            siteUrlBox.Text = _configuration.Connection.Uri.ToString();
+            syncTextBox.Text = _configuration.SyncTimeSpan.TotalMinutes.ToString();
+            userNameTextBox.Text = _configuration.Connection.Credentials.UserName;
+            passwordText.Password = _configuration.Connection.Credentials.Password;
         }
 
         private void ListEdit(object sender, RoutedEventArgs e)
         {
-            ConfigurationListsEdit window = new ConfigurationListsEdit(configuration.ListsWithColumnsNames);
+            ConfigurationListsEdit window = new ConfigurationListsEdit(_configuration.ListsWithColumnsNames);
             window.Show();
         }
 
         private void Cancel(object sender, RoutedEventArgs e)
         {
-            window.Show();
+            _window.Show();
             Close();
         }
-        //TODO [CR BT] : Create a model with all UI textboxes, send it to this method and move this logic into Business Layer. Create a class eg. ConfigurationValidator and add the method there.
+        //!TODO [CR BT] : Create a model with all UI textboxes, send it to this method and move this logic into Business Layer. Create a class eg. ConfigurationValidator and add the method there.
         private bool ValidateAllFields()
         {
             bool input = false;
-            var syncBoxValidation = generalUI.FieldValidation(syncTextBox.Text, syncLabel);   
-            var userName = generalUI.FieldValidation(userNameTextBox.Text, userNameErrorLabel);
-            var password = generalUI.FieldValidation(passwordText.Password, passwordErrorLabel);
-            var siteUrl = generalUI.FieldValidation(siteUrlBox.Text, siteErrorLabel);                      
+            var syncBoxValidation = _generalUI.FieldValidation(syncTextBox.Text, syncLabel);
+            var userName = _generalUI.FieldValidation(userNameTextBox.Text, userNameErrorLabel);
+            var password = _generalUI.FieldValidation(passwordText.Password, passwordErrorLabel);
+            var siteUrl = _generalUI.FieldValidation(siteUrlBox.Text, siteErrorLabel);
             if (syncBoxValidation && userName && password && siteUrl)
             {
                 input = true;
@@ -71,49 +75,43 @@ namespace SPFileSync_Application
         {
             try
             {
-                if(ValidateAllFields())
+                if (ValidateAllFields())
                 {
                     double minutes = 0;
                     var checkSyncTime = double.TryParse(syncTextBox.Text, out minutes);
                     if (checkSyncTime)
                     {
                         Connection connection = new Connection() { Credentials = new Models.Credentials { UserName = userNameTextBox.Text, Password = passwordText.Password }, Uri = new Uri(siteUrlBox.Text) };
-                        configuration.Connection = connection;
-                        configuration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);
-                        configuration.Connection.Login();
-                        configuration.DirectoryPath = path;
-                        Common.Helpers.XmlFileManipulator.Serialize(configurations);
-                        window.Show();
+                        _configuration.Connection = connection;
+                        _configuration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);
+                        _configuration.Connection.Login();
+                        _configuration.DirectoryPath = _path;
+                        Common.Helpers.XmlFileManipulator.Serialize(_configurations);
+                        _window.Show();
                         Close();
                     }
                     else
                     {
-                        //TODO [CR BT] : Extract constant
-                        generalUI.DisplayWarning(syncLabel, "Invalid value");
+                        _generalUI.DisplayWarning(syncLabel, Common.Constants.ConfigurationMessages.InvalidValue);
                     }
-                }                              
+                }
             }
-            catch(UriFormatException uriException)                          
+            catch (UriFormatException uriException)
             {
-                //TODO [CR BT] : Extract constant
-                generalUI.NotifyError(notifyIcon, Common.Constants.ConfigurationMessages.badConfigurationTitle, Common.Constants.ConfigurationMessages.invalidSiteUrl);               
-                Common.Helpers.MyLogger.Logger.Debug(uriException,"error");
+
+                _generalUI.NotifyError(_notifyIcon, Common.Constants.ConfigurationMessages.BadConfigurationTitle, Common.Constants.ConfigurationMessages.InvalidSiteUrl);
+                Common.Helpers.MyLogger.Logger.Debug(uriException);
             }
             catch (WebException webException)
             {
-                generalUI.NotifyError(notifyIcon, Common.Constants.ConfigurationMessages.badConfigurationTitle, Common.Constants.ConfigurationMessages.credentialsError);
+                _generalUI.NotifyError(_notifyIcon, Common.Constants.ConfigurationMessages.BadConfigurationTitle, Common.Constants.ConfigurationMessages.CredentialsError);
                 Common.Helpers.MyLogger.Logger.Debug(webException);
             }
         }
-        //TODO [CR BT] : Remove unused variable "result".
-        //TODO [CR BT] : Move method in another location, existing class/new one.
+
         private void SetFileDestination(object sender, RoutedEventArgs e)
         {
-            FolderBrowserDialog folder = new FolderBrowserDialog();
-            folder.SelectedPath = configuration.DirectoryPath;           
-            var result = folder.ShowDialog();
-            path = folder.SelectedPath;
-
+            _path = Common.Helpers.PathConfiguration.SetPath(_configuration.DirectoryPath);
         }
     }
 }

@@ -21,6 +21,6 @@
         <Label HorizontalAlignment="Left" Margin="98,199,0,0" VerticalAlignment="Top" Width="120" Foreground="White" Name="urlColumnError" Height="36"/>
         <Label HorizontalAlignment="Left" Margin="98,268,0,0" VerticalAlignment="Top" Width="120" Foreground="White" Name="userColumnError" Height="30"/>
         <Button Content="Save" HorizontalAlignment="Left" Margin="15,349,0,0" VerticalAlignment="Top" Width="75" Click="Save"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="124,349,0,0" VerticalAlignment="Top" Width="75" Click="Cancel"/>
+        <!--<Button Content="Cancel" HorizontalAlignment="Left" Margin="124,349,0,0" VerticalAlignment="Top" Width="75" Click="Cancel"/>-->
     </Grid>
 </Window>

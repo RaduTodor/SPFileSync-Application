@@ -1,83 +1,98 @@
-﻿using Configuration;
-using Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿
 
 namespace SPFileSync_Application
 {
-    /// <summary>
-    /// Interaction logic for ConfigurationListsEdit.xaml
-    /// </summary>
-    //TODO [CR BT] : Please remove unused usings. Move them inside the namespace.
-    public partial class ConfigurationListsEdit : Window
+    using Models;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Windows;
+    public partial class ConfigurationListsEdit
     {
-        //TODO [CR BT] : Private proprties should be named starting with "_".
-        //TODO [CR BT] : itemLists, items, itemsToRemove, countRemovedItems are not intuitive names, please rename them.
-        List<ListWithColumnsName> itemLists;
-        private ObservableCollection<ListWithColumnsName> items;
-        private List<ListWithColumnsName> itemsToRemove = new List<ListWithColumnsName>();
-        //TODO [CR BT] : This seems and should to be a constant. 
-        private int countRemovedItems = 0;       
+        List<ListWithColumnsName> _selectedConfigLists;
+        //private ObservableCollection<ListWithColumnsName> _observableSelectedconfigLists;
+        private ObservableCollection<string> _observableSelectedconfigListsName = new ObservableCollection<string>();
+        private List<ListWithColumnsName> _removedListsOfConfig = new List<ListWithColumnsName>();
+        private ListWithColumnsName _listItem = new ListWithColumnsName();
+        private int _selectedItemIndex;
+        //TODO [CR BT] : This seems and should to be a constant.
+        private int countRemovedSelectedListItems = 0;
+
         public ConfigurationListsEdit(List<ListWithColumnsName> list)
         {
             InitializeComponent();
-            itemLists = list;
-            items = new ObservableCollection<ListWithColumnsName>(itemLists);
-            items.CollectionChanged += ItemsCollectionChanged;
-            itemListBox.ItemsSource = items;
-            
+            _selectedConfigLists = list;
+           // _observableSelectedconfigLists = new ObservableCollection<ListWithColumnsName>(_selectedConfigLists);
+            _observableSelectedconfigListsName.CollectionChanged += ItemsCollectionChanged;
+            GetListsNames();
+            itemListBox.ItemsSource = _observableSelectedconfigListsName;
+        }
+
+        private void GetListsNames()
+        {
+            foreach (var item in _selectedConfigLists)
+            {
+                _observableSelectedconfigListsName.Add(item.ListName);
+            }
         }
 
         private void ItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            countRemovedItems++;
-            if(items.Count-countRemovedItems <1)
+            var action = e.Action.ToString();
+            if(action == "Remove")
+            {
+                countRemovedSelectedListItems++;
+            }
+            
+            if (_observableSelectedconfigListsName.Count <= 1)
             {
                 removeButton.IsEnabled = false;
-            }          
+            }
+            else
+            {
+                removeButton.IsEnabled = true;
+            }
         }
 
         private void RemoveItemList(object sender, RoutedEventArgs e)
-        {         
-            ListWithColumnsName selectedConfig = (ListWithColumnsName)itemListBox.SelectedItem;
-            items.Remove(selectedConfig);
-            itemsToRemove.Add(selectedConfig);
+        {
+            //ListWithColumnsName selectedConfig = (ListWithColumnsName)itemListBox.SelectedItem;
+            _selectedItemIndex = itemListBox.SelectedIndex;
+            _observableSelectedconfigListsName.Remove((string)itemListBox.SelectedItem);
+            _removedListsOfConfig.Add(_selectedConfigLists[_selectedItemIndex]);
         }
 
         private void EditItemList(object sender, RoutedEventArgs e)
         {
-            EditItemListPanel window = new EditItemListPanel((ListWithColumnsName)itemListBox.SelectedItem,this);
+            _selectedItemIndex = itemListBox.SelectedIndex;
+            _listItem = _selectedConfigLists[_selectedItemIndex];
+            var selectedConfigList = _selectedConfigLists[_selectedItemIndex];
+            EditItemListPanel window = new EditItemListPanel(selectedConfigList, this);
             window.Show();
             Hide();
         }
-        //TODO [CR BT] : Rename method. The method it's called "Save" but the logic is to remove an item.
-        //TODO [CR BT] : When you remove items from a list user for instead of foreach. Foreach will crush.
-        private void Save(object sender, RoutedEventArgs e)
+
+        private void RemoveLists(object sender, RoutedEventArgs e)
         {
-
-            foreach(var item in itemsToRemove)
+            for (int i = 0; i < _removedListsOfConfig.Count; i++)
             {
-                itemLists.Remove(item);
+                _selectedConfigLists.Remove(_removedListsOfConfig[i]);
             }
-
             Close();
         }
 
         private void Close(object sender, RoutedEventArgs e)
         {
+            _selectedConfigLists[_selectedItemIndex] = _listItem;
             Close();
+        }
+
+        private void Add(object sender, RoutedEventArgs e)
+        {
+
+            ListWithColumns window = new ListWithColumns(_selectedConfigLists, _observableSelectedconfigListsName);
+            // GetListsNames();
+            window.Show();
+            // _observableSelectedconfigListsName.Add(_selectedConfigLists[_selectedConfigLists.Count-1].ListName);
         }
     }
 }

@@ -1,20 +1,20 @@
 ﻿namespace Common.Constants
 {
-    //TODO [CR BT] : A class only with constants should be static.
-    public class ConfigurationMessages
+
+    public static class ConfigurationMessages
     {
         //TODO [CR BT] : Use capital letters for constants as you used for the last ones: comboBoxRest -> ComboBoxRest
-        public const string comboBoxRest = "Rest";
+        public const string ComboBoxRest = "Rest";
 
-        public const string comboBoxCsom = "Csom";
+        public const string ComboBoxCsom = "Csom";
 
-        public const string invalidSiteUrl = "Site field has an invalid url";
+        public const string InvalidSiteUrl = "Site field has an invalid url";
 
-        public const string badConfigurationTitle = "Bad configuration";
+        public const string BadConfigurationTitle = "Bad configuration";
 
-        public const string credentialsError = "Username or password dosen't exist";
+        public const string CredentialsError = "Username or password dosen't exist";
 
-        public const string generalConfigError = "There was an error with the configuration";
+        public const string GeneralConfigError = "There was an error with the configuration";
 
         public const string ResourceFolderAppIcon = @"Utils\UFO.ico";
 
@@ -23,6 +23,8 @@
         public const string AppName = "SPFileSync";
 
         public const string EmptyField = "Empty field";
+
+        public const string InvalidValue = "Invalid Value";
 
 
     }

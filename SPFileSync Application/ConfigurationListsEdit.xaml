@@ -14,8 +14,9 @@
 
         <Button Content="Edit" HorizontalAlignment="Left" Margin="34,218,0,0" VerticalAlignment="Top" Width="75" Click="EditItemList" Name="editButton" IsEnabled="{Binding ElementName=itemListBox, Path=SelectedItems.Count}" />
         <ListBox HorizontalAlignment="Left" Height="201" Margin="158,84,0,0" VerticalAlignment="Top" Width="235" Name="itemListBox"/>
-        <Button Content="Close" HorizontalAlignment="Left" Margin="300,312,0,0" VerticalAlignment="Top" Width="75" Click="Close"/>
-        <Button Content="Save" HorizontalAlignment="Left" Margin="158,312,0,0" VerticalAlignment="Top" Width="75" Click="Save" Name="saveButton"/>
+        <!--<Button Content="Close" HorizontalAlignment="Left" Margin="300,312,0,0" VerticalAlignment="Top" Width="75" Click="Close"/>-->
+        <Button Content="Save" HorizontalAlignment="Left" Margin="158,312,0,0" VerticalAlignment="Top" Width="75" Click="RemoveLists" Name="saveButton"/>
+        <Button Content="Add" HorizontalAlignment="Left" Margin="34,84,0,0" VerticalAlignment="Top" Width="75" Click="Add"/>
 
     </Grid>
 </Window>

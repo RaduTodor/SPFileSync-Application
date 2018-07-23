@@ -1,26 +1,34 @@
-﻿using Models;
-using System.Collections.Generic;
-using System.Windows;
+﻿
 
-//TODO [CR BT] : Move usings inside the namespace.
-//TODO [CR BT] : Remove Window inheritance.
 namespace SPFileSync_Application
 {
-    public partial class ListWithColumns : Window
+    using Models;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Windows;
+
+    public partial class ListWithColumns 
     {
-        //TODO [CR BT] : Private proprties should be named starting with "_".
-        //TODO [CR BT] : Rename "addList" variable to a more speciffic name.
-        private List<ListWithColumnsName> addList;
+        private List<ListWithColumnsName> _addListsToConfiguration;
+        private ObservableCollection<string> myObservableCollection;
         public ListWithColumns(List<ListWithColumnsName> list)
         {
-            InitializeComponent();           
-            addList = list;            
+            InitializeComponent();
+            _addListsToConfiguration = list;            
+        }
+
+        public ListWithColumns(List<ListWithColumnsName> list,ObservableCollection<string> observableCollection)
+        {
+            InitializeComponent();
+            _addListsToConfiguration = list;
+            myObservableCollection = observableCollection;
         }
 
         private void ConfirmList(object sender, RoutedEventArgs e)
         {
             ListWithColumnsName list = new ListWithColumnsName() { ListName = listTextBox.Text, UrlColumnName = urlColumnTextBox.Text, UserColumnName = userColumnTextBox.Text };
-            addList.Add(list);
+            _addListsToConfiguration.Add(list);
+            myObservableCollection.Add(list.ListName);
             this.Close();
         }
 

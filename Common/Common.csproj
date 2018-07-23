@@ -43,6 +43,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -70,6 +71,8 @@
     <Compile Include="Exceptions\MetadataReadException.cs" />
     <Compile Include="Exceptions\RestOperationException.cs" />
     <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Helpers\ObservableHashSet.cs" />
+    <Compile Include="Helpers\PathConfiguration.cs" />
     <Compile Include="Helpers\XmlFileManipulator.cs" />
     <Compile Include="Helpers\FileEditingHelper.cs" />
     <Compile Include="Helpers\ParsingHelpers.cs" />

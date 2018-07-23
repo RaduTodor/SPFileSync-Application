@@ -1,57 +1,48 @@
-﻿using Configuration;
-using Models;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Windows;
-using System.Windows.Forms;
-
+﻿
 namespace SPFileSync_Application
 {
-    /// <summary>
-    /// Interaction logic for ConfigurationWindow.xaml
-    /// </summary>
-    //TODO [CR BT] : Move usings inside the namespace.
-    //TODO [CR BT] : Remove Window inheritance.
-    public partial class ConfigurationWindow : Window
+    using Configuration;
+    using Models;
+    using System;
+    using System.Collections.Generic;
+    using System.Net;
+    using System.Windows;
+    using System.Windows.Forms;
+
+    public partial class ConfigurationWindow 
     {
 
-        //Should i move the buttons logic in methods and move them into Business Logic Layer?
-        //TODO [CR BT] : Private proprties should be named starting with "_".
-        private string path;
-        private NotifyIcon notifyIcon = new NotifyIcon();
-        private ConnectionConfiguration configuration;
-        private GeneralUI generalUI;
-        private List<ConnectionConfiguration> configurations;
+        private string _path;
+        private NotifyIcon _notifyIcon = new NotifyIcon();
+        private ConnectionConfiguration _configuration;
+        private GeneralUI _generalUI;
+        private List<ConnectionConfiguration> _configurations;
         public ConfigurationWindow(List<ConnectionConfiguration> connectionConfigurations)
         {
             InitializeComponent();
-            generalUI = new GeneralUI(this);
-            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.comboBoxRest);
-            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.comboBoxCsom);
-            configurations = connectionConfigurations;
+            _generalUI = new GeneralUI(this);
+            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxRest);
+            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxCsom);
+            _configurations = connectionConfigurations;
         }
 
-        //TODO [CR BT] : Remove result variable. Just call the showDialog method.
         private void SetFileDestination(object sender, RoutedEventArgs e)
         {
-            FolderBrowserDialog folder = new FolderBrowserDialog();
-            var result = folder.ShowDialog();
-            path = folder.SelectedPath;
+            _path = Common.Helpers.PathConfiguration.SetPath();
         }
 
         //TODO [CR BT] : Create a model with all UI textboxes, send it to this method and move this logic into Business Layer. Create a class eg. ConfigurationValidator and add the method there.
         private bool ValidateAllFields()
         {
             bool input = false;
-            var syncBoxValidation = generalUI.FieldValidation(syncTextBox.Text, syncLabel);
-            var pathValidation = generalUI.FieldValidation(path, pathLabel);
-            var userName = generalUI.FieldValidation(userNameTextBox.Text, userNameErrorLabel);
-            var password = generalUI.FieldValidation(passwordText.Password, passwordErrorLabel);
-            var siteUrl = generalUI.FieldValidation(siteUrlBox.Text, siteErrorLabel);
-            var listUrl = generalUI.FieldValidation(listTextBox.Text, listErrorLabel);
-            var urlColumn = generalUI.FieldValidation(urlColumnTextBox.Text, urlColumnError);
-            var userColumn = generalUI.FieldValidation(userColumnTextBox.Text, userColumnError);
+            var syncBoxValidation = _generalUI.FieldValidation(syncTextBox.Text, syncLabel);
+            var pathValidation = _generalUI.FieldValidation(_path, pathLabel);
+            var userName = _generalUI.FieldValidation(userNameTextBox.Text, userNameErrorLabel);
+            var password = _generalUI.FieldValidation(passwordText.Password, passwordErrorLabel);
+            var siteUrl = _generalUI.FieldValidation(siteUrlBox.Text, siteErrorLabel);
+            var listUrl = _generalUI.FieldValidation(listTextBox.Text, listErrorLabel);
+            var urlColumn = _generalUI.FieldValidation(urlColumnTextBox.Text, urlColumnError);
+            var userColumn = _generalUI.FieldValidation(userColumnTextBox.Text, userColumnError);
             if (syncBoxValidation && pathValidation && userName && password && siteUrl && listUrl && urlColumn && userColumn)
             {
                 input = true;
@@ -70,52 +61,53 @@ namespace SPFileSync_Application
                     Connection connection = new Connection() { Credentials = new Credentials() { UserName = userNameTextBox.Text, Password = passwordText.Password }, Uri = new Uri(siteUrlBox.Text) };
                     var minutes = int.Parse(syncTextBox.Text);
                     connection.Login();
-                    GeneralUI.checkConfiguration(configuration);
-                    configuration.Connection = connection;
-                    configuration.DirectoryPath = path;
-                    configuration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);                      
-                    ListWithColumnsName list =  new ListWithColumnsName() { ListName = listTextBox.Text, UrlColumnName = urlColumnTextBox.Text, UserColumnName = userColumnTextBox.Text };
-                    if(configuration.ListsWithColumnsNames == null)
+                    GeneralUI.checkConfiguration( ref _configuration);
+                    _configuration.Connection = connection;
+                    _configuration.DirectoryPath = _path;
+                    _configuration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);
+                    ListWithColumnsName list = new ListWithColumnsName() { ListName = listTextBox.Text, UrlColumnName = urlColumnTextBox.Text, UserColumnName = userColumnTextBox.Text };
+                    if (_configuration.ListsWithColumnsNames == null)
                     {
-                        configuration.ListsWithColumnsNames = new List<ListWithColumnsName>();
+                        _configuration.ListsWithColumnsNames = new List<ListWithColumnsName>();
                     }
-                    configuration.ListsWithColumnsNames.Add(list);
-                    configurations.Add(configuration);                    
-                    Common.Helpers.XmlFileManipulator.Serialize(configurations);
+                    _configuration.ListsWithColumnsNames.Add(list);
+                    _configurations.Add(_configuration);
+                    Common.Helpers.XmlFileManipulator.Serialize(_configurations);
                     this.Close();
                 }
-                catch(UriFormatException uriException)
+                catch (UriFormatException uriException)
                 {
-                    generalUI.NotifyError(notifyIcon, Common.Constants.ConfigurationMessages.badConfigurationTitle, Common.Constants.ConfigurationMessages.invalidSiteUrl);
-                    generalUI.AddToListButton(Common.Constants.ConfigurationMessages.invalidSiteUrl);
+                    _generalUI.NotifyError(_notifyIcon, Common.Constants.ConfigurationMessages.BadConfigurationTitle, Common.Constants.ConfigurationMessages.InvalidSiteUrl);
+                    _generalUI.AddToListButton(Common.Constants.ConfigurationMessages.InvalidSiteUrl);
                     Common.Helpers.MyLogger.Logger.Debug(uriException);
                 }
-                catch (WebException webException)
+                catch (Common.Exceptions.LoginException webException)
                 {
-                    generalUI.NotifyError(notifyIcon, Common.Constants.ConfigurationMessages.badConfigurationTitle, Common.Constants.ConfigurationMessages.credentialsError);
-                    generalUI.AddToListButton(Common.Constants.ConfigurationMessages.credentialsError);
+                    _generalUI.NotifyError(_notifyIcon, Common.Constants.ConfigurationMessages.BadConfigurationTitle, Common.Constants.ConfigurationMessages.CredentialsError);
+                    _generalUI.AddToListButton(Common.Constants.ConfigurationMessages.CredentialsError);
+
                     Common.Helpers.MyLogger.Logger.Debug(webException);
                 }
                 catch (Exception exception)
                 {
-                    generalUI.NotifyError(notifyIcon, Common.Constants.ConfigurationMessages.badConfigurationTitle, Common.Constants.ConfigurationMessages.generalConfigError);
-                    generalUI.AddToListButton(Common.Constants.ConfigurationMessages.generalConfigError);
+                    _generalUI.NotifyError(_notifyIcon, Common.Constants.ConfigurationMessages.BadConfigurationTitle, Common.Constants.ConfigurationMessages.GeneralConfigError);
+                    _generalUI.AddToListButton(Common.Constants.ConfigurationMessages.GeneralConfigError);
                     Common.Helpers.MyLogger.Logger.Debug(exception);
-                }               
+                }
             }
         }
 
         private void Cancel(object sender, RoutedEventArgs e)
-        {            
-            this.Close();           
+        {
+            this.Close();
         }
-      
+
         private void AddListWithColumns(object sender, RoutedEventArgs e)
         {
 
-            GeneralUI.checkConfiguration(configuration);
-            ListWithColumns window = new ListWithColumns(configuration.ListsWithColumnsNames);
+            GeneralUI.checkConfiguration(ref _configuration);
+            ListWithColumns window = new ListWithColumns(_configuration.ListsWithColumnsNames);
             window.Show();
-        }        
+        }
     }
 }
