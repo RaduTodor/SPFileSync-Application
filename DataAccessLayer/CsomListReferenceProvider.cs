@@ -1,20 +1,20 @@
-﻿using Common.Constants;
-using Common.Exceptions;
-
-namespace DataAccessLayer
+﻿namespace DataAccessLayer
 {
-    using Microsoft.SharePoint.Client;
-    using Models;
     using System;
     using System.Linq;
+    using Common.Constants;
+    using Common.Exceptions;
+    using Common.Helpers;
+    using Microsoft.SharePoint.Client;
+    using Models;
 
     /// <summary>
-    /// An implementation of BaseListReferenceProvider which uses CSOM technology to implement base methods.
+    ///     An implementation of BaseListReferenceProvider which uses CSOM technology to implement base methods.
     /// </summary>
     public class CsomListReferenceProvider : BaseListReferenceProvider
     {
         /// <summary>
-        /// Calls UdateListReferenceItem for an added item created with AddItem
+        ///     Calls UdateListReferenceItem for an added item created with AddItem
         /// </summary>
         /// <param name="listName"></param>
         /// <param name="uri"></param>
@@ -32,12 +32,15 @@ namespace DataAccessLayer
             }
             catch (Exception exception)
             {
-                throw new CsomOperationException(DefaultExceptionMessages.CsomAddExceptionMessage,exception);
+                Exception currentException =
+                    new CsomOperationException(DefaultExceptionMessages.CsomAddExceptionMessage, exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
         }
 
         /// <summary>
-        /// Calls UdateListReferenceItem for an existing item found with GetByTitle
+        ///     Calls UdateListReferenceItem for an existing item found with GetByTitle
         /// </summary>
         /// <param name="uri"></param>
         /// <param name="itemId"></param>
@@ -55,18 +58,22 @@ namespace DataAccessLayer
             }
             catch (Exception exception)
             {
-                throw new CsomOperationException(DefaultExceptionMessages.CsomChangeExceptionMessage, exception);
+                Exception currentException =
+                    new CsomOperationException(DefaultExceptionMessages.CsomChangeExceptionMessage, exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
         }
 
         /// <summary>
-        /// Changes properties of given ReferenceListItem and uploads it on sharepoint ClientContext 
+        ///     Changes properties of given ReferenceListItem and uploads it on sharepoint ClientContext
         /// </summary>
         /// <param name="listItem"></param>
         /// <param name="list"></param>
         /// <param name="uri"></param>
         /// <param name="clientContext"></param>
-        private void UpdateListReferenceItem(ListItem listItem, ListWithColumnsName list, Uri uri, ClientContext clientContext)
+        private void UpdateListReferenceItem(ListItem listItem, ListWithColumnsName list, Uri uri,
+            ClientContext clientContext)
         {
             listItem[$"{list.UrlColumnName}"] = uri;
             listItem[$"{list.UserColumnName}"] = clientContext.Web.CurrentUser;
@@ -75,7 +82,7 @@ namespace DataAccessLayer
         }
 
         /// <summary>
-        /// Removes ReferenceListItem found with GetByTitle, with DeleteObject 
+        ///     Removes ReferenceListItem found with GetByTitle, with DeleteObject
         /// </summary>
         /// <param name="listName"></param>
         /// <param name="itemId"></param>
@@ -90,7 +97,10 @@ namespace DataAccessLayer
             }
             catch (Exception exception)
             {
-                throw new CsomOperationException(DefaultExceptionMessages.CsomRemoveExceptionMessage, exception);
+                Exception currentException =
+                    new CsomOperationException(DefaultExceptionMessages.CsomRemoveExceptionMessage, exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
         }
     }

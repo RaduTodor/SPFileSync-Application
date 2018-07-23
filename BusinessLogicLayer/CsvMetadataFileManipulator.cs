@@ -5,20 +5,19 @@
     using System.IO;
     using System.Linq;
     using System.Text;
+    using Common.Constants;
+    using Common.Exceptions;
+    using Common.Helpers;
     using CsvHelper;
     using Models;
-    using Common.Constants;
-    using Common.Helpers;
-    using Common.Exceptions;
-
 
     /// <summary>
-    /// This Class writes and reads Metadata needed for Synchronization check. It uses CsvHelper
+    ///     This Class writes and reads Metadata needed for Synchronization check. It uses CsvHelper
     /// </summary>
     public static class CsvMetadataFileManipulator
     {
         /// <summary>
-        /// The writing method is generic
+        ///     The writing method is generic
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="filePath"></param>
@@ -33,7 +32,7 @@
         }
 
         /// <summary>
-        /// The reading method also is generic and needs a directoryPath 
+        ///     The reading method also is generic and needs a directoryPath
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="filePath"></param>
@@ -58,13 +57,18 @@
                         }
                         catch (Exception exception)
                         {
-                            throw new MetadataReadException(DefaultExceptionMessages.ErrorMetadataReadExceptionMessage, exception);
+                            Exception currentException =
+                                new MetadataReadException(DefaultExceptionMessages.ErrorMetadataReadExceptionMessage,
+                                    exception);
+                            MyLogger.Logger.Error(currentException, currentException.Message);
+                            throw currentException;
                         }
                     }
                 }
             }
             catch (Exception exception)
             {
+                MyLogger.Logger.Error(exception, exception.Message);
                 throw exception;
             }
 

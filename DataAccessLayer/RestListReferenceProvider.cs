@@ -1,15 +1,15 @@
-﻿using Common.Exceptions;
-
-namespace DataAccessLayer
+﻿namespace DataAccessLayer
 {
-    using Newtonsoft.Json.Linq;
     using System;
     using System.IO;
     using System.Net;
     using Common.Constants;
+    using Common.Exceptions;
+    using Common.Helpers;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
-    /// An implementation of BaseListReferenceProvider which uses REST calls technology to implement base methods.
+    ///     An implementation of BaseListReferenceProvider which uses REST calls technology to implement base methods.
     /// </summary>
     public class RestListReferenceProvider : BaseListReferenceProvider
     {
@@ -18,7 +18,7 @@ namespace DataAccessLayer
         private const string F = "f";
 
         /// <summary>
-        /// Gets the Digest Value needed for authentication
+        ///     Gets the Digest Value needed for authentication
         /// </summary>
         /// <returns></returns>
         private string RequestFormDigest()
@@ -27,17 +27,16 @@ namespace DataAccessLayer
             var url = ConnectionConfiguration.Connection.Uri + ApiConstants.ContextInfo;
             var endpointUri = new Uri(url);
             var result = webClient.UploadString(endpointUri, RequestHeaderConstants.Post);
-            JToken token = JToken.Parse(result);
+            var token = JToken.Parse(result);
             if (token != null)
-            {
-                return token[DataAccessLayerConstants.JTokenFirstLayer][DataAccessLayerConstants.JTokenSecondLayer][DataAccessLayerConstants.JTokenThirdLayer].ToString();
-            }
+                return token[DataAccessLayerConstants.JTokenFirstLayer][DataAccessLayerConstants.JTokenSecondLayer][
+                    DataAccessLayerConstants.JTokenThirdLayer].ToString();
 
             return string.Empty;
         }
 
         /// <summary>
-        /// Build HttpRequestHeader needed for  Post and Merge operation
+        ///     Build HttpRequestHeader needed for  Post and Merge operation
         /// </summary>
         /// <param name="request"></param>
         /// <param name="operationType"></param>
@@ -53,7 +52,7 @@ namespace DataAccessLayer
         }
 
         /// <summary>
-        /// Build WebClientHeader needed for Remove operation and fost GetDigestValue method
+        ///     Build WebClientHeader needed for Remove operation and fost GetDigestValue method
         /// </summary>
         /// <returns></returns>
         private WebClient BuildWebClientWithHeader()
@@ -70,7 +69,7 @@ namespace DataAccessLayer
         }
 
         /// <summary>
-        /// Creates a new ReferenceListItem, adds header to request and writes the request
+        ///     Creates a new ReferenceListItem, adds header to request and writes the request
         /// </summary>
         /// <param name="listName"></param>
         /// <param name="uri"></param>
@@ -89,15 +88,17 @@ namespace DataAccessLayer
             }
             catch (Exception exception)
             {
-                throw new RestOperationException(DefaultExceptionMessages.RestAddExceptionMessage, exception);
+                Exception currentException =
+                    new RestOperationException(DefaultExceptionMessages.RestAddExceptionMessage, exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
-
         }
 
         /// <summary>
-        /// Creates a httpwebrequest
-        /// If itemId is -1 then it's obvious it's a POST request and acts as needed
-        /// Elsewhere it's a MERGE request
+        ///     Creates a httpwebrequest
+        ///     If itemId is -1 then it's obvious it's a POST request and acts as needed
+        ///     Elsewhere it's a MERGE request
         /// </summary>
         /// <param name="uri"></param>
         /// <param name="itemId"></param>
@@ -130,12 +131,12 @@ namespace DataAccessLayer
         }
 
         /// <summary>
-        /// Changes a ListReferenceItem identified by it's <paramref name="itemId"/>
+        ///     Changes a ListReferenceItem identified by it's <paramref name="itemId" />
         /// </summary>
         /// <param name="uri"></param>
         /// <param name="itemId"></param>
         /// <param name="listName"></param>
-        public override void ChangeListReferenceItem(Uri uri,int itemId, string listName)
+        public override void ChangeListReferenceItem(Uri uri, int itemId, string listName)
         {
             try
             {
@@ -150,12 +151,15 @@ namespace DataAccessLayer
             }
             catch (Exception exception)
             {
-                throw new RestOperationException(DefaultExceptionMessages.RestChangeExceptionMessage, exception);
+                Exception currentException =
+                    new RestOperationException(DefaultExceptionMessages.RestChangeExceptionMessage, exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
         }
 
         /// <summary>
-        /// Removes a ListReferenceItem identified by it's <paramref name="itemId"/>
+        ///     Removes a ListReferenceItem identified by it's <paramref name="itemId" />
         /// </summary>
         /// <param name="listName"></param>
         /// <param name="itemId"></param>
@@ -168,13 +172,17 @@ namespace DataAccessLayer
                 webClient.Headers.Add(HttpRequestHeader.IfMatch, StarAll);
                 webClient.Headers.Add(RequestHeaderConstants.Method, RequestHeaderConstants.Delete);
                 webClient.Headers.Add(HttpRequestHeader.ContentType, DataAccessLayerConstants.ContentTypeJson);
-                var url = ConnectionConfiguration.Connection.Uri + string.Format(ApiConstants.ListItemByIdApi, listName, itemId);
+                var url = ConnectionConfiguration.Connection.Uri +
+                          string.Format(ApiConstants.ListItemByIdApi, listName, itemId);
                 var endpointUri = new Uri(url);
                 webClient.UploadString(endpointUri, RequestHeaderConstants.Post);
             }
             catch (Exception exception)
             {
-                throw new RestOperationException(DefaultExceptionMessages.RestRemoveExceptionMessage, exception);
+                Exception currentException =
+                    new RestOperationException(DefaultExceptionMessages.RestRemoveExceptionMessage, exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
         }
     }

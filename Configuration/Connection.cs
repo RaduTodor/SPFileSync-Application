@@ -1,39 +1,39 @@
-﻿using Common.Constants;
-using Common.Exceptions;
-
-namespace Configuration
+﻿namespace Configuration
 {
     using System;
-    using System.Net;
-    using Microsoft.SharePoint.Client;
-    using System.Linq;
-    using System.Xml.Serialization;
     using System.ComponentModel;
+    using System.Linq;
+    using System.Net;
+    using System.Xml.Serialization;
+    using Common.Constants;
+    using Common.Exceptions;
+    using Common.Helpers;
+    using Microsoft.SharePoint.Client;
     using Models;
 
     /// <summary>
-    /// Connection instance has an Uri and Credentials needed for a connection to be made
-    /// It also has some useful methods
+    ///     Connection instance has an Uri and Credentials needed for a connection to be made
+    ///     It also has some useful methods
     /// </summary>
     public class Connection
     {
         private const char Backslash = '\\';
 
-        [XmlIgnore]
-        public Uri Uri { get; set; }
+        [XmlIgnore] public Uri Uri { get; set; }
 
         [XmlAttribute("uri")]
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public string UriString
         {
-            get { return Uri == null ? null : Uri.ToString(); }
-            set { Uri = value == null ? null : new Uri(value); }
+            get => Uri == null ? null : Uri.ToString();
+            set => Uri = value == null ? null : new Uri(value);
         }
 
         public Credentials Credentials { get; set; }
 
         /// <summary>
-        /// Returns a ClientContext for instance's Uri with instance's Credentials
+        ///     Returns a ClientContext for instance's Uri with instance's Credentials
         /// </summary>
         /// <returns></returns>
         public ClientContext CreateContext()
@@ -44,7 +44,7 @@ namespace Configuration
         }
 
         /// <summary>
-        /// Gets the username part without domain (just the login name)
+        ///     Gets the username part without domain (just the login name)
         /// </summary>
         /// <returns></returns>
         public string GetCurrentUserName()
@@ -53,7 +53,7 @@ namespace Configuration
         }
 
         /// <summary>
-        /// Returns last part of a sharepoint uri
+        ///     Returns last part of a sharepoint uri
         /// </summary>
         /// <returns></returns>
         public string GetSharepointIdentifier()
@@ -63,7 +63,7 @@ namespace Configuration
         }
 
         /// <summary>
-        /// Loads a clientContext with instance's data and returns the current User Id's
+        ///     Loads a clientContext with instance's data and returns the current User Id's
         /// </summary>
         /// <returns></returns>
         public int GetCurrentUserId()
@@ -88,17 +88,24 @@ namespace Configuration
                         }
                         catch (Exception exception)
                         {
-                            throw new ClientContextOperationException(DefaultExceptionMessages.ClientContextOperationExceptionMessage,
+                            Exception currentException = new ClientContextOperationException(
+                                DefaultExceptionMessages.ClientContextOperationExceptionMessage,
                                 exception);
+                            MyLogger.Logger.Error(currentException, currentException.Message);
+                            throw currentException;
                         }
+
                         return clientContext.Web.CurrentUser.Id;
                     }
                 }
             }
             catch (Exception exception)
             {
-                throw new CurrentUserIdUnaccesibleException(DefaultExceptionMessages.CurrentUserExceptionMessage,
+                Exception currentException = new CurrentUserIdUnaccesibleException(
+                    DefaultExceptionMessages.CurrentUserExceptionMessage,
                     exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
 
             return -1;
@@ -113,7 +120,10 @@ namespace Configuration
             }
             catch (Exception exception)
             {
-                throw new LoginException(DefaultExceptionMessages.LoginExceptionMessage,exception);
+                Exception currentException =
+                    new LoginException(DefaultExceptionMessages.LoginExceptionMessage, exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
         }
     }

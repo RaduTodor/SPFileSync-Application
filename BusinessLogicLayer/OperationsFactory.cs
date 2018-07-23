@@ -1,15 +1,15 @@
 ﻿namespace BusinessLogicLayer
 {
-    using DataAccessLayer;
     using Common.ApplicationEnums;
+    using DataAccessLayer;
 
     /// <summary>
-    /// Implements the FactoryPattern for BaseListReferenceProvider
+    ///     Implements the FactoryPattern for BaseListReferenceProvider
     /// </summary>
     public static class OperationsFactory
     {
         /// <summary>
-        /// Returns a specific instance of BaseListReferenceProvider from a given enum elements choice
+        ///     Returns a specific instance of BaseListReferenceProvider from a given enum elements choice
         /// </summary>
         /// <param name="choice"></param>
         /// <returns></returns>
