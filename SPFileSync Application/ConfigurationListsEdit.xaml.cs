@@ -20,11 +20,15 @@ namespace SPFileSync_Application
     /// <summary>
     /// Interaction logic for ConfigurationListsEdit.xaml
     /// </summary>
+    //TODO [CR BT] : Please remove unused usings. Move them inside the namespace.
     public partial class ConfigurationListsEdit : Window
     {
+        //TODO [CR BT] : Private proprties should be named starting with "_".
+        //TODO [CR BT] : itemLists, items, itemsToRemove, countRemovedItems are not intuitive names, please rename them.
         List<ListWithColumnsName> itemLists;
         private ObservableCollection<ListWithColumnsName> items;
         private List<ListWithColumnsName> itemsToRemove = new List<ListWithColumnsName>();
+        //TODO [CR BT] : This seems and should to be a constant. 
         private int countRemovedItems = 0;       
         public ConfigurationListsEdit(List<ListWithColumnsName> list)
         {
@@ -58,7 +62,8 @@ namespace SPFileSync_Application
             window.Show();
             Hide();
         }
-
+        //TODO [CR BT] : Rename method. The method it's called "Save" but the logic is to remove an item.
+        //TODO [CR BT] : When you remove items from a list user for instead of foreach. Foreach will crush.
         private void Save(object sender, RoutedEventArgs e)
         {
 

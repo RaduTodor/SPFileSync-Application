@@ -17,6 +17,7 @@
     /// </summary>
     public class FileSynchronizer
     {
+        //TODO [CR RT] : Use capital letters for properties fileOperationProvider - > FileOperationProvider
         private FileOperationProvider fileOperationProvider { get; }
 
         private BaseListReferenceProvider listReferenceProvider { get; }

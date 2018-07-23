@@ -11,11 +11,13 @@ namespace SPFileSync_Application
     /// <summary>
     /// Interaction logic for ConfigurationWindow.xaml
     /// </summary>
+    //TODO [CR BT] : Move usings inside the namespace.
+    //TODO [CR BT] : Remove Window inheritance.
     public partial class ConfigurationWindow : Window
     {
 
         //Should i move the buttons logic in methods and move them into Business Logic Layer?
-
+        //TODO [CR BT] : Private proprties should be named starting with "_".
         private string path;
         private NotifyIcon notifyIcon = new NotifyIcon();
         private ConnectionConfiguration configuration;
@@ -37,6 +39,7 @@ namespace SPFileSync_Application
             path = folder.SelectedPath;
         }
 
+        //TODO [CR BT] : Create a model with all UI textboxes, send it to this method and move this logic into Business Layer. Create a class eg. ConfigurationValidator and add the method there.
         private bool ValidateAllFields()
         {
             bool input = false;
@@ -55,6 +58,8 @@ namespace SPFileSync_Application
             return input;
         }
 
+        //TODO [CR BT] : Duplicate code in catch. Extract class eg. NotifyUI and send corresponding parameters.
+        //TODO [CR BT] : Extract try logic and move it into Business Logic. Use the UI textboxes model created above and send it to this class. Split this logic in multiple methods. This logic is making two different operations: create a connection and add a list to configuration which will be serialized .
         private void Save(object sender, RoutedEventArgs e)
         {
             if (ValidateAllFields())

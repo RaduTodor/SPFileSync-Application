@@ -8,9 +8,12 @@ namespace SPFileSync_Application
     /// <summary>
     /// Interaction logic for Configurations.xaml
     /// </summary>
+    //TODO [CR BT] : Move usings inside the namespace.
     public partial class Configurations : Window
     {
+        //TODO [CR BT] : Private proprties should be named starting with "_".
         private List<ConnectionConfiguration> connections;
+        //TODO [CR BT] : 'items' is not an intuitive name, please rename it.
         private ObservableCollection<ConnectionConfiguration> items;
         public Configurations(List<ConnectionConfiguration> connectionConfigurations)
         {

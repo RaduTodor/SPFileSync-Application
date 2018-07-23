@@ -11,6 +11,7 @@
     /// </summary>
     public class ListReferenceManager
     {
+        //TODO [CR RT] : Use capital letters for properties connectionConfiguration - > ConnectionConfiguration
         private ConnectionConfiguration connectionConfiguration { get; }
 
         private ListReferenceProviderType providerType { get; }

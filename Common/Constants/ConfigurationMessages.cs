@@ -1,7 +1,9 @@
 ﻿namespace Common.Constants
 {
+    //TODO [CR BT] : A class only with constants should be static.
     public class ConfigurationMessages
     {
+        //TODO [CR BT] : Use capital letters for constants as you used for the last ones: comboBoxRest -> ComboBoxRest
         public const string comboBoxRest = "Rest";
 
         public const string comboBoxCsom = "Csom";

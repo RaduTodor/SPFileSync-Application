@@ -10,14 +10,19 @@ namespace SPFileSync_Application
     /// <summary>
     /// Interaction logic for EditConfigurationPanel.xaml
     /// </summary>
+    //TODO [CR BT] : Move usings inside the namespace.
+    //TODO [CR BT] : Remove Window inheritance.
     public partial class EditConfigurationPanel : Window
     {
+        //TODO [CR BT] : Private proprties should be named starting with "_".
         private ConnectionConfiguration configuration;
         private List<ConnectionConfiguration> configurations;
         private GeneralUI generalUI;
         private NotifyIcon notifyIcon = new NotifyIcon();       
         private string path="";
         Window window;
+
+        //TODO [CR BT] : Extract logic in multiple methods. 
         public EditConfigurationPanel(ConnectionConfiguration configurationItem,List<ConnectionConfiguration> configurations,Window window)
         {
             InitializeComponent();
@@ -45,7 +50,7 @@ namespace SPFileSync_Application
             window.Show();
             Close();
         }
-
+        //TODO [CR BT] : Create a model with all UI textboxes, send it to this method and move this logic into Business Layer. Create a class eg. ConfigurationValidator and add the method there.
         private bool ValidateAllFields()
         {
             bool input = false;
@@ -60,7 +65,8 @@ namespace SPFileSync_Application
             return input;
         }
 
-
+        //TODO [CR BT] : Duplicate code in catch. Extract class eg. NotifyUI and send corresponding parameters.
+        //TODO [CR BT] : Extract try logic and move it into Business Logic. Use the UI textboxes model created above and send it to this class. 
         private void Save(object sender, RoutedEventArgs e)
         {
             try
@@ -82,6 +88,7 @@ namespace SPFileSync_Application
                     }
                     else
                     {
+                        //TODO [CR BT] : Extract constant
                         generalUI.DisplayWarning(syncLabel, "Invalid value");
                     }
                 }                              
@@ -97,7 +104,7 @@ namespace SPFileSync_Application
                 Common.Helpers.MyLogger.Logger.Debug(webException);
             }
         }
-
+        //TODO [CR BT] : Remove unused variable "result".
         private void SetFileDestination(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog folder = new FolderBrowserDialog();

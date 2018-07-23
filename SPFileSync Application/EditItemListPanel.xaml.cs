@@ -18,8 +18,11 @@ namespace SPFileSync_Application
     /// <summary>
     /// Interaction logic for EditItemListPanel.xaml
     /// </summary>
+    //TODO [CR BT] : Move usings inside the namespace.
+    //TODO [CR BT] : Remove Window inheritance.
     public partial class EditItemListPanel : Window
     {
+        //TODO [CR BT] : Private proprties should be named starting with "_".
         private GeneralUI generalUI = new GeneralUI();
         private ListWithColumnsName itemToDisplay;
         private Window window;

@@ -17,6 +17,7 @@ namespace DataAccessLayer
     /// </summary>
     public class MetadataProvider
     {
+        //TODO [CR RT] : Use capital letters for properties connectionConfigurations - > ConnectionConfigurations
         private ConnectionConfiguration connectionConfiguration { get; }
 
         private const string Entry = "entry";

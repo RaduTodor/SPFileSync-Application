@@ -14,6 +14,7 @@ using System.Windows.Forms;
 
 namespace SPFileSync_Application
 {
+    //TODO [CR BT] :  Single Responsability principal violated. Remove this class because it's doing a lot of different operations which can be moved to existing/new classes. Even the name of the class it's show us that a lot of different things are made here.
     public class GeneralUI
     {
         //Should i move it to Business Logic Layer?
@@ -29,7 +30,7 @@ namespace SPFileSync_Application
         {
 
         }
-
+        //TODO [CR BT] : Methods should start with Capital letter. Move this into another class in Configuration DLL.
         public static void checkConfiguration(ConnectionConfiguration configuration)
         {
             if (configuration == null)
@@ -41,15 +42,17 @@ namespace SPFileSync_Application
                 configuration.ListsWithColumnsNames = new List<ListWithColumnsName>();
             }
         }
-
+        //TODO [CR BT] : Extract method into another class in Common. Check if there is no existing class where you can move this method.
         public static string GetResourcesFolder(string wantedResource)
         {
             var path = Directory.GetCurrentDirectory();
+            //TODO [CR BT] :Extract constant
             var removeSegment = path.IndexOf("bin");
             var resourceFolderPath = $@"{path.Remove(removeSegment)}{wantedResource}";
             return resourceFolderPath;
         }
-
+        //TODO [CR BT] : Extract this method into another class eg. ConfigurationValidator  which should be created.
+        //TODO [CR BT] : Rename method to eg. ValidateField
         public bool FieldValidation(string data, System.Windows.Controls.Label displayError)
         {
             bool verifyData = true;
@@ -60,7 +63,8 @@ namespace SPFileSync_Application
             }
             return verifyData;
         }
-
+        //TODO [CR BT] : Extract method into another class in Common class eg. NotifyUI created above.
+        //TODO [CR BT] : Rename Interval -> interval
         public void DisplayWarning(System.Windows.Controls.Label label, string message, int Interval = 2000)
         {
             System.Timers.Timer timer = new System.Timers.Timer();
@@ -75,6 +79,7 @@ namespace SPFileSync_Application
             timer.Start();
         }
 
+        //TODO [CR BT] : Extract method into another class eg. NotifyUI which should be created.
         public void NotifyError(NotifyIcon notifyIcon, string notificationTitle, string notificationMessage)
         {
             notifyIcon.BalloonTipTitle = notificationTitle;
@@ -88,13 +93,14 @@ namespace SPFileSync_Application
             notifyIcon.Click += NotifyIconClick;
             notifyIcon.Text = notificationMessage;
         }
-
+        //TODO [CR BT] : Extract method into another class eg. NotifyUI which should be created.
         private void NotifyIconClick(object sender, EventArgs e)
         {
             window.Show();
             window.WindowState = WindowState.Normal;
         }
 
+        //TODO [CR BT] : Extract method into another class eg. NotifyUI which should be created.
         public void AddToListButton(string logMessage)
         {
             errors.AddItem(logMessage);

@@ -14,16 +14,21 @@ namespace SPFileSync_Application
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
-
+    //TODO [CR BT] : Move usings inside the namespace.
+    //TODO [CR BT] : Remove Window inheritance.
     public partial class MainWindow : Window
     {
+        //TODO [CR BT] : Private proprties should be named starting with "_".
         List<ConnectionConfiguration> connectionConfigurations = new List<ConnectionConfiguration>();
+        //TODO [CR BT] : Extract logic into multiple methods. eg. logic regarding NofityIcon should be extracted into another method.
         public MainWindow()
         {
             InitializeComponent();            
             configComboBox.Items.Add(ConfigurationMessages.comboBoxRest);
-            configComboBox.Items.Add(ConfigurationMessages.comboBoxCsom);                     
+            configComboBox.Items.Add(ConfigurationMessages.comboBoxCsom);
+            //TODO [CR BT] : Remove unused variable                  
             GeneralUI uIFunctions = new GeneralUI(this);
+            //TODO [CR BT] : Rename ni variable
             NotifyIcon ni = new NotifyIcon();
             ni.Icon = new Icon(GeneralUI.GetResourcesFolder(ConfigurationMessages.ResourceFolderAppIcon));
             ni.Visible = true;
@@ -63,7 +68,9 @@ namespace SPFileSync_Application
             window.Show();          
         }
 
-       public static Common.ApplicationEnums.ListReferenceProviderType GetProviderType(string choice)
+        //TODO [CR BT] : Please make this method private.
+        //TODO [CR BT] : Use switch instead of multiple if. If there are 20 values for this Enum how you should proceed?
+        public static Common.ApplicationEnums.ListReferenceProviderType GetProviderType(string choice)
         {
             if(choice == ConfigurationMessages.comboBoxRest)
             {

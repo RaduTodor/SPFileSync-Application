@@ -13,6 +13,7 @@ namespace BusinessLogicLayer
     /// </summary>
     public class FilesManager
     {
+        //TODO [CR RT] : Use capital letters for properties connectionConfigurations - > ConnectionConfigurations
         private List<ConnectionConfiguration> connectionConfigurations { get; }
 
         private ListReferenceProviderType providerType { get; }
