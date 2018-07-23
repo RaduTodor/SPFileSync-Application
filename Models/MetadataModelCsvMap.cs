@@ -1,8 +1,9 @@
 ﻿namespace Models
 {
     using Common.Constants;
+    using CsvHelper.Configuration;
 
-    public sealed class MetadataModelCsvMap : CsvHelper.Configuration.ClassMap<MetadataModel>
+    public sealed class MetadataModelCsvMap : ClassMap<MetadataModel>
     {
         public MetadataModelCsvMap()
         {

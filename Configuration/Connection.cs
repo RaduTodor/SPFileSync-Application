@@ -7,6 +7,7 @@
     using System.Xml.Serialization;
     using Common.Constants;
     using Common.Exceptions;
+    using Common.Helpers;
     using Microsoft.SharePoint.Client;
     using Models;
 
@@ -87,9 +88,11 @@
                         }
                         catch (Exception exception)
                         {
-                            throw new ClientContextOperationException(
+                            Exception currentException = new ClientContextOperationException(
                                 DefaultExceptionMessages.ClientContextOperationExceptionMessage,
                                 exception);
+                            MyLogger.Logger.Error(currentException, currentException.Message);
+                            throw currentException;
                         }
 
                         return clientContext.Web.CurrentUser.Id;
@@ -98,8 +101,11 @@
             }
             catch (Exception exception)
             {
-                throw new CurrentUserIdUnaccesibleException(DefaultExceptionMessages.CurrentUserExceptionMessage,
+                Exception currentException = new CurrentUserIdUnaccesibleException(
+                    DefaultExceptionMessages.CurrentUserExceptionMessage,
                     exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
 
             return -1;
@@ -114,7 +120,10 @@
             }
             catch (Exception exception)
             {
-                throw new LoginException(DefaultExceptionMessages.LoginExceptionMessage, exception);
+                Exception currentException =
+                    new LoginException(DefaultExceptionMessages.LoginExceptionMessage, exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
         }
     }

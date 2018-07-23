@@ -1,11 +1,11 @@
 ﻿namespace Common.Helpers
 {
-    using Common.Constants;
-    using System.Linq;
     using System;
+    using System.Linq;
+    using Constants;
 
     /// <summary>
-    /// This static class has some useful Parsing methods
+    ///     This static class has some useful Parsing methods
     /// </summary>
     public static class ParsingHelpers
     {
@@ -14,7 +14,7 @@
         private const string Space = " ";
 
         /// <summary>
-        /// From an url get the last part (filename...with extension)
+        ///     From an url get the last part (filename...with extension)
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
@@ -25,7 +25,7 @@
         }
 
         /// <summary>
-        /// Returns the Parent Directory of an url file
+        ///     Returns the Parent Directory of an url file
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>

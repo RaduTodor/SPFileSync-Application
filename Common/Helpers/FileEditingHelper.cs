@@ -1,31 +1,30 @@
 ﻿namespace Common.Helpers
 {
+    using System;
     using System.IO;
     using System.Security.AccessControl;
     using System.Security.Principal;
-    using System;
-    using Common.Constants;
-    using Common.Exceptions;
-
+    using Constants;
+    using Exceptions;
 
     /// <summary>
-    /// Useful methods for File interaction
+    ///     Useful methods for File interaction
     /// </summary>
     public static class FileEditingHelper
     {
         /// <summary>
-        /// Makes sure that a file (by filepath) it's existing and grants access to it's directory
+        ///     Makes sure that a file (by filepath) it's existing and grants access to it's directory
         /// </summary>
         /// <param name="filePath"></param>
-        /// <param name="DirectoryPath"></param>
-        public static void CreateAccesibleFile(string filePath,string DirectoryPath)
+        /// <param name="directoryPath"></param>
+        public static void CreateAccesibleFile(string filePath, string directoryPath)
         {
             try
             {
                 if (!File.Exists(filePath))
                 {
-                    Directory.CreateDirectory(DirectoryPath);
-                    var info = new DirectoryInfo(DirectoryPath);
+                    Directory.CreateDirectory(directoryPath);
+                    var info = new DirectoryInfo(directoryPath);
                     var security = info.GetAccessControl();
                     security.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().Name,
                         FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None,
@@ -41,9 +40,11 @@
             }
             catch (Exception exception)
             {
-                throw new CreateFileException(DefaultExceptionMessages.CreateFileExceptionMessage, exception);
+                Exception currentException =
+                    new CreateFileException(DefaultExceptionMessages.CreateFileExceptionMessage, exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
             }
-
         }
     }
 }

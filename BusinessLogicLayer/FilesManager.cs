@@ -35,7 +35,7 @@
                     var fileSync = new FileSynchronizer(connection, ProviderType);
                     fileSync.ExceptionUpdate += (sender, exception) =>
                     {
-                        //SOMETHING
+                        //Notify with bubble
                     };
                     Task.Run(() => fileSync.Synchronize());
                 }
@@ -43,7 +43,7 @@
                 {
                     MyLogger.Logger.Error(exception, exception.Message);
                     {
-                        //Same SOMETHING
+                        //Notify with bubble
                     }
                 }
         }

@@ -1,13 +1,13 @@
 ﻿namespace DataAccessLayer
 {
-    using Configuration;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Common.Constants;
+    using Configuration;
 
     /// <summary>
-    /// It's the base of a ListReferenceProvider
+    ///     It's the base of a ListReferenceProvider
     /// </summary>
     public abstract class BaseListReferenceProvider
     {
@@ -20,7 +20,7 @@
         public abstract void ChangeListReferenceItem(Uri uri, int itemId, string listName);
 
         /// <summary>
-        /// Creates the querry needed for a new ReferenceListItem to be made
+        ///     Creates the querry needed for a new ReferenceListItem to be made
         /// </summary>
         /// <param name="listName"></param>
         /// <param name="uri"></param>
@@ -29,11 +29,12 @@
         {
             var url = uri.AbsoluteUri;
             var listWithColumn = ConnectionConfiguration.ListsWithColumnsNames.First(list => list.ListName == listName);
-            return string.Format(ApiConstants.NewReferenceItem, listName, listWithColumn.UrlColumnName, url, url, listWithColumn.UserColumnName, ConnectionConfiguration.Connection.GetCurrentUserId());
+            return string.Format(ApiConstants.NewReferenceItem, listName, listWithColumn.UrlColumnName, url, url,
+                listWithColumn.UserColumnName, ConnectionConfiguration.Connection.GetCurrentUserId());
         }
 
         /// <summary>
-        /// Returns the ModifiedDate of an listItem based on it's url
+        ///     Returns the ModifiedDate of an listItem based on it's url
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
@@ -44,7 +45,7 @@
         }
 
         /// <summary>
-        /// Gets all urls from all ReferenceListItem of CurrentUser
+        ///     Gets all urls from all ReferenceListItem of CurrentUser
         /// </summary>
         /// <returns></returns>
         public List<string> GetCurrentUserUrls()
