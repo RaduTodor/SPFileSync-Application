@@ -21,6 +21,7 @@ namespace SPFileSync_Application
 
         private Window window;
         private Common.Helpers.ObservableHashSet<string> errors = new Common.Helpers.ObservableHashSet<string>();
+
         public GeneralUI(Window window)
         {
             this.window = window;

@@ -4,22 +4,109 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SPFileSync_Application"
+        xmlns:local1="clr-namespace:Models;assembly=Models"
         mc:Ignorable="d"
         Title="ListWithColumns" Height="300" Width="350">
     <Window.Background>
         <ImageBrush ImageSource="/Utils/background.jpg"></ImageBrush>
     </Window.Background>
+    
+    <Window.Resources>
+        <local1:ConfigurationWindowModel x:Key="CWM"></local1:ConfigurationWindowModel>
+        <local1:SyncTimeValidator x:Key="STV"/>
+        <ControlTemplate x:Key="validationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
+
+        <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+              Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                              Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PasswordInError" TargetType="{x:Type PasswordBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+              Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                              Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
-        <Button Content="Ok" HorizontalAlignment="Left" Margin="38,222,0,0" VerticalAlignment="Top" Width="75" Click="ConfirmList"/>
+        <Button Content="Ok" HorizontalAlignment="Left" Margin="38,222,0,0" VerticalAlignment="Top" Width="75" Click="ConfirmList">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Text.Length, ElementName=userColumnTextBox, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </MultiDataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Text.Length, ElementName=urlColumnTextBox, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </MultiDataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Text.Length, ElementName=listTextBox, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="208,222,0,0" VerticalAlignment="Top" Width="75" Click="CancelList"/>
-        <Label Content="List Url" HorizontalAlignment="Left" Margin="38,67,0,0" VerticalAlignment="Top" Foreground="White" Width="61" Height="24"/>
-        <Label Content="Url Column" HorizontalAlignment="Left" Margin="29,105,0,0" VerticalAlignment="Top" Foreground="White"/>
+        <Label Content="List Name" HorizontalAlignment="Left" Margin="38,67,0,0" VerticalAlignment="Top" Foreground="White" Width="61" Height="24"/>
+        <Label Content="Url Column" HorizontalAlignment="Left" Margin="29,113,0,0" VerticalAlignment="Top" Foreground="White"/>
         <Label Content="UserColumn" HorizontalAlignment="Left" Margin="29,163,0,0" VerticalAlignment="Top" Foreground="White"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="109,67,0,0" TextWrapping="Wrap" Text="SyncList" Name="listTextBox" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="109,115,0,0" TextWrapping="Wrap" Text="Url" VerticalAlignment="Top" Name="urlColumnTextBox" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="109,163,0,0" TextWrapping="Wrap" Text="User" VerticalAlignment="Top" Name="userColumnTextBox" Width="120"/>
-        <Label HorizontalAlignment="Left" Margin="109,90,0,0" VerticalAlignment="Top" Width="120" Foreground="White" Name="listUrlError" Height="20"/>
-        <Label HorizontalAlignment="Left" Margin="109,137,0,0" VerticalAlignment="Top" Width="120" Foreground="White" Name="urlColumnError" Height="21"/>
-        <Label HorizontalAlignment="Left" Margin="109,186,0,0" VerticalAlignment="Top" Width="120" Foreground="White" Name="userColumnError" Height="20"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="109,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Name="listTextBox"  Validation.ErrorTemplate="{StaticResource validationTemplate}"
+             Style="{StaticResource TextBoxInError}">
+            <TextBox.Text>
+                <Binding Path="ListName" Source="{StaticResource CWM}"
+                 UpdateSourceTrigger="PropertyChanged" >
+                    <Binding.ValidationRules>
+                        <local1:ConfigurationWindowModel/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="109,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Name="urlColumnTextBox"  Validation.ErrorTemplate="{StaticResource validationTemplate}"
+             Style="{StaticResource TextBoxInError}">
+            <TextBox.Text>
+                <Binding Path="UrlColumn" Source="{StaticResource CWM}"
+                 UpdateSourceTrigger="PropertyChanged" >
+                    <Binding.ValidationRules>
+                        <local1:ConfigurationWindowModel/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="109,163,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Name="userColumnTextBox"  Validation.ErrorTemplate="{StaticResource validationTemplate}"
+             Style="{StaticResource TextBoxInError}">
+            <TextBox.Text>
+                <Binding Path="UserColumn" Source="{StaticResource CWM}"
+                 UpdateSourceTrigger="PropertyChanged" >
+                    <Binding.ValidationRules>
+                        <local1:ConfigurationWindowModel/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
     </Grid>
 </Window>

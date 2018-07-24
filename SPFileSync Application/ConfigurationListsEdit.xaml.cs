@@ -8,11 +8,9 @@ namespace SPFileSync_Application
     using System.Windows;
     public partial class ConfigurationListsEdit
     {
-        List<ListWithColumnsName> _selectedConfigLists;
-        //private ObservableCollection<ListWithColumnsName> _observableSelectedconfigLists;
+        List<ListWithColumnsName> _selectedConfigLists;      
         private ObservableCollection<string> _observableSelectedconfigListsName = new ObservableCollection<string>();
         private List<ListWithColumnsName> _removedListsOfConfig = new List<ListWithColumnsName>();
-        private ListWithColumnsName _listItem = new ListWithColumnsName();
         private int _selectedItemIndex;
         //TODO [CR BT] : This seems and should to be a constant.
         private int countRemovedSelectedListItems = 0;
@@ -21,7 +19,6 @@ namespace SPFileSync_Application
         {
             InitializeComponent();
             _selectedConfigLists = list;
-           // _observableSelectedconfigLists = new ObservableCollection<ListWithColumnsName>(_selectedConfigLists);
             _observableSelectedconfigListsName.CollectionChanged += ItemsCollectionChanged;
             GetListsNames();
             itemListBox.ItemsSource = _observableSelectedconfigListsName;
@@ -55,7 +52,6 @@ namespace SPFileSync_Application
 
         private void RemoveItemList(object sender, RoutedEventArgs e)
         {
-            //ListWithColumnsName selectedConfig = (ListWithColumnsName)itemListBox.SelectedItem;
             _selectedItemIndex = itemListBox.SelectedIndex;
             _observableSelectedconfigListsName.Remove((string)itemListBox.SelectedItem);
             _removedListsOfConfig.Add(_selectedConfigLists[_selectedItemIndex]);
@@ -63,8 +59,7 @@ namespace SPFileSync_Application
 
         private void EditItemList(object sender, RoutedEventArgs e)
         {
-            _selectedItemIndex = itemListBox.SelectedIndex;
-            _listItem = _selectedConfigLists[_selectedItemIndex];
+            _selectedItemIndex = itemListBox.SelectedIndex;            
             var selectedConfigList = _selectedConfigLists[_selectedItemIndex];
             EditItemListPanel window = new EditItemListPanel(selectedConfigList, this);
             window.Show();
@@ -82,17 +77,13 @@ namespace SPFileSync_Application
 
         private void Close(object sender, RoutedEventArgs e)
         {
-            _selectedConfigLists[_selectedItemIndex] = _listItem;
             Close();
         }
 
         private void Add(object sender, RoutedEventArgs e)
         {
-
-            ListWithColumns window = new ListWithColumns(_selectedConfigLists, _observableSelectedconfigListsName);
-            // GetListsNames();
-            window.Show();
-            // _observableSelectedconfigListsName.Add(_selectedConfigLists[_selectedConfigLists.Count-1].ListName);
+            ListWithColumns window = new ListWithColumns(_selectedConfigLists, _observableSelectedconfigListsName);         
+            window.Show();          
         }
     }
 }

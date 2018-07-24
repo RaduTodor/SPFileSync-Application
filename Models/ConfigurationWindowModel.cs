@@ -1,30 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿
 
 namespace Models
 {
-    public class ConfigurationWindowModel:ValidationRule
-    {
-        public string SyncBoxValidation { get; set; }
-        public string PathValidation { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string SiteUrl { get; set; }
-        public string ListUrl { get; set; }
-        public string UrlColumn { get; set; }
-        public string UserColumn { get; set; }
+    using System.Globalization;
+    using System.Windows.Controls;
 
+    public class ConfigurationWindowModel : ValidationRule
+    {      
+        public string UserName { get; set; } = "username";
+        public string Password { get; set; } = "pass123";
+        public string SiteUrl { get; set; } = "http://sp2013dc/sites/iship/";
+        public string ListName { get; set; } = "SyncList";
+        public string UrlColumn { get; set; } = "URL";
+        public string UserColumn { get; set; } = "User";
+   
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if(value == null)
+            if (string.IsNullOrEmpty(value.ToString()))
             {
                 return new ValidationResult(false, Common.Constants.ConfigurationMessages.EmptyField);
+            }
+            int intValue = 0;
+            var checkIfInteger = int.TryParse(value.ToString(),out intValue);
+            if(checkIfInteger && intValue <=0)
+            {
+                return new ValidationResult(false,Common.Constants.ConfigurationMessages.InvalidValue);
             }
 
             return ValidationResult.ValidResult;
