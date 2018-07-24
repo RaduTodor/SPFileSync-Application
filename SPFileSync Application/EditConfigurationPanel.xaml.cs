@@ -15,12 +15,14 @@ namespace SPFileSync_Application
         private GeneralUI _generalUI;
         private NotifyIcon _notifyIcon = new NotifyIcon();
         private string _path = "";
+        private List<ConnectionConfiguration> _initialConfigurations;
         Window _window;
 
         public EditConfigurationPanel(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
         {
             InitializeComponent();
             InitializeFields(configurationItem, configurations, window);
+            _initialConfigurations = new List<ConnectionConfiguration>(_configurations);
             UpdateUI();
         }
 
@@ -41,6 +43,7 @@ namespace SPFileSync_Application
             syncTextBox.Text = _configuration.SyncTimeSpan.TotalMinutes.ToString();
             userNameTextBox.Text = _configuration.Connection.Credentials.UserName;
             passwordText.Password = _configuration.Connection.Credentials.Password;
+            pathLabel.Content = _configuration.DirectoryPath;
         }
 
         private void ListEdit(object sender, RoutedEventArgs e)
@@ -51,23 +54,13 @@ namespace SPFileSync_Application
 
         private void Cancel(object sender, RoutedEventArgs e)
         {
+            _configurations = new List<ConnectionConfiguration>(_initialConfigurations);
             _window.Show();
             Close();
         }
-        //!TODO [CR BT] : Create a model with all UI textboxes, send it to this method and move this logic into Business Layer. Create a class eg. ConfigurationValidator and add the method there.
-        private bool ValidateAllFields()
-        {
-            bool input = false;
-            var syncBoxValidation = _generalUI.FieldValidation(syncTextBox.Text, syncLabel);
-            var userName = _generalUI.FieldValidation(userNameTextBox.Text, userNameErrorLabel);
-            var password = _generalUI.FieldValidation(passwordText.Password, passwordErrorLabel);
-            var siteUrl = _generalUI.FieldValidation(siteUrlBox.Text, siteErrorLabel);
-            if (syncBoxValidation && userName && password && siteUrl)
-            {
-                input = true;
-            }
-            return input;
-        }
+
+
+
 
         //TODO [CR BT] : Duplicate code in catch. Extract class eg. NotifyUI and send corresponding parameters.
         //TODO [CR BT] : Extract try logic and move it into Business Logic. Use the UI textboxes model created above and send it to this class. 
@@ -75,26 +68,17 @@ namespace SPFileSync_Application
         {
             try
             {
-                if (ValidateAllFields())
-                {
-                    double minutes = 0;
-                    var checkSyncTime = double.TryParse(syncTextBox.Text, out minutes);
-                    if (checkSyncTime)
-                    {
-                        Connection connection = new Connection() { Credentials = new Models.Credentials { UserName = userNameTextBox.Text, Password = passwordText.Password }, Uri = new Uri(siteUrlBox.Text) };
-                        _configuration.Connection = connection;
-                        _configuration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);
-                        _configuration.Connection.Login();
-                        _configuration.DirectoryPath = _path;
-                        Common.Helpers.XmlFileManipulator.Serialize(_configurations);
-                        _window.Show();
-                        Close();
-                    }
-                    else
-                    {
-                        _generalUI.DisplayWarning(syncLabel, Common.Constants.ConfigurationMessages.InvalidValue);
-                    }
-                }
+                double minutes = 0;
+                var checkSyncTime = double.TryParse(syncTextBox.Text, out minutes);
+                Connection connection = new Connection() { Credentials = new Models.Credentials { UserName = userNameTextBox.Text, Password = passwordText.Password }, Uri = new Uri(siteUrlBox.Text) };
+                _configuration.Connection = connection;
+                _configuration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);
+                _configuration.Connection.Login();
+                _configuration.DirectoryPath = _path;
+                Common.Helpers.XmlFileManipulator.Serialize(_configurations);
+                _window.Show();
+                Close();
+
             }
             catch (UriFormatException uriException)
             {
@@ -112,6 +96,7 @@ namespace SPFileSync_Application
         private void SetFileDestination(object sender, RoutedEventArgs e)
         {
             _path = Common.Helpers.PathConfiguration.SetPath(_configuration.DirectoryPath);
+            pathLabel.Content = _path;
         }
     }
 }

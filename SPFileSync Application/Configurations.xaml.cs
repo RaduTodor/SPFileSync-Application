@@ -41,11 +41,9 @@ namespace SPFileSync_Application
         }
 
         private void Remove(object sender, RoutedEventArgs e)
-        {
-            //  ConnectionConfiguration selectedConfig = (ConnectionConfiguration)allConfigsList.SelectedItem;
-            _configurationsName.Remove((string)allConfigsList.SelectedItem);
-            //_connections.Remove(selectedConfig);
+        {                                
             _connections.RemoveAt(allConfigsList.SelectedIndex);
+            _configurationsName.Remove((string)allConfigsList.SelectedItem);
             Common.Helpers.XmlFileManipulator.Serialize(_connections);
         }
     }

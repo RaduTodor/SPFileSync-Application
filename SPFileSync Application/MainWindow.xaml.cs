@@ -11,6 +11,7 @@ namespace SPFileSync_Application
     using System;
     using BusinessLogicLayer;
     using Common.Constants;
+    using System.ComponentModel;
 
     public partial class MainWindow 
     {
@@ -41,6 +42,12 @@ namespace SPFileSync_Application
         {
             configComboBox.Items.Add(ConfigurationMessages.ComboBoxRest);
             configComboBox.Items.Add(ConfigurationMessages.ComboBoxCsom);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Environment.Exit(1);
+            base.OnClosing(e);
         }
 
         protected override void OnStateChanged(EventArgs e)

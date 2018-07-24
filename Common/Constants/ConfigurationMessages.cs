@@ -3,7 +3,6 @@
 
     public static class ConfigurationMessages
     {
-        //TODO [CR BT] : Use capital letters for constants as you used for the last ones: comboBoxRest -> ComboBoxRest
         public const string ComboBoxRest = "Rest";
 
         public const string ComboBoxCsom = "Csom";
@@ -25,7 +24,6 @@
         public const string EmptyField = "Empty field";
 
         public const string InvalidValue = "Invalid Value";
-
 
     }
 }
