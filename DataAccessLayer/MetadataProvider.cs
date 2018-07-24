@@ -98,27 +98,37 @@
         ///     Calls GetAllUrlsInResponse
         /// </summary>
         /// <returns></returns>
-        public List<string> GetCurrentUserUrls()
+        public List<string> GetCurrentUserUrls(EventHandler<Exception> exceptionHandler)
         {
             try
             {
                 var allUrlsOfCurrentUser = new List<string>();
                 foreach (var listWithColumnsName in ConnectionConfiguration.ListsWithColumnsNames)
                 {
-                    var endpointResponse = GetHttpWebResponse(string.Format(ApiConstants.SpecificListItemsOfUserApi,
-                        listWithColumnsName.ListName,
-                        listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
-                        ConnectionConfiguration.Connection.GetCurrentUserName()));
-
-                    using (var stream = endpointResponse.GetResponseStream())
+                    try
                     {
-                        if (stream != null)
-                            using (var sr = new StreamReader(stream, Encoding.UTF8))
-                            {
-                                var result = sr.ReadToEnd().Trim();
-                                allUrlsOfCurrentUser.AddRange(GetAllUrlsInResponse(result,
-                                    listWithColumnsName.UrlColumnName));
-                            }
+                        var endpointResponse = GetHttpWebResponse(string.Format(ApiConstants.SpecificListItemsOfUserApi,
+                            listWithColumnsName.ListName,
+                            listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
+                            ConnectionConfiguration.Connection.GetCurrentUserName()));
+
+                        using (var stream = endpointResponse.GetResponseStream())
+                        {
+                            if (stream != null)
+                                using (var sr = new StreamReader(stream, Encoding.UTF8))
+                                {
+                                    var result = sr.ReadToEnd().Trim();
+                                    allUrlsOfCurrentUser.AddRange(GetAllUrlsInResponse(result,
+                                        listWithColumnsName.UrlColumnName));
+                                }
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Exception currentException =
+                            new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
+                        MyLogger.Logger.Error(currentException, currentException.Message);
+                        exceptionHandler?.Invoke(this,currentException);
                     }
                 }
 

@@ -10,25 +10,26 @@ namespace SPFileSync_Application
     public partial class ListWithColumns 
     {
         private List<ListWithColumnsName> _addListsToConfiguration;
-        private ObservableCollection<string> myObservableCollection;
+        private ObservableCollection<string> _meinObservableCollection;
         public ListWithColumns(List<ListWithColumnsName> list)
         {
             InitializeComponent();
-            _addListsToConfiguration = list;            
+            _addListsToConfiguration = list;   
+            _meinObservableCollection = new ObservableCollection<string>();
         }
 
         public ListWithColumns(List<ListWithColumnsName> list,ObservableCollection<string> observableCollection)
         {
             InitializeComponent();
             _addListsToConfiguration = list;
-            myObservableCollection = observableCollection;
+            _meinObservableCollection = observableCollection;
         }
 
         private void ConfirmList(object sender, RoutedEventArgs e)
         {
             ListWithColumnsName list = new ListWithColumnsName() { ListName = listTextBox.Text, UrlColumnName = urlColumnTextBox.Text, UserColumnName = userColumnTextBox.Text };
             _addListsToConfiguration.Add(list);
-            myObservableCollection.Add(list.ListName);
+            _meinObservableCollection.Add(list.ListName);
             this.Close();
         }
 

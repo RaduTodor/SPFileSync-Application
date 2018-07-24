@@ -19,11 +19,12 @@
     {
         private const string Backslash = "\\";
 
-        public FileSynchronizer(ConnectionConfiguration configuration, ListReferenceProviderType type)
+        public FileSynchronizer(ConnectionConfiguration configuration, ListReferenceProviderType type, int count)
         {
             FileOperationProvider = new FileOperationProvider(configuration);
             ListReferenceProvider = OperationsFactory.GetOperations(type);
             ListReferenceProvider.ConnectionConfiguration = configuration;
+            ConfigurationNumber = count;
         }
 
         private FileOperationProvider FileOperationProvider { get; }
@@ -32,6 +33,9 @@
 
         public event EventHandler<Exception> ExceptionUpdate;
 
+        public event EventHandler<int> ProgressUpdate;
+
+        public int ConfigurationNumber { get; set; }
 
         /// <summary>
         ///     Gets sharepoint listReferenceItems, compares with the local infos, downloads if case and writes the modified infos
@@ -52,11 +56,14 @@
                         ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
                         ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
                     currentData);
+                ProgressUpdate?.Invoke(this, ConfigurationNumber);
+
             }
             catch (Exception exception)
             {
                 MyLogger.Logger.Error(exception);
                 ExceptionUpdate?.Invoke(this, exception);
+                ProgressUpdate?.Invoke(this, ConfigurationNumber);
             }
         }
 
@@ -108,7 +115,7 @@
         private List<MetadataModel> GetUserUrlsWithDate()
         {
             var metadatas = new List<MetadataModel>();
-            var userUrLs = ListReferenceProvider.GetCurrentUserUrls();
+            var userUrLs = ListReferenceProvider.GetCurrentUserUrls(ExceptionUpdate);
             foreach (var url in userUrLs)
             {
                 var dateTime = ListReferenceProvider.GetMetadataItem(url);

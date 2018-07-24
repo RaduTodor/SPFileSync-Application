@@ -9,18 +9,28 @@ namespace SPFileSync_Application
     using System.IO;
     using System.Drawing;
     using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Windows.Forms.VisualStyles;
     using BusinessLogicLayer;
     using Common.Constants;
 
-    public partial class MainWindow 
+    public partial class MainWindow
     {
-        private List<ConnectionConfiguration> _connectionConfigurations = new List<ConnectionConfiguration>();       
+        private List<ConnectionConfiguration> _connectionConfigurations = new List<ConnectionConfiguration>();
+
         public MainWindow()
         {
             InitializeComponent();
             PopulateUIComboBox();
             ApplicationIcon();
             _connectionConfigurations = Common.Helpers.XmlFileManipulator.Deserialize<ConnectionConfiguration>();
+            if (_connectionConfigurations.Count == 0)
+            {
+                SyncButton.IsEnabled = false;
+            }
+
+            WaitSync.Visibility = Visibility.Hidden;
         }
 
         private void ApplicationIcon()
@@ -30,11 +40,17 @@ namespace SPFileSync_Application
             notification.Visible = true;
             notification.Text = ConfigurationMessages.AppName;
             notification.DoubleClick +=
-                delegate (object sender, EventArgs args)
+                delegate(object sender, EventArgs args)
                 {
                     this.Show();
                     this.WindowState = WindowState.Normal;
                 };
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            Environment.Exit(1);
+            base.OnClosed(e);
         }
 
         private void PopulateUIComboBox()
@@ -52,23 +68,43 @@ namespace SPFileSync_Application
 
         private void AddConfig(object sender, RoutedEventArgs e)
         {
-            ConfigurationWindow window = new ConfigurationWindow(_connectionConfigurations);
+            ConfigurationWindow window = new ConfigurationWindow(_connectionConfigurations, this);
             window.Show();
         }
 
         private void Sync(object sender, RoutedEventArgs e)
         {
-            FilesManager fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()));
-            fileManager.Synchronize();
+            SyncButton.IsEnabled = false;
+            WaitSync.Visibility = Visibility.Visible;
+            Verdicts verdicts = new Verdicts();
+            FilesManager fileManager = new FilesManager(_connectionConfigurations,
+                GetProviderType(configComboBox.SelectedItem.ToString()));
+            fileManager.Synchronize(verdicts);
+
+            SyncProgressProvider syncProgressProvider = new SyncProgressProvider();
+            syncProgressProvider.ProgressUpdate += (s, verdict) =>
+            {
+                this.Dispatcher.Invoke(()=>SetSyncButtonTrue());
+            };
+            Task.Run(() =>
+            {
+                syncProgressProvider.Operation(syncProgressProvider,verdicts);               
+            });
+        }
+
+        private void SetSyncButtonTrue()
+        {
+            SyncButton.IsEnabled = true;
+            WaitSync.Visibility = Visibility.Hidden;
         }
 
         private void SeeConfigurations(object sender, RoutedEventArgs e)
         {
             _connectionConfigurations = Common.Helpers.XmlFileManipulator.Deserialize<ConnectionConfiguration>();
-            Configurations window = new Configurations(_connectionConfigurations);
+            Configurations window = new Configurations(_connectionConfigurations, this);
             window.Show();
         }
-      
+
         private static Common.ApplicationEnums.ListReferenceProviderType GetProviderType(string choice)
         {
             switch (choice)

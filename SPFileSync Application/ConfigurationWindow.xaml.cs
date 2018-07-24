@@ -17,13 +17,15 @@ namespace SPFileSync_Application
         private ConnectionConfiguration _configuration;
         private GeneralUI _generalUI;
         private List<ConnectionConfiguration> _configurations;
-        public ConfigurationWindow(List<ConnectionConfiguration> connectionConfigurations)
+        private MainWindow mainWindow;
+        public ConfigurationWindow(List<ConnectionConfiguration> connectionConfigurations, MainWindow window)
         {
             InitializeComponent();
             _generalUI = new GeneralUI(this);
             configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxRest);
             configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxCsom);
             _configurations = connectionConfigurations;
+            mainWindow = window;
         }
 
         private void SetFileDestination(object sender, RoutedEventArgs e)
@@ -62,6 +64,7 @@ namespace SPFileSync_Application
                     var minutes = int.Parse(syncTextBox.Text);
                     connection.Login();
                     GeneralUI.checkConfiguration( ref _configuration);
+                    connection.Credentials.UserName = connection.GetUserWithDomain();
                     _configuration.Connection = connection;
                     _configuration.DirectoryPath = _path;
                     _configuration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);
@@ -73,6 +76,8 @@ namespace SPFileSync_Application
                     _configuration.ListsWithColumnsNames.Add(list);
                     _configurations.Add(_configuration);
                     Common.Helpers.XmlFileManipulator.Serialize(_configurations);
+                    if (mainWindow.SyncButton.IsEnabled == false)
+                        mainWindow.SyncButton.IsEnabled = true;
                     this.Close();
                 }
                 catch (UriFormatException uriException)
