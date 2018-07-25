@@ -6,7 +6,6 @@ namespace SPFileSync_Application
 
     public partial class EditItemListPanel
     {
-        private GeneralUI _generalUI = new GeneralUI();
         private ListWithColumnsName _itemToDisplay;
         private Window _window;
         public EditItemListPanel(ListWithColumnsName item, Window window)

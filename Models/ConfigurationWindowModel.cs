@@ -13,7 +13,8 @@ namespace Models
         public string ListName { get; set; } = "SyncList";
         public string UrlColumn { get; set; } = "URL";
         public string UserColumn { get; set; } = "User";
-   
+        public string SyncInterval { get; set; }
+        public string Path { get; set; }
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             if (string.IsNullOrEmpty(value.ToString()))

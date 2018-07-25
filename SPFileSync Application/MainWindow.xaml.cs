@@ -19,6 +19,7 @@ namespace SPFileSync_Application
         public MainWindow()
         {
             InitializeComponent();
+            Hide();
             PopulateUIComboBox();
             ApplicationIcon();
             _connectionConfigurations = Common.Helpers.XmlFileManipulator.Deserialize<ConnectionConfiguration>();
@@ -27,8 +28,18 @@ namespace SPFileSync_Application
         private void ApplicationIcon()
         {
             NotifyIcon notification = new NotifyIcon();
-            notification.Icon = new Icon(GeneralUI.GetResourcesFolder(ConfigurationMessages.ResourceFolderAppIcon));
+            notification.Icon = new Icon(Common.Helpers.PathConfiguration.GetResourcesFolder(ConfigurationMessages.ResourceFolderAppIcon));
             notification.Visible = true;
+            ContextMenuStrip notificationContextStrip = new ContextMenuStrip();
+            ContextMenu context = new ContextMenu();
+            MenuItem syncItem = new MenuItem
+            {
+                Index = 0,
+                Text = "Sync"
+            };
+            syncItem.Click += SyncItemClick;
+            context.MenuItems.Add(syncItem);
+            notification.ContextMenu = context;
             notification.Text = ConfigurationMessages.AppName;
             notification.DoubleClick +=
                 delegate (object sender, EventArgs args)
@@ -36,6 +47,11 @@ namespace SPFileSync_Application
                     this.Show();
                     this.WindowState = WindowState.Normal;
                 };
+        }
+
+        private void SyncItemClick(object sender, EventArgs e)
+        {
+            SyncFiles();
         }
 
         private void PopulateUIComboBox()
@@ -63,10 +79,15 @@ namespace SPFileSync_Application
             window.Show();
         }
 
-        private void Sync(object sender, RoutedEventArgs e)
+        private void SyncFiles()
         {
             FilesManager fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()));
             fileManager.Synchronize();
+        }
+
+        private void Sync(object sender, RoutedEventArgs e)
+        {
+            SyncFiles();
         }
 
         private void SeeConfigurations(object sender, RoutedEventArgs e)

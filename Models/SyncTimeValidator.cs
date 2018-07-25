@@ -6,7 +6,6 @@ namespace Models
 
     public class SyncTimeValidator : ValidationRule
     {
-        private int _syncTime;
         public int SyncTime { get; set; } = 10;
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)

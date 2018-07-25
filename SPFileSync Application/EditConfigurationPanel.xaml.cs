@@ -1,7 +1,10 @@
 ﻿
 namespace SPFileSync_Application
 {
+    using BusinessLogicLayer;
+    using Common.Helpers;
     using Configuration;
+    using Models;
     using System;
     using System.Collections.Generic;
     using System.Net;
@@ -12,23 +15,20 @@ namespace SPFileSync_Application
     {
         private ConnectionConfiguration _configuration;
         private List<ConnectionConfiguration> _configurations;
-        private GeneralUI _generalUI;
-        private NotifyIcon _notifyIcon = new NotifyIcon();
+        private NotifyUI _notifyUI;
         private string _path = "";
-        private List<ConnectionConfiguration> _initialConfigurations;
         Window _window;
 
         public EditConfigurationPanel(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
         {
             InitializeComponent();
             InitializeFields(configurationItem, configurations, window);
-            _initialConfigurations = new List<ConnectionConfiguration>(_configurations);
             UpdateUI();
         }
 
         private void InitializeFields(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
         {
-            _generalUI = new GeneralUI(this);
+            _notifyUI = new NotifyUI(this, errorList);
             _configuration = configurationItem;
             this._configurations = configurations;
             this._window = window;
@@ -54,43 +54,30 @@ namespace SPFileSync_Application
 
         private void Cancel(object sender, RoutedEventArgs e)
         {
-            _configurations = new List<ConnectionConfiguration>(_initialConfigurations);
             _window.Show();
             Close();
         }
 
 
-
-
-        //TODO [CR BT] : Duplicate code in catch. Extract class eg. NotifyUI and send corresponding parameters.
-        //TODO [CR BT] : Extract try logic and move it into Business Logic. Use the UI textboxes model created above and send it to this class. 
+        
         private void Save(object sender, RoutedEventArgs e)
-        {
-            try
+        {          
+            ConfigurationUIOperations configurationOperations = new ConfigurationUIOperations();
+            ConfigurationWindowModel configurationWindowModel = new ConfigurationWindowModel
             {
-                double minutes = 0;
-                var checkSyncTime = double.TryParse(syncTextBox.Text, out minutes);
-                Connection connection = new Connection() { Credentials = new Models.Credentials { UserName = userNameTextBox.Text, Password = passwordText.Password }, Uri = new Uri(siteUrlBox.Text) };
-                _configuration.Connection = connection;
-                _configuration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);
-                _configuration.Connection.Login();
-                _configuration.DirectoryPath = _path;
-                Common.Helpers.XmlFileManipulator.Serialize(_configurations);
-                _window.Show();
+                UserName = userNameTextBox.Text,
+                Password = passwordText.Password,
+                SiteUrl = siteUrlBox.Text,
+                Path = _path,
+                SyncInterval = syncTextBox.Text
+            };
+            WindowNotifyModel windowNotifyModel = new WindowNotifyModel() {NotifyUI = _notifyUI, Window = this };
+            var checkIfValid = configurationOperations.EditConfiguration(configurationWindowModel, _configurations, windowNotifyModel, _configuration);
+            if(checkIfValid)
+            {
                 Close();
-
-            }
-            catch (UriFormatException uriException)
-            {
-
-                _generalUI.NotifyError(_notifyIcon, Common.Constants.ConfigurationMessages.BadConfigurationTitle, Common.Constants.ConfigurationMessages.InvalidSiteUrl);
-                Common.Helpers.MyLogger.Logger.Debug(uriException);
-            }
-            catch (WebException webException)
-            {
-                _generalUI.NotifyError(_notifyIcon, Common.Constants.ConfigurationMessages.BadConfigurationTitle, Common.Constants.ConfigurationMessages.CredentialsError);
-                Common.Helpers.MyLogger.Logger.Debug(webException);
-            }
+                _window.Show();
+            }                    
         }
 
         private void SetFileDestination(object sender, RoutedEventArgs e)

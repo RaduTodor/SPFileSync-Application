@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System.Windows.Forms;
     using Common.ApplicationEnums;
     using Common.Helpers;
     using Configuration;
@@ -12,6 +13,8 @@
     /// </summary>
     public class FilesManager
     {
+        NotifyIcon notifyIcon = new NotifyIcon();
+        NotifyUI notifyUI = new NotifyUI();
         public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type)
         {
             ConnectionConfigurations = configurations;
@@ -35,7 +38,7 @@
                     var fileSync = new FileSynchronizer(connection, ProviderType);
                     fileSync.ExceptionUpdate += (sender, exception) =>
                     {
-                        //Notify with bubble
+                        notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
                     };
                     Task.Run(() => fileSync.Synchronize());
                 }
@@ -43,7 +46,7 @@
                 {
                     MyLogger.Logger.Error(exception, exception.Message);
                     {
-                        //Notify with bubble
+                        notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
                     }
                 }
         }

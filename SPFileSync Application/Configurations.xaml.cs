@@ -41,10 +41,12 @@ namespace SPFileSync_Application
         }
 
         private void Remove(object sender, RoutedEventArgs e)
-        {                                
+        {
+            allConfigsList.Focus();
             _connections.RemoveAt(allConfigsList.SelectedIndex);
             _configurationsName.Remove((string)allConfigsList.SelectedItem);
             Common.Helpers.XmlFileManipulator.Serialize(_connections);
         }
+       
     }
 }

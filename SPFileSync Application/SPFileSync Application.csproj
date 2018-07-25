@@ -117,7 +117,6 @@
     <Compile Include="EditConfigurationPanel.xaml.cs">
       <DependentUpon>EditConfigurationPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GeneralUI.cs" />
     <Compile Include="ListWithColumns.xaml.cs">
       <DependentUpon>ListWithColumns.xaml</DependentUpon>
     </Compile>

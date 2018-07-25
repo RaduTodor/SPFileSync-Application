@@ -12,9 +12,6 @@ namespace SPFileSync_Application
         private ObservableCollection<string> _observableSelectedconfigListsName = new ObservableCollection<string>();
         private List<ListWithColumnsName> _removedListsOfConfig = new List<ListWithColumnsName>();
         private int _selectedItemIndex;
-        //TODO [CR BT] : This seems and should to be a constant.
-        private int countRemovedSelectedListItems = 0;
-
         public ConfigurationListsEdit(List<ListWithColumnsName> list)
         {
             InitializeComponent();
@@ -33,13 +30,7 @@ namespace SPFileSync_Application
         }
 
         private void ItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            var action = e.Action.ToString();
-            if(action == "Remove")
-            {
-                countRemovedSelectedListItems++;
-            }
-            
+        {          
             if (_observableSelectedconfigListsName.Count <= 1)
             {
                 removeButton.IsEnabled = false;
