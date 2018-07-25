@@ -11,17 +11,18 @@ namespace SPFileSync_Application
 
     public partial class ConfigurationWindow
     {
-
+        private MainWindow mainWindow;
         private string _path;
         private NotifyIcon _notifyIcon = new NotifyIcon();
         private ConnectionConfiguration _configuration;
         private GeneralUI _generalUI;
         private List<ConnectionConfiguration> _configurations;
-        public ConfigurationWindow(List<ConnectionConfiguration> connectionConfigurations)
+        public ConfigurationWindow(List<ConnectionConfiguration> connectionConfigurations, MainWindow window)
         {
             InitializeComponent();
             _generalUI = new GeneralUI(this);           
             _configurations = connectionConfigurations;
+            mainWindow = window;
             InitializeUI();
         }
      
@@ -57,7 +58,9 @@ namespace SPFileSync_Application
                     _configuration.ListsWithColumnsNames.Add(list);
                     _configurations.Add(_configuration);
                     Common.Helpers.XmlFileManipulator.Serialize(_configurations);
-                    this.Close();
+                    if (mainWindow.SyncButton.IsEnabled == false)
+                        mainWindow.SyncButton.IsEnabled = true;
+                this.Close();
                 }
                 catch (UriFormatException uriException)
                 {

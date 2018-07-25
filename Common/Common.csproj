@@ -59,6 +59,7 @@
     <Compile Include="Constants\ApiConstants.cs" />
     <Compile Include="Constants\ConfigurationMessages.cs" />
     <Compile Include="Constants\DataAccessLayerConstants.cs" />
+    <Compile Include="Constants\DefaultDebugMessages.cs" />
     <Compile Include="Constants\DefaultExceptionMessages.cs" />
     <Compile Include="Constants\HelpersConstants.cs" />
     <Compile Include="Constants\QuerryTemplates.cs" />

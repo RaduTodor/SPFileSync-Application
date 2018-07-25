@@ -8,14 +8,16 @@ namespace SPFileSync_Application
     public partial class Configurations
     {
         private List<ConnectionConfiguration> _connections;
+        private MainWindow mainWindow;
         private ObservableCollection<string> _configurationsName = new ObservableCollection<string>();
-        public Configurations(List<ConnectionConfiguration> connectionConfigurations)
+        public Configurations(List<ConnectionConfiguration> connectionConfigurations, MainWindow window)
         {
             InitializeComponent();
             PopulateComboBox();
             _connections = connectionConfigurations;
             PopulateObservableCollection();
             allConfigsList.ItemsSource = _configurationsName;
+            mainWindow = window;
         }
 
         private void PopulateComboBox()
@@ -45,6 +47,10 @@ namespace SPFileSync_Application
             _connections.RemoveAt(allConfigsList.SelectedIndex);
             _configurationsName.Remove((string)allConfigsList.SelectedItem);
             Common.Helpers.XmlFileManipulator.Serialize(_connections);
+            if (_connections.Count == 0)
+            {
+                mainWindow.SyncButton.IsEnabled = false;
+            }
         }
     }
 }

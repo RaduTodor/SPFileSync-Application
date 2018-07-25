@@ -46,14 +46,12 @@
             try
             {
                 var spData = GetUserUrlsWithDate();
-                var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(string.Format(
+                var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(Directory.GetCurrentDirectory()+string.Format(
                         HelpersConstants.MetadataFileLocation,
-                        ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
                         ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
-                    ListReferenceProvider.ConnectionConfiguration.DirectoryPath);
+                    Directory.GetCurrentDirectory()+HelpersConstants.ParentDirectory);
                 foreach (var model in spData) EnsureFile(model, currentData, ExceptionUpdate);
-                CsvMetadataFileManipulator.WriteMetadata(string.Format(HelpersConstants.MetadataFileLocation,
-                        ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
+                CsvMetadataFileManipulator.WriteMetadata(Directory.GetCurrentDirectory()+string.Format(HelpersConstants.MetadataFileLocation,
                         ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
                     currentData);
                 ProgressUpdate?.Invoke(this, ConfigurationNumber);
@@ -80,7 +78,7 @@
             if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
                 FileOperationProvider.Download(match.Url, ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
-                    exceptionHandler);
+                    exceptionHandler,true);
                 currentData.Remove(match);
                 currentData.Add(model);
             }
@@ -88,15 +86,17 @@
             {
                 if (!File.Exists(ListReferenceProvider.ConnectionConfiguration.DirectoryPath + Backslash +
                                  ParsingHelpers.ParseUrlFileName(model.Url)))
-                {
-                    FileOperationProvider.Download(model.Url,
-                        ListReferenceProvider.ConnectionConfiguration.DirectoryPath, exceptionHandler);
+                {   
                     if (match == null)
                     {
+                        FileOperationProvider.Download(model.Url,
+                            ListReferenceProvider.ConnectionConfiguration.DirectoryPath, exceptionHandler, false);
                         currentData.Add(model);
                     }
                     else
                     {
+                        FileOperationProvider.Download(model.Url,
+                            ListReferenceProvider.ConnectionConfiguration.DirectoryPath, exceptionHandler, true);
                         currentData.Remove(match);
                         currentData.Add(model);
                     }

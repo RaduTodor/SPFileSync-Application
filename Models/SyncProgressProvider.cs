@@ -11,7 +11,7 @@ public class SyncProgressProvider
     {
         while (verdicts.FinalizedSyncProccesses.Any(verdict => verdict == false))
         {
-            Thread.Sleep(500);
+
         }
         ProgressUpdate?.Invoke(this, true);
     }

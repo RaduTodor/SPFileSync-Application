@@ -76,7 +76,7 @@
             catch (Exception exception)
             {
                 Exception currentException =
-                    new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
+                    new GetRequestException(exception.Message, exception);
                 MyLogger.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
@@ -84,13 +84,13 @@
 
         private HttpWebResponse GetHttpWebResponse(string apiResult)
         {
-            var endpointRequest = (HttpWebRequest) WebRequest.Create(
+            var endpointRequest = (HttpWebRequest)WebRequest.Create(
                 ConnectionConfiguration.Connection.Uri.AbsoluteUri +
                 apiResult);
 
             AddGetHeadersToRequest(endpointRequest);
 
-            return (HttpWebResponse) endpointRequest.GetResponse();
+            return (HttpWebResponse)endpointRequest.GetResponse();
         }
 
         /// <summary>
@@ -126,9 +126,10 @@
                     catch (Exception exception)
                     {
                         Exception currentException =
-                            new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
-                        MyLogger.Logger.Error(currentException, currentException.Message);
-                        exceptionHandler?.Invoke(this,currentException);
+                            new GetRequestException(exception.Message,exception);
+                        MyLogger.Logger.Error(currentException, string.Format(DefaultExceptionMessages.GetRequestExceptionMessage,
+                            listWithColumnsName.ListName, ConnectionConfiguration.Connection.Uri));
+                        exceptionHandler?.Invoke(this, currentException);
                     }
                 }
 
@@ -137,7 +138,7 @@
             catch (Exception exception)
             {
                 Exception currentException =
-                    new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
+                    new GetRequestException(exception.Message, exception);
                 MyLogger.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
@@ -153,11 +154,11 @@
         {
             var elements = XElement.Parse(xmlString);
             var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
-                from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
-                from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
-                from urlNameBody in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + urlColumnName)
-                from url in urlNameBody.Elements(DataAccessLayerConstants.DNamespace + Url)
-                select url;
+                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
+                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
+                         from urlNameBody in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + urlColumnName)
+                         from url in urlNameBody.Elements(DataAccessLayerConstants.DNamespace + Url)
+                         select url;
             var urls = new List<string>();
             foreach (var element in result) urls.Add(element.Value);
             return urls;
@@ -172,10 +173,10 @@
         {
             var elements = XElement.Parse(xmlString);
             var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
-                from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
-                from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
-                from modifiedDate in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + Modified)
-                select modifiedDate;
+                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
+                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
+                         from modifiedDate in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + Modified)
+                         select modifiedDate;
             return Convert.ToDateTime(result.First().Value);
         }
     }

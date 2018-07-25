@@ -88,6 +88,8 @@ namespace SPFileSync_Application
                 GetProviderType(configComboBox.SelectedItem.ToString()));
             fileManager.Synchronize(verdicts);
 
+            //Notify with bubble that the sync is currently on
+
             SyncProgressProvider syncProgressProvider = new SyncProgressProvider();
             syncProgressProvider.ProgressUpdate += (s, verdict) =>
             {
