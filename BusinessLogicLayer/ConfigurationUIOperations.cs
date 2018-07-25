@@ -12,7 +12,6 @@ namespace BusinessLogicLayer
 {
     public class ConfigurationUIOperations
     {
-
         private Connection CreateConnection(ConfigurationWindowModel configurationWindowModel)
         {
             Connection connection = new Connection() { Credentials = new Credentials() { UserName = configurationWindowModel.UserName, Password = configurationWindowModel.Password },
@@ -23,7 +22,7 @@ namespace BusinessLogicLayer
         public bool EditConfiguration(ConfigurationWindowModel configurationWindowModel, List<ConnectionConfiguration> configurations, WindowNotifyModel windowNotifyModel,ConnectionConfiguration configuration)
         {
             try
-            {
+            { 
                 CreateBasicConfiguration(configurationWindowModel, configuration);
                 configurations.Add(configuration);
                 SerializeConfigurations(configurations);
@@ -57,7 +56,7 @@ namespace BusinessLogicLayer
             connectionConfiguration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);             
         }
 
-        public void AddNewConfiguration(ConfigurationWindowModel configurationWindowModel, List<ConnectionConfiguration> configurations,WindowNotifyModel windowNotifyModel)
+        public bool AddNewConfiguration(ConfigurationWindowModel configurationWindowModel, List<ConnectionConfiguration> configurations,WindowNotifyModel windowNotifyModel)
         {
             try
             {                    
@@ -72,19 +71,23 @@ namespace BusinessLogicLayer
                 configurations.Add(connectionConfiguration);
                 SerializeConfigurations(configurations);
                 windowNotifyModel.Window.Close();
-                
+                return true;
+
             }
             catch (UriFormatException uriException)
             {
                 windowNotifyModel.NotifyUI.CatchErrorNotifier(uriException,Common.Constants.ConfigurationMessages.InvalidSiteUrl);
+                return false;
             }
             catch (Common.Exceptions.LoginException webException)
             {
                 windowNotifyModel.NotifyUI.CatchErrorNotifier(webException,webException.Message);
+                return false;
             }
             catch (Exception exception)
             {
                 windowNotifyModel.NotifyUI.CatchErrorNotifier(exception,exception.Message);
+                return false;
             }
         }
 

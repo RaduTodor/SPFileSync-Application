@@ -18,7 +18,8 @@ namespace SPFileSync_Application
         private ConnectionConfiguration _configuration;
         private NotifyUI _notifyUI;
         private List<ConnectionConfiguration> _configurations;
-        public ConfigurationWindow(List<ConnectionConfiguration> connectionConfigurations)
+        private MainWindow mainWindow;
+        public ConfigurationWindow(List<ConnectionConfiguration> connectionConfigurations, MainWindow window)
         {
             InitializeComponent();
             _notifyUI = new NotifyUI(this,errorList);
@@ -43,8 +44,10 @@ namespace SPFileSync_Application
             ConfigurationUIOperations configurationOperations = new ConfigurationUIOperations();
             ConfigurationWindowModel configurationWindowModel = new ConfigurationWindowModel { UserName = userNameTextBox.Text, Password = passwordText.Password, SiteUrl = siteUrlBox.Text,
                 Path = _path, ListName = listTextBox.Text, UrlColumn = urlColumnTextBox.Text, UserColumn = userColumnTextBox.Text,SyncInterval = syncTextBox.Text };
-            WindowNotifyModel windowNotifyModel = new WindowNotifyModel() {NotifyUI = _notifyUI, Window = this };
-            configurationOperations.AddNewConfiguration(configurationWindowModel, _configurations,windowNotifyModel);
+            WindowNotifyModel windowNotifyModel = new WindowNotifyModel() {NotifyUI = _notifyUI, Window = this,MainWindow = (mainWindow as MainWindow)};
+            var test =configurationOperations.AddNewConfiguration(configurationWindowModel, _configurations,windowNotifyModel);
+                if (test && mainWindow.SyncButton.IsEnabled == false)
+                    mainWindow.SyncButton.IsEnabled = true;
         }
 
         private void Cancel(object sender, RoutedEventArgs e)

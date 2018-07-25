@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
-    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Forms;
@@ -33,12 +32,14 @@
 
         private void ApplicationIcon()
         {
-            NotifyIcon notification = new NotifyIcon();
-            notification.Icon = new Icon(Common.Helpers.PathConfiguration.GetResourcesFolder(ConfigurationMessages.ResourceFolderAppIcon));
+            var notification = new NotifyIcon();
+            notification.Icon =
+                new Icon(Common.Helpers.PathConfiguration.GetResourcesFolder(
+                    ConfigurationMessages.ResourceFolderAppIcon));
             notification.Visible = true;
-            ContextMenuStrip notificationContextStrip = new ContextMenuStrip();
-            ContextMenu context = new ContextMenu();
-            MenuItem syncItem = new MenuItem
+            var notificationContextStrip = new ContextMenuStrip();
+            var context = new ContextMenu();
+            var syncItem = new MenuItem
             {
                 Index = 0,
                 Text = "Sync"
@@ -91,7 +92,7 @@
             window.Show();
         }
 
-        private void Sync(object sender, RoutedEventArgs e)
+        private void SyncFiles()
         {
             if (InternetAccessHelper.HasInternetAccess())
             {
@@ -104,7 +105,7 @@
                 fileManager.InternetAccessLost += (senderObject, truthValue) =>
                 {
                     //Notify with bubble
-                    Dispatcher.Invoke(()=>AutomaticSync());
+                    Dispatcher.Invoke(() => AutomaticSync());
                 };
 
                 //Notify with bubble that the sync is currently on
