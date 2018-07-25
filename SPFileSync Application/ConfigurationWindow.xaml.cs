@@ -24,7 +24,6 @@ namespace SPFileSync_Application
             InitializeComponent();
             _notifyUI = new NotifyUI(this,errorList);
             _configurations = connectionConfigurations;
-            mainWindow = window;
             InitializeUI();
         }
 
