@@ -1,6 +1,6 @@
 ﻿namespace Common.Constants
 {
-    public static class DefaultDebugMessages
+    public static class DefaultTraceMessages
     {
         public const string FileDownloadSuccessful =
             "The file {0} from url:{1} has been downloaded successfully at the directory {2}";

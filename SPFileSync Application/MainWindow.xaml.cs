@@ -123,13 +123,21 @@
             }
         }
 
+        private bool RetryThreadOn = false;
+
         private void AutomaticSync()
         {
-            Task.Run(() =>
+            if (!RetryThreadOn)
             {
-                if (InternetAccessHelper.HasInternetAccessAfterRetryInterval())
-                    Sync(SyncButton, new RoutedEventArgs());
-            });
+                SyncButton.IsEnabled = false;
+                RetryThreadOn = true;
+                Task.Run(() =>
+                {
+                    if (InternetAccessHelper.HasInternetAccessAfterRetryInterval())
+                        this.Dispatcher.Invoke(()=>Sync(SyncButton, new RoutedEventArgs()));
+                    RetryThreadOn = false;
+                });
+            }
         }
 
         private void SetSyncButtonTrue()

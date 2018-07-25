@@ -52,8 +52,9 @@
         ///     Calls GetModifiedDateInResponse
         /// </summary>
         /// <param name="fileUrl"></param>
+        /// <param name="internetAccessException"></param>
         /// <returns></returns>
-        public DateTime GetModifiedDateOfItem(string fileUrl)
+        public DateTime GetModifiedDateOfItem(string fileUrl, EventHandler<Exception> internetAccessException)
         {
             try
             {
@@ -73,6 +74,16 @@
 
                     return GetModifiedDateInResponse(result);
                 }
+            }
+            catch (System.Net.WebException exception)
+            {
+                Exception currentException =
+                    new NoInternetAccessException(exception.Message, exception);
+                MyLogger.Logger.Error(currentException, string.Format(
+                    DefaultExceptionMessages.NoInternetAccessExceptionMessage,
+                    DataAccessLayerConstants.SyncRetryInterval));
+                internetAccessException?.Invoke(this, currentException);
+                throw currentException;
             }
             catch (Exception exception)
             {

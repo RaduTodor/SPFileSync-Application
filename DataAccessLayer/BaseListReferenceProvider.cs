@@ -38,10 +38,10 @@
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public DateTime GetMetadataItem(string url)
+        public DateTime GetMetadataItem(string url, EventHandler<Exception> internetAccessException)
         {
             var metadataProvider = new MetadataProvider(ConnectionConfiguration);
-            return metadataProvider.GetModifiedDateOfItem(url);
+            return metadataProvider.GetModifiedDateOfItem(url, internetAccessException);
         }
 
         /// <summary>
