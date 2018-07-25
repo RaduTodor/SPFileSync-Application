@@ -31,11 +31,13 @@
 
         private BaseListReferenceProvider ListReferenceProvider { get; }
 
+        public int ConfigurationNumber { get; set; }
+
         public event EventHandler<Exception> ExceptionUpdate;
 
-        public event EventHandler<int> ProgressUpdate;
+        public event EventHandler<Exception> InternetAccessException;
 
-        public int ConfigurationNumber { get; set; }
+        public event EventHandler<int> ProgressUpdate;
 
         /// <summary>
         ///     Gets sharepoint listReferenceItems, compares with the local infos, downloads if case and writes the modified infos
@@ -46,16 +48,18 @@
             try
             {
                 var spData = GetUserUrlsWithDate();
-                var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(Directory.GetCurrentDirectory()+string.Format(
+                var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(
+                    Directory.GetCurrentDirectory() + string.Format(
                         HelpersConstants.MetadataFileLocation,
                         ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
-                    Directory.GetCurrentDirectory()+HelpersConstants.ParentDirectory);
+                    Directory.GetCurrentDirectory() + HelpersConstants.ParentDirectory);
                 foreach (var model in spData) EnsureFile(model, currentData, ExceptionUpdate);
-                CsvMetadataFileManipulator.WriteMetadata(Directory.GetCurrentDirectory()+string.Format(HelpersConstants.MetadataFileLocation,
-                        ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
+                CsvMetadataFileManipulator.WriteMetadata(Directory.GetCurrentDirectory() + string.Format(
+                                                             HelpersConstants.MetadataFileLocation,
+                                                             ListReferenceProvider.ConnectionConfiguration.Connection
+                                                                 .GetSharepointIdentifier()),
                     currentData);
                 ProgressUpdate?.Invoke(this, ConfigurationNumber);
-
             }
             catch (Exception exception)
             {
@@ -78,7 +82,7 @@
             if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
                 FileOperationProvider.Download(match.Url, ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
-                    exceptionHandler,true);
+                    exceptionHandler, true);
                 currentData.Remove(match);
                 currentData.Add(model);
             }
@@ -86,7 +90,7 @@
             {
                 if (!File.Exists(ListReferenceProvider.ConnectionConfiguration.DirectoryPath + Backslash +
                                  ParsingHelpers.ParseUrlFileName(model.Url)))
-                {   
+                {
                     if (match == null)
                     {
                         FileOperationProvider.Download(model.Url,
@@ -115,7 +119,7 @@
         private List<MetadataModel> GetUserUrlsWithDate()
         {
             var metadatas = new List<MetadataModel>();
-            var userUrLs = ListReferenceProvider.GetCurrentUserUrls(ExceptionUpdate);
+            var userUrLs = ListReferenceProvider.GetCurrentUserUrls(ExceptionUpdate, InternetAccessException);
             foreach (var url in userUrLs)
             {
                 var dateTime = ListReferenceProvider.GetMetadataItem(url);

@@ -1,16 +1,15 @@
-﻿
-
-namespace SPFileSync_Application
+﻿namespace SPFileSync_Application
 {
-    using Models;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows;
+    using Models;
 
-    public partial class ListWithColumns 
+    public partial class ListWithColumns
     {
-        private List<ListWithColumnsName> _addListsToConfiguration;
-        private ObservableCollection<string> configurationListsName;
+        private readonly List<ListWithColumnsName> _addListsToConfiguration;
+        private readonly ObservableCollection<string> configurationListsName;
+
         public ListWithColumns(List<ListWithColumnsName> list)
         {
             InitializeComponent();
@@ -19,7 +18,7 @@ namespace SPFileSync_Application
             configurationListsName = new ObservableCollection<string>();
         }
 
-        public ListWithColumns(List<ListWithColumnsName> list,ObservableCollection<string> observableCollection)
+        public ListWithColumns(List<ListWithColumnsName> list, ObservableCollection<string> observableCollection)
         {
             InitializeComponent();
             _addListsToConfiguration = list;
@@ -28,15 +27,20 @@ namespace SPFileSync_Application
 
         private void ConfirmList(object sender, RoutedEventArgs e)
         {
-            ListWithColumnsName list = new ListWithColumnsName() { ListName = listTextBox.Text, UrlColumnName = urlColumnTextBox.Text, UserColumnName = userColumnTextBox.Text };
+            var list = new ListWithColumnsName
+            {
+                ListName = listTextBox.Text,
+                UrlColumnName = urlColumnTextBox.Text,
+                UserColumnName = userColumnTextBox.Text
+            };
             _addListsToConfiguration.Add(list);
             configurationListsName.Add(list.ListName);
-            this.Close();
+            Close();
         }
 
         private void CancelList(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

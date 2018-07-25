@@ -35,7 +35,7 @@
                 {
                     using (var stream = response.GetResponseStream())
                     {
-                        string fileName = ParsingHelpers.ParseUrlFileName(url);
+                        var fileName = ParsingHelpers.ParseUrlFileName(url);
                         var downloadedFilePath = Path.Combine(directoryPath, fileName);
                         FileEditingHelper.CreateAccesibleFile(downloadedFilePath, directoryPath);
                         using (var fileStream = new FileStream(downloadedFilePath, FileMode.Create))
@@ -53,15 +53,13 @@
                         }
 
                         if (!update)
-                        {
-                            MyLogger.Logger.Debug(String.Format(DefaultDebugMessages.FileDownloadSuccessful, fileName, url,
+                            MyLogger.Logger.Debug(string.Format(DefaultDebugMessages.FileDownloadSuccessful, fileName,
+                                url,
                                 directoryPath));
-                        }
                         else
-                        {
-                            MyLogger.Logger.Debug(String.Format(DefaultDebugMessages.FileUpdateSuccessful, fileName, url,
+                            MyLogger.Logger.Debug(string.Format(DefaultDebugMessages.FileUpdateSuccessful, fileName,
+                                url,
                                 directoryPath));
-                        }
                     }
                 }
             }
@@ -69,7 +67,8 @@
             {
                 Exception downloadFileExceptionexception =
                     new DownloadFileException(exception.Message, exception);
-                MyLogger.Logger.Error(downloadFileExceptionexception, string.Format(DefaultExceptionMessages.FileDownloadExceptionMessage, url));
+                MyLogger.Logger.Error(downloadFileExceptionexception,
+                    string.Format(DefaultExceptionMessages.FileDownloadExceptionMessage, url));
                 exceptionHandler?.Invoke(this, downloadFileExceptionexception);
             }
         }

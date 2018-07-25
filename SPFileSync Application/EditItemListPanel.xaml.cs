@@ -1,14 +1,14 @@
-﻿
-namespace SPFileSync_Application
+﻿namespace SPFileSync_Application
 {
-    using Models;
     using System.Windows;
+    using Models;
 
     public partial class EditItemListPanel
     {
         private GeneralUI _generalUI = new GeneralUI();
-        private ListWithColumnsName _itemToDisplay;
-        private Window _window;
+        private readonly ListWithColumnsName _itemToDisplay;
+        private readonly Window _window;
+
         public EditItemListPanel(ListWithColumnsName item, Window window)
         {
             InitializeComponent();
@@ -16,7 +16,7 @@ namespace SPFileSync_Application
             listTextBox.Text = item.ListName;
             urlColumnTextBox.Text = item.UrlColumnName;
             userColumnTextBox.Text = item.UserColumnName;
-            this._window = window;
+            _window = window;
         }
 
         private void Cancel(object sender, RoutedEventArgs e)
@@ -24,7 +24,7 @@ namespace SPFileSync_Application
             _window.Show();
             Close();
         }
-   
+
         private void Save(object sender, RoutedEventArgs e)
         {
             _itemToDisplay.ListName = listTextBox.Text;
@@ -35,4 +35,3 @@ namespace SPFileSync_Application
         }
     }
 }
-

@@ -1,20 +1,19 @@
-﻿
-
-namespace SPFileSync_Application
+﻿namespace SPFileSync_Application
 {
-    using Configuration;
-    using System.Windows;
-    using System.Collections.Generic;
-    using System.Windows.Forms;
-    using System.IO;
-    using System.Drawing;
     using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows.Forms.VisualStyles;
-    using BusinessLogicLayer;
-    using Common.Constants;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Drawing;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Forms;
+    using BusinessLogicLayer;
+    using Common.ApplicationEnums;
+    using Common.Constants;
+    using Common.Helpers;
+    using Configuration;
+    using Models;
 
     public partial class MainWindow
     {
@@ -25,26 +24,23 @@ namespace SPFileSync_Application
             InitializeComponent();
             PopulateUIComboBox();
             ApplicationIcon();
-            _connectionConfigurations = Common.Helpers.XmlFileManipulator.Deserialize<ConnectionConfiguration>();
-            if (_connectionConfigurations.Count == 0)
-            {
-                SyncButton.IsEnabled = false;
-            }
+            _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
+            if (_connectionConfigurations.Count == 0) SyncButton.IsEnabled = false;
 
             WaitSync.Visibility = Visibility.Hidden;
         }
 
         private void ApplicationIcon()
         {
-            NotifyIcon notification = new NotifyIcon();
+            var notification = new NotifyIcon();
             notification.Icon = new Icon(GeneralUI.GetResourcesFolder(ConfigurationMessages.ResourceFolderAppIcon));
             notification.Visible = true;
             notification.Text = ConfigurationMessages.AppName;
             notification.DoubleClick +=
-                delegate(object sender, EventArgs args)
+                delegate
                 {
-                    this.Show();
-                    this.WindowState = WindowState.Normal;
+                    Show();
+                    WindowState = WindowState.Normal;
                 };
         }
 
@@ -75,29 +71,47 @@ namespace SPFileSync_Application
 
         private void AddConfig(object sender, RoutedEventArgs e)
         {
-            ConfigurationWindow window = new ConfigurationWindow(_connectionConfigurations, this);
+            var window = new ConfigurationWindow(_connectionConfigurations, this);
             window.Show();
         }
 
         private void Sync(object sender, RoutedEventArgs e)
         {
-            SyncButton.IsEnabled = false;
-            WaitSync.Visibility = Visibility.Visible;
-            Verdicts verdicts = new Verdicts();
-            FilesManager fileManager = new FilesManager(_connectionConfigurations,
-                GetProviderType(configComboBox.SelectedItem.ToString()));
-            fileManager.Synchronize(verdicts);
-
-            //Notify with bubble that the sync is currently on
-
-            SyncProgressProvider syncProgressProvider = new SyncProgressProvider();
-            syncProgressProvider.ProgressUpdate += (s, verdict) =>
+            if (InternetAccessHelper.HasInternetAccess())
             {
-                this.Dispatcher.Invoke(()=>SetSyncButtonTrue());
-            };
+                SyncButton.IsEnabled = false;
+                WaitSync.Visibility = Visibility.Visible;
+                var verdicts = new Verdicts();
+                var fileManager = new FilesManager(_connectionConfigurations,
+                    GetProviderType(configComboBox.SelectedItem.ToString()));
+                fileManager.Synchronize(verdicts);
+                fileManager.InternetAccessLost += (senderObject, truthValue) =>
+                {
+                    //Notify with bubble
+                    Dispatcher.Invoke(()=>AutomaticSync());
+                };
+
+                //Notify with bubble that the sync is currently on
+
+                var syncProgressProvider = new SyncProgressProvider();
+                syncProgressProvider.ProgressUpdate += (s, verdict) =>
+                {
+                    Dispatcher.Invoke(() => SetSyncButtonTrue());
+                };
+                Task.Run(() => { syncProgressProvider.Operation(syncProgressProvider, verdicts); });
+            }
+            else
+            {
+                AutomaticSync();
+            }
+        }
+
+        private void AutomaticSync()
+        {
             Task.Run(() =>
             {
-                syncProgressProvider.Operation(syncProgressProvider,verdicts);               
+                if (InternetAccessHelper.HasInternetAccessAfterRetryInterval())
+                    Sync(SyncButton, new RoutedEventArgs());
             });
         }
 
@@ -109,23 +123,23 @@ namespace SPFileSync_Application
 
         private void SeeConfigurations(object sender, RoutedEventArgs e)
         {
-            _connectionConfigurations = Common.Helpers.XmlFileManipulator.Deserialize<ConnectionConfiguration>();
-            Configurations window = new Configurations(_connectionConfigurations, this);
+            _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
+            var window = new Configurations(_connectionConfigurations, this);
             window.Show();
         }
 
-        private static Common.ApplicationEnums.ListReferenceProviderType GetProviderType(string choice)
+        private static ListReferenceProviderType GetProviderType(string choice)
         {
             switch (choice)
             {
                 case ConfigurationMessages.ComboBoxRest:
-                    return Common.ApplicationEnums.ListReferenceProviderType.Rest;
+                    return ListReferenceProviderType.Rest;
 
                 case ConfigurationMessages.ComboBoxCsom:
-                    return Common.ApplicationEnums.ListReferenceProviderType.Csom;
+                    return ListReferenceProviderType.Csom;
 
                 default:
-                    return Common.ApplicationEnums.ListReferenceProviderType.Rest;
+                    return ListReferenceProviderType.Rest;
             }
         }
     }

@@ -1,7 +1,6 @@
-﻿
-using System;
+﻿using System;
 using System.Linq;
-using System.Threading;
+using Models;
 
 public class SyncProgressProvider
 {
@@ -11,8 +10,8 @@ public class SyncProgressProvider
     {
         while (verdicts.FinalizedSyncProccesses.Any(verdict => verdict == false))
         {
-
         }
+
         ProgressUpdate?.Invoke(this, true);
     }
 

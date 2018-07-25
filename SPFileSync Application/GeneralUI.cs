@@ -1,26 +1,25 @@
-﻿using Common.Constants;
-using Configuration;
-using Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Forms;
-
-namespace SPFileSync_Application
+﻿namespace SPFileSync_Application
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.IO;
+    using System.Windows;
+    using System.Windows.Forms;
+    using Common.Constants;
+    using Common.Helpers;
+    using Configuration;
+    using Models;
+    using Label = System.Windows.Controls.Label;
+    using Timer = System.Timers.Timer;
+
     //TODO [CR BT] :  Single Responsability principal violated. Remove this class because it's doing a lot of different operations which can be moved to existing/new classes. Even the name of the class it's show us that a lot of different things are made here.
     public class GeneralUI
     {
+        private readonly ObservableHashSet<string> errors = new ObservableHashSet<string>();
         //Should i move it to Business Logic Layer?
 
-        private Window window;
-        private Common.Helpers.ObservableHashSet<string> errors = new Common.Helpers.ObservableHashSet<string>();
+        private readonly Window window;
 
         public GeneralUI(Window window)
         {
@@ -29,20 +28,16 @@ namespace SPFileSync_Application
 
         public GeneralUI()
         {
-
         }
+
         //TODO [CR BT] : Methods should start with Capital letter. Move this into another class in Configuration DLL.
         public static void checkConfiguration(ref ConnectionConfiguration configuration)
         {
-            if (configuration == null)
-            {
-                configuration = new ConnectionConfiguration();
-            }
+            if (configuration == null) configuration = new ConnectionConfiguration();
             if (configuration.ListsWithColumnsNames == null)
-            {
                 configuration.ListsWithColumnsNames = new List<ListWithColumnsName>();
-            }
         }
+
         //TODO [CR BT] : Extract method into another class in Common. Check if there is no existing class where you can move this method.
         public static string GetResourcesFolder(string wantedResource)
         {
@@ -52,23 +47,26 @@ namespace SPFileSync_Application
             var resourceFolderPath = $@"{path.Remove(removeSegment)}{wantedResource}";
             return resourceFolderPath;
         }
+
         //TODO [CR BT] : Extract this method into another class eg. ConfigurationValidator  which should be created.
         //TODO [CR BT] : Rename method to eg. ValidateField
-        public bool FieldValidation(string data, System.Windows.Controls.Label displayError)
+        public bool FieldValidation(string data, Label displayError)
         {
-            bool verifyData = true;
+            var verifyData = true;
             if (string.IsNullOrEmpty(data))
             {
                 verifyData = false;
                 DisplayWarning(displayError, ConfigurationMessages.EmptyField);
             }
+
             return verifyData;
         }
+
         //TODO [CR BT] : Extract method into another class in Common class eg. NotifyUI created above.
         //TODO [CR BT] : Rename Interval -> interval
-        public void DisplayWarning(System.Windows.Controls.Label label, string message, int Interval = 2000)
+        public void DisplayWarning(Label label, string message, int Interval = 2000)
         {
-            System.Timers.Timer timer = new System.Timers.Timer();
+            var timer = new Timer();
             timer.Interval = Interval;
             label.Dispatcher.Invoke(new Action(() => label.Content = message));
             label.Dispatcher.Invoke(new Action(() => label.Visibility = Visibility.Visible));
@@ -94,6 +92,7 @@ namespace SPFileSync_Application
             notifyIcon.Click += NotifyIconClick;
             notifyIcon.Text = notificationMessage;
         }
+
         //TODO [CR BT] : Extract method into another class eg. NotifyUI which should be created.
         private void NotifyIconClick(object sender, EventArgs e)
         {
@@ -105,10 +104,7 @@ namespace SPFileSync_Application
         public void AddToListButton(string logMessage)
         {
             errors.AddItem(logMessage);
-            if (window is ConfigurationWindow)
-            {
-                (window as ConfigurationWindow).errorList.ItemsSource = errors;
-            }
+            if (window is ConfigurationWindow) (window as ConfigurationWindow).errorList.ItemsSource = errors;
         }
     }
 }

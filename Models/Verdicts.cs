@@ -1,10 +1,12 @@
-﻿
-public class Verdicts
+﻿namespace Models
 {
-    public bool[] FinalizedSyncProccesses { get; set; }
-
-    public Verdicts()
+    public class Verdicts
     {
-        FinalizedSyncProccesses = new bool[0];
+        public Verdicts()
+        {
+            FinalizedSyncProccesses = new bool[0];
+        }
+
+        public bool[] FinalizedSyncProccesses { get; set; }
     }
 }

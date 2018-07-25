@@ -1,6 +1,5 @@
 ﻿namespace Common.Constants
 {
-
     public static class ConfigurationMessages
     {
         public const string ComboBoxRest = "Rest";
@@ -24,6 +23,5 @@
         public const string EmptyField = "Empty field";
 
         public const string InvalidValue = "Invalid Value";
-
     }
 }

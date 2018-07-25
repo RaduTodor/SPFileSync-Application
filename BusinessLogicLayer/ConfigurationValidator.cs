@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BusinessLogicLayer
+﻿namespace BusinessLogicLayer
 {
-   public class ConfigurationValidator
+    public class ConfigurationValidator
     {
-
         //EditPanel
         //ConfigWindow
 
@@ -35,6 +28,5 @@ namespace BusinessLogicLayer
         //    }
         //    return input;
         //}
-
     }
 }

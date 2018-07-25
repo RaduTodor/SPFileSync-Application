@@ -8,14 +8,19 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Background>
-        <ImageBrush ImageSource="/Utils/background.jpg"></ImageBrush>
+        <ImageBrush ImageSource="/Utils/background.jpg" />
     </Window.Background>
     <Grid>
-        <Button Content="Add configuration" HorizontalAlignment="Left" Margin="68,192,0,0" VerticalAlignment="Top" Width="119" Height="26" Click="AddConfig"/>
+        <Button Content="Add configuration" HorizontalAlignment="Left" Margin="68,192,0,0" VerticalAlignment="Top"
+                Width="119" Height="26" Click="AddConfig" />
         <ListBox Height="238" Margin="12,11,12,13" Name="ListBox1" Width="254" />
-        <Button Name ="SyncButton"  Content="Sync Files" HorizontalAlignment="Left" Margin="89,138,0,0" VerticalAlignment="Top" Width="75" Click="Sync"/>
-        <ComboBox HorizontalAlignment="Left" Margin="662,10,0,0" VerticalAlignment="Top" Width="120" Name="configComboBox" SelectedIndex="0"/>
-        <Button Content="See configurations" HorizontalAlignment="Left" Margin="68,252,0,0" VerticalAlignment="Top" Width="119" Height="24" Click="SeeConfigurations"/>
-        <Image Name ="WaitSync"  gif:ImageBehavior.AnimatedSource="/Utils/weirdGif.gif" HorizontalAlignment="Left" Margin="169,122,0,0" VerticalAlignment="Top" Height="70" Width="54" RenderTransformOrigin="0.864,0.907"/>
+        <Button Name="SyncButton" Content="Sync Files" HorizontalAlignment="Left" Margin="89,138,0,0"
+                VerticalAlignment="Top" Width="75" Click="Sync" />
+        <ComboBox HorizontalAlignment="Left" Margin="662,10,0,0" VerticalAlignment="Top" Width="120"
+                  Name="configComboBox" SelectedIndex="0" />
+        <Button Content="See configurations" HorizontalAlignment="Left" Margin="68,252,0,0" VerticalAlignment="Top"
+                Width="119" Height="24" Click="SeeConfigurations" />
+        <Image Name="WaitSync" gif:ImageBehavior.AnimatedSource="/Utils/weirdGif.gif" HorizontalAlignment="Left"
+               Margin="169,122,0,0" VerticalAlignment="Top" Height="70" Width="54" RenderTransformOrigin="0.864,0.907" />
     </Grid>
 </Window>

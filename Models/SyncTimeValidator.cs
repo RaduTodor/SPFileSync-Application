@@ -1,8 +1,8 @@
-﻿
-namespace Models
+﻿namespace Models
 {
     using System.Globalization;
     using System.Windows.Controls;
+    using Common.Constants;
 
     public class SyncTimeValidator : ValidationRule
     {
@@ -11,20 +11,13 @@ namespace Models
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            int intValue = 0;
+            var intValue = 0;
             var checkIfInteger = int.TryParse(value.ToString(), out intValue);
             if (value.ToString().Length == 0)
-            {
-                return new ValidationResult(false, Common.Constants.ConfigurationMessages.EmptyField);
-            }
-            else if (checkIfInteger && intValue <= 0)
-            {
-                return new ValidationResult(false, Common.Constants.ConfigurationMessages.InvalidValue);
-            }
-            else if (!checkIfInteger)
-            {
-                return new ValidationResult(false, Common.Constants.ConfigurationMessages.InvalidValue);
-            }
+                return new ValidationResult(false, ConfigurationMessages.EmptyField);
+            if (checkIfInteger && intValue <= 0)
+                return new ValidationResult(false, ConfigurationMessages.InvalidValue);
+            if (!checkIfInteger) return new ValidationResult(false, ConfigurationMessages.InvalidValue);
             return ValidationResult.ValidResult;
         }
     }
