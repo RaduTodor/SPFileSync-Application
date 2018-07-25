@@ -4,6 +4,9 @@ namespace Common.Helpers
     using System;
     using System.Windows.Forms;
     using System.Reflection;
+
+    //TODO [CR RT] Please give specific naming for the class
+    //TODO [CR RT] Please give specific naming for the class
     public class Fixes
     {
         public static void SetNotifyIconText(NotifyIcon notification, string text)

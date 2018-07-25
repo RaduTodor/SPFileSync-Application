@@ -31,6 +31,7 @@
 
         private BaseListReferenceProvider ListReferenceProvider { get; }
 
+        //TODO [CR RT] Please make it private
         public int ConfigurationNumber { get; set; }
 
         public event EventHandler<Exception> ExceptionUpdate;

@@ -14,6 +14,8 @@
     /// </summary>
     public class FilesManager
     {
+        //TODO [CR RT] Why it is not instantiated from ctor?
+        //TODO [CR RT] Remove unsused class member
         NotifyIcon notifyIcon = new NotifyIcon();
         NotifyUI notifyUI = new NotifyUI();
         public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type)

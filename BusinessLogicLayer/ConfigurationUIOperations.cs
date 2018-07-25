@@ -10,6 +10,8 @@ using System.Windows.Forms;
 
 namespace BusinessLogicLayer
 {
+    //TODO [CR RT] Put usings under namespace
+    //TODO [CR RT] Add class and public methods documentation
     public class ConfigurationUIOperations
     {
         private Connection CreateConnection(ConfigurationWindowModel configurationWindowModel)
