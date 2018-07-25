@@ -26,7 +26,8 @@
         /// <param name="url"></param>
         /// <param name="directoryPath"></param>
         /// <param name="exceptionHandler"></param>
-        public void Download(string url, string directoryPath, EventHandler<Exception> exceptionHandler)
+        /// <param name="update"></param>
+        public void Download(string url, string directoryPath, EventHandler<Exception> exceptionHandler, bool update)
         {
             try
             {
@@ -34,7 +35,9 @@
                 {
                     using (var stream = response.GetResponseStream())
                     {
-                        var downloadedFilePath = Path.Combine(directoryPath, ParsingHelpers.ParseUrlFileName(url));
+                        string fileName = ParsingHelpers.ParseUrlFileName(url);
+                        var downloadedFilePath = Path.Combine(directoryPath, fileName);
+                        FileEditingHelper.CreateAccesibleFile(downloadedFilePath, directoryPath);
                         using (var fileStream = new FileStream(downloadedFilePath, FileMode.Create))
                         {
                             var read = new byte[DataAccessLayerConstants.StreamReadBufferBytesDimension];
@@ -48,14 +51,25 @@
                                 }
                             }
                         }
+
+                        if (!update)
+                        {
+                            MyLogger.Logger.Debug(String.Format(DefaultDebugMessages.FileDownloadSuccessful, fileName, url,
+                                directoryPath));
+                        }
+                        else
+                        {
+                            MyLogger.Logger.Debug(String.Format(DefaultDebugMessages.FileUpdateSuccessful, fileName, url,
+                                directoryPath));
+                        }
                     }
                 }
             }
             catch (Exception exception)
             {
                 Exception downloadFileExceptionexception =
-                    new DownloadFileException(DefaultExceptionMessages.FileDownloadExceptionMessage, exception);
-                MyLogger.Logger.Error(downloadFileExceptionexception, downloadFileExceptionexception.Message);
+                    new DownloadFileException(exception.Message, exception);
+                MyLogger.Logger.Error(downloadFileExceptionexception, string.Format(DefaultExceptionMessages.FileDownloadExceptionMessage, url));
                 exceptionHandler?.Invoke(this, downloadFileExceptionexception);
             }
         }

@@ -48,10 +48,10 @@
         ///     Gets all urls from all ReferenceListItem of CurrentUser
         /// </summary>
         /// <returns></returns>
-        public List<string> GetCurrentUserUrls()
+        public List<string> GetCurrentUserUrls(EventHandler<Exception> exceptionHandler)
         {
             var metadataProvider = new MetadataProvider(ConnectionConfiguration);
-            return metadataProvider.GetCurrentUserUrls();
+            return metadataProvider.GetCurrentUserUrls(exceptionHandler);
         }
     }
 }

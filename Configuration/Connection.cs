@@ -27,8 +27,8 @@
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string UriString
         {
-            get => Uri == null ? null : Uri.ToString();
-            set => Uri = value == null ? null : new Uri(value);
+            get { return Uri == null ? null : Uri.ToString(); }
+            set { Uri = value == null ? null : new Uri(value); }
         }
 
         public Credentials Credentials { get; set; }
@@ -51,6 +51,12 @@
         public string GetCurrentUserName()
         {
             return Credentials != null ? Credentials.UserName.Split(Backslash)[1].Split(Backslash)[0] : "";
+        }
+
+        public string GetUserWithDomain()
+        {
+            var result = Uri.Host;
+            return $"{result.Substring(0, result.Length - 2).ToUpper()}{Backslash}{Credentials.UserName}";
         }
 
         /// <summary>
