@@ -16,7 +16,9 @@
 
     public partial class MainWindow
     {
+        //TODO [CR BT] Instantiate member from ctor
         private List<ConnectionConfiguration> _connectionConfigurations = new List<ConnectionConfiguration>();
+        //TODO [CR BT] Please rename to _notifyUI
         NotifyUI notifyUI;
 
         public MainWindow()
@@ -32,13 +34,17 @@
             WaitSync.Visibility = Visibility.Hidden;
         }
 
+        //TODO [CR BT] Please rename, use verbs in all methods naming
+        //TODO [CR BT] Extract to multiple methods
+
         private void ApplicationIcon()
         {
             var notification = new NotifyIcon();
-            notification.Icon =
+            notification.Icon =         //TODO [CR BT] Remove redundant path
                 new Icon(Common.Helpers.PathConfiguration.GetResourcesFolder(
                     ConfigurationMessages.ResourceFolderAppIcon));
             notification.Visible = true;
+            //TODO [CR BT] Remove unused object
             var notificationContextStrip = new ContextMenuStrip();
             var context = new ContextMenu();
             var syncItem = new MenuItem

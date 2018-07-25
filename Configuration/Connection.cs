@@ -89,6 +89,7 @@
 
                     if (clientContext != null)
                     {
+                        //TODO [CR RT] Extract to a separate method
                         try
                         {
                             clientContext.ExecuteQuery();

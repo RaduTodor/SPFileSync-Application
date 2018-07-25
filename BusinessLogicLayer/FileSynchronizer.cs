@@ -69,7 +69,7 @@
                 ProgressUpdate?.Invoke(this, ConfigurationNumber);
             }
         }
-
+        //TODO [CR RT] Remove invalid param
         /// <summary>
         ///     Checks if given MetadataModel is in given list and if it is compares the ModifiedDate, if so calls Download on it
         /// </summary>
@@ -91,6 +91,7 @@
                 if (!File.Exists(ListReferenceProvider.ConnectionConfiguration.DirectoryPath + Backslash +
                                  ParsingHelpers.ParseUrlFileName(model.Url)))
                 {
+                    //TODO [CR RT] Extract duplicate code -> Download+Add
                     if (match == null)
                     {
                         FileOperationProvider.Download(model.Url,

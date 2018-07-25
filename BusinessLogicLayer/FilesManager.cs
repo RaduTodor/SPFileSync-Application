@@ -59,6 +59,7 @@
                 {
                     verdicts.FinalizedSyncProccesses[count] = true;
                     MyLogger.Logger.Error(exception, exception.Message);
+                    //TODO [CR RT] Remove block {}
                     {
                         notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
                     }

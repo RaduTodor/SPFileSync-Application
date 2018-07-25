@@ -9,7 +9,10 @@ using System.Windows.Forms;
 
 namespace Common.Helpers
 {
-  public class PathConfiguration
+    //TODO [CR BT] Resolve usings
+    //TODO [CR BT] Make class static
+
+    public class PathConfiguration
     {
         public static string SetPath(string defaultPath="")
         {
@@ -22,6 +25,7 @@ namespace Common.Helpers
         public static string GetResourcesFolder(string wantedResource)
         {
             var path = Directory.GetCurrentDirectory();
+            //TODO [CR BT] Specify culture e.g. StringComparison.InvariantCultureIgnoreCase
             var removeSegment = path.IndexOf(ConfigurationMessages.Bin);
             var resourceFolderPath = $@"{path.Remove(removeSegment)}{wantedResource}";
             return resourceFolderPath;

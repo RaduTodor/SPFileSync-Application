@@ -7,7 +7,6 @@
     /// <summary>
     ///     Manages ListReference with an instance of BaseListReferenceProvider
     /// </summary>
-    //TODO [CR RT] Class seems to not be used. Is it needed anymore?
     public class ListReferenceManager
     {
         public ListReferenceManager(ConnectionConfiguration configuration, ListReferenceProviderType type)
