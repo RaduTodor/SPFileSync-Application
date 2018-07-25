@@ -2,13 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using Common.ApplicationEnums;
     using Common.Helpers;
     using Configuration;
-    using Microsoft.SharePoint.Client;
     using Models;
 
     /// <summary>
@@ -50,17 +48,7 @@
                     };
                     fileSync.InternetAccessException += (sender, exception) =>
                     {
-                        //for(int number=0;number<verdicts.FinalizedSyncProccesses.Length;number++)
-                        //{
-                        //    verdicts.FinalizedSyncProccesses[number] = true;
-                        //}
-                        //AutomaticFileSynchronizer automaticFileSync = new AutomaticFileSynchronizer(ConnectionConfigurations);
-                        //automaticFileSync.InternetAccessInformation += (othersender, information) =>
-                        //{
-                        //    //Notify with bubble
-                        //};
-                        //Task.Run(() => automaticFileSync.AutomaticSynchronize());
-                        InternetAccessLost?.Invoke(this,true);
+                        InternetAccessLost.Invoke(this,true);
                     };
                     fileSync.ProgressUpdate += (sender, number) => { verdicts.FinalizedSyncProccesses[number] = true; };
                     Task.Run(() => fileSync.Synchronize());

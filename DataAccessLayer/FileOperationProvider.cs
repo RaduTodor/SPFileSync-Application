@@ -27,7 +27,8 @@
         /// <param name="directoryPath"></param>
         /// <param name="exceptionHandler"></param>
         /// <param name="update"></param>
-        public void Download(string url, string directoryPath, EventHandler<Exception> exceptionHandler, bool update)
+        /// <param name="internetAccessException"></param>
+        public void Download(string url, string directoryPath, EventHandler<Exception> exceptionHandler, bool update, EventHandler<Exception> internetAccessException)
         {
             try
             {
@@ -53,21 +54,31 @@
                         }
 
                         if (!update)
-                            MyLogger.Logger.Debug(string.Format(DefaultDebugMessages.FileDownloadSuccessful, fileName,
+                            MyLogger.Logger.Trace(string.Format(DefaultTraceMessages.FileDownloadSuccessful, fileName,
                                 url,
                                 directoryPath));
                         else
-                            MyLogger.Logger.Debug(string.Format(DefaultDebugMessages.FileUpdateSuccessful, fileName,
+                            MyLogger.Logger.Trace(string.Format(DefaultTraceMessages.FileUpdateSuccessful, fileName,
                                 url,
                                 directoryPath));
                     }
                 }
             }
+            catch (System.Net.WebException exception)
+            {
+                Exception currentException =
+                    new NoInternetAccessException(exception.Message, exception);
+                MyLogger.Logger.Error(currentException, string.Format(
+                    DefaultExceptionMessages.NoInternetAccessExceptionMessage,
+                    DataAccessLayerConstants.SyncRetryInterval));
+                internetAccessException?.Invoke(this, currentException);
+                throw currentException;
+            }
             catch (Exception exception)
             {
                 Exception downloadFileExceptionexception =
                     new DownloadFileException(exception.Message, exception);
-                MyLogger.Logger.Error(downloadFileExceptionexception,
+                MyLogger.Logger.Debug(downloadFileExceptionexception,
                     string.Format(DefaultExceptionMessages.FileDownloadExceptionMessage, url));
                 exceptionHandler?.Invoke(this, downloadFileExceptionexception);
             }

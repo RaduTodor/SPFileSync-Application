@@ -1,5 +1,6 @@
 ﻿namespace Common.Helpers
 {
+    using System;
     using System.Runtime.InteropServices;
     using System.Threading;
     using Constants;
@@ -17,13 +18,7 @@
 
         public static bool HasInternetAccessAfterRetryInterval()
         {
-            int TimeRemaining = DataAccessLayerConstants.SyncRetryInterval;
-            while (TimeRemaining != 0)
-            {
-                Thread.Sleep(1000);
-                TimeRemaining--;
-            }
-            
+            Thread.Sleep(new TimeSpan(0,DataAccessLayerConstants.SyncRetryInterval,0));
             int description;
             return InternetGetConnectedState(out description, 0);
         }
