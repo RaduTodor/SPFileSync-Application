@@ -17,13 +17,15 @@
     public partial class MainWindow
     {
         private List<ConnectionConfiguration> _connectionConfigurations = new List<ConnectionConfiguration>();
+        NotifyUI notifyUI;
 
         public MainWindow()
         {
             InitializeComponent();
             Hide();
+            notifyUI = new NotifyUI(this, ListBox1);
             PopulateUIComboBox();
-            ApplicationIcon();
+            ApplicationIcon();            
             _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
             if (_connectionConfigurations.Count == 0) SyncButton.IsEnabled = false;
 
@@ -104,12 +106,11 @@
                 fileManager.Synchronize(verdicts);
                 fileManager.InternetAccessLost += (senderObject, truthValue) =>
                 {
-                    //Notify with bubble
+                    notifyUI.BasicNotifyError(ConfigurationMessages.InternetAccesError, ConfigurationMessages.InternetAccesErrorMessage);
                     Dispatcher.Invoke(() => AutomaticSync());
                 };
 
-                //Notify with bubble that the sync is currently on
-
+                notifyUI.BasicNotifyError(ConfigurationMessages.SyncIsActive, ConfigurationMessages.SyncActiveMessage);
                 var syncProgressProvider = new SyncProgressProvider();
                 syncProgressProvider.ProgressUpdate += (s, verdict) =>
                 {

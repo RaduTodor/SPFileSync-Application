@@ -31,5 +31,9 @@
         public const string SyncIsActive = "Sync is active.";
 
         public const string SyncActiveMessage = "Synchronization is running.";
+
+        public const string InternetAccesError = "Bad internet connection";
+
+        public const string InternetAccesErrorMessage = "Solve your internet problems";
     }
 }
