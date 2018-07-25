@@ -147,16 +147,20 @@
                 Task.Run(() =>
                 {
                     if (InternetAccessHelper.HasInternetAccessAfterRetryInterval())
-                        this.Dispatcher.Invoke(()=>Sync(SyncButton, new RoutedEventArgs()));
+                        Dispatcher.Invoke(()=>Sync(SyncButton, new RoutedEventArgs()));
                     RetryThreadOn = false;
+                    SetSyncButtonTrue();
                 });
             }
         }
 
         private void SetSyncButtonTrue()
         {
-            SyncButton.IsEnabled = true;
-            WaitSync.Visibility = Visibility.Hidden;
+            if (!RetryThreadOn)
+            {
+                SyncButton.IsEnabled = true;
+                WaitSync.Visibility = Visibility.Hidden;
+            }
         }
 
         private void Sync(object sender, RoutedEventArgs e)

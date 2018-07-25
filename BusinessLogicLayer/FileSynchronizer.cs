@@ -54,7 +54,7 @@
                         HelpersConstants.MetadataFileLocation,
                         ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
                     Directory.GetCurrentDirectory() + HelpersConstants.ParentDirectory);
-                foreach (var model in spData) EnsureFile(model, currentData, ExceptionUpdate, InternetAccessException);
+                foreach (var model in spData) EnsureFile(model, currentData);
                 CsvMetadataFileManipulator.WriteMetadata(Directory.GetCurrentDirectory() + string.Format(
                                                              HelpersConstants.MetadataFileLocation,
                                                              ListReferenceProvider.ConnectionConfiguration.Connection
@@ -76,14 +76,13 @@
         /// <param name="model"></param>
         /// <param name="currentData"></param>
         /// <param name="exceptionHandler"></param>
-        private void EnsureFile(MetadataModel model, List<MetadataModel> currentData,
-            EventHandler<Exception> exceptionHandler, EventHandler<Exception> internetAccessExceptionHandler)
+        private void EnsureFile(MetadataModel model, List<MetadataModel> currentData)
         {
             var match = currentData.FirstOrDefault(x => x.Url == model.Url);
             if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
                 FileOperationProvider.Download(match.Url, ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
-                    exceptionHandler, true, internetAccessExceptionHandler);
+                    ExceptionUpdate, true, InternetAccessException);
                 currentData.Remove(match);
                 currentData.Add(model);
             }
@@ -95,13 +94,13 @@
                     if (match == null)
                     {
                         FileOperationProvider.Download(model.Url,
-                            ListReferenceProvider.ConnectionConfiguration.DirectoryPath, exceptionHandler, false, internetAccessExceptionHandler);
+                            ListReferenceProvider.ConnectionConfiguration.DirectoryPath, ExceptionUpdate, false, InternetAccessException);
                         currentData.Add(model);
                     }
                     else
                     {
                         FileOperationProvider.Download(model.Url,
-                            ListReferenceProvider.ConnectionConfiguration.DirectoryPath, exceptionHandler, false, internetAccessExceptionHandler);
+                            ListReferenceProvider.ConnectionConfiguration.DirectoryPath, ExceptionUpdate, false, InternetAccessException);
                         currentData.Remove(match);
                         currentData.Add(model);
                     }
