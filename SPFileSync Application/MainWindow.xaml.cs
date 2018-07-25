@@ -44,10 +44,17 @@
             var syncItem = new MenuItem
             {
                 Index = 0,
-                Text = "Sync"
+                Text = ConfigurationMessages.Sync
             };
             syncItem.Click += SyncItemClick;
+            var exitItem = new MenuItem
+            {
+                Index = 1,
+                Text = ConfigurationMessages.Exit
+            };
+            exitItem.Click += ExitItemClick;
             context.MenuItems.Add(syncItem);
+            context.MenuItems.Add(exitItem);
             notification.ContextMenu = context;
             notification.Text = ConfigurationMessages.AppName;
             notification.DoubleClick +=
@@ -56,6 +63,11 @@
                     Show();
                     WindowState = WindowState.Normal;
                 };
+        }
+
+        private void ExitItemClick(object sender, EventArgs e)
+        {
+            Close();
         }
 
         protected override void OnClosed(EventArgs e)
