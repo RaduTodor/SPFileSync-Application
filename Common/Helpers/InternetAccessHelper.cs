@@ -18,9 +18,14 @@
 
         public static bool HasInternetAccessAfterRetryInterval()
         {
-            Thread.Sleep(new TimeSpan(0,DataAccessLayerConstants.SyncRetryInterval,0));
-            int description;
-            return InternetGetConnectedState(out description, 0);
+            bool response = false;
+            while (!response)
+            {
+                Thread.Sleep(new TimeSpan(0, DataAccessLayerConstants.SyncRetryInterval, 0));
+                int description;
+                response = InternetGetConnectedState(out description, 0);
+            }
+            return true;
         }
     }
 }
