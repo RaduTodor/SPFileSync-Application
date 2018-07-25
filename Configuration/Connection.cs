@@ -1,6 +1,7 @@
 ﻿namespace Configuration
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
     using System.Net;
@@ -115,6 +116,19 @@
             }
 
             return -1;
+        }
+
+
+        public static void CheckConfiguration(ref ConnectionConfiguration configuration)
+        {
+            if (configuration == null)
+            {
+                configuration = new ConnectionConfiguration();
+            }
+            if (configuration.ListsWithColumnsNames == null)
+            {
+                configuration.ListsWithColumnsNames = new List<ListWithColumnsName>();
+            }
         }
 
         public void Login()

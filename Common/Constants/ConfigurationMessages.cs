@@ -23,5 +23,9 @@
         public const string EmptyField = "Empty field";
 
         public const string InvalidValue = "Invalid Value";
+
+        public const string Bin = "bin";
+
+        public const string SyncTitleError = "SyncError";
     }
 }

@@ -22,6 +22,7 @@
         public MainWindow()
         {
             InitializeComponent();
+            Hide();
             PopulateUIComboBox();
             ApplicationIcon();
             _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
@@ -32,9 +33,19 @@
 
         private void ApplicationIcon()
         {
-            var notification = new NotifyIcon();
-            notification.Icon = new Icon(GeneralUI.GetResourcesFolder(ConfigurationMessages.ResourceFolderAppIcon));
+            NotifyIcon notification = new NotifyIcon();
+            notification.Icon = new Icon(Common.Helpers.PathConfiguration.GetResourcesFolder(ConfigurationMessages.ResourceFolderAppIcon));
             notification.Visible = true;
+            ContextMenuStrip notificationContextStrip = new ContextMenuStrip();
+            ContextMenu context = new ContextMenu();
+            MenuItem syncItem = new MenuItem
+            {
+                Index = 0,
+                Text = "Sync"
+            };
+            syncItem.Click += SyncItemClick;
+            context.MenuItems.Add(syncItem);
+            notification.ContextMenu = context;
             notification.Text = ConfigurationMessages.AppName;
             notification.DoubleClick +=
                 delegate
@@ -48,6 +59,11 @@
         {
             Environment.Exit(1);
             base.OnClosed(e);
+        }
+
+        private void SyncItemClick(object sender, EventArgs e)
+        {
+            SyncFiles();
         }
 
         private void PopulateUIComboBox()
@@ -119,6 +135,11 @@
         {
             SyncButton.IsEnabled = true;
             WaitSync.Visibility = Visibility.Hidden;
+        }
+
+        private void Sync(object sender, RoutedEventArgs e)
+        {
+            SyncFiles();
         }
 
         private void SeeConfigurations(object sender, RoutedEventArgs e)

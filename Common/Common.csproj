@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -75,8 +76,10 @@
     <Compile Include="Exceptions\MetadataReadException.cs" />
     <Compile Include="Exceptions\NoInternetAccessException.cs" />
     <Compile Include="Exceptions\RestOperationException.cs" />
+    <Compile Include="Helpers\Fixes.cs" />
     <Compile Include="Helpers\InternetAccessHelper.cs" />
     <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Helpers\NotifyUI.cs" />
     <Compile Include="Helpers\ObservableHashSet.cs" />
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Helpers\PathConfiguration.cs" />

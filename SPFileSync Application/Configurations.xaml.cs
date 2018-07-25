@@ -1,18 +1,15 @@
-﻿namespace SPFileSync_Application
+﻿
+namespace SPFileSync_Application
 {
+    using Configuration;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows;
-    using Common.Constants;
-    using Common.Helpers;
-    using Configuration;
-
     public partial class Configurations
     {
-        private readonly ObservableCollection<string> _configurationsName = new ObservableCollection<string>();
-        private readonly List<ConnectionConfiguration> _connections;
-        private readonly MainWindow mainWindow;
-
+        private List<ConnectionConfiguration> _connections;
+        private MainWindow mainWindow;
+        private ObservableCollection<string> _configurationsName = new ObservableCollection<string>();
         public Configurations(List<ConnectionConfiguration> connectionConfigurations, MainWindow window)
         {
             InitializeComponent();
@@ -25,29 +22,37 @@
 
         private void PopulateComboBox()
         {
-            configComboBox.Items.Add(ConfigurationMessages.ComboBoxRest);
-            configComboBox.Items.Add(ConfigurationMessages.ComboBoxCsom);
+            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxRest);
+            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxCsom);
         }
 
         private void PopulateObservableCollection()
         {
-            foreach (var item in _connections) _configurationsName.Add(item.Connection.UriString);
+            foreach (var item in _connections)
+            {
+                _configurationsName.Add(item.Connection.UriString);
+            }
         }
 
         private void Edit(object sender, RoutedEventArgs e)
         {
             var selectedConfig = _connections[allConfigsList.SelectedIndex];
-            var window = new EditConfigurationPanel(selectedConfig, _connections, this);
+            EditConfigurationPanel window = new EditConfigurationPanel(selectedConfig, _connections, this);
             window.Show();
-            Hide();
+            this.Hide();
         }
 
         private void Remove(object sender, RoutedEventArgs e)
         {
+            allConfigsList.Focus();
             _connections.RemoveAt(allConfigsList.SelectedIndex);
-            _configurationsName.Remove((string) allConfigsList.SelectedItem);
-            XmlFileManipulator.Serialize(_connections);
-            if (_connections.Count == 0) mainWindow.SyncButton.IsEnabled = false;
+            _configurationsName.Remove((string)allConfigsList.SelectedItem);
+            Common.Helpers.XmlFileManipulator.Serialize(_connections);
+            if (_connections.Count == 0)
+            {
+                mainWindow.SyncButton.IsEnabled = false;
+            }
         }
+       
     }
 }

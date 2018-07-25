@@ -1,47 +1,43 @@
-﻿namespace SPFileSync_Application
+﻿
+namespace SPFileSync_Application
 {
+    using BusinessLogicLayer;
+    using Common.Helpers;
+    using Configuration;
+    using Models;
     using System;
     using System.Collections.Generic;
     using System.Net;
     using System.Windows;
     using System.Windows.Forms;
-    using Common.Constants;
-    using Common.Helpers;
-    using Configuration;
-    using Models;
 
     public partial class EditConfigurationPanel
     {
         private ConnectionConfiguration _configuration;
         private List<ConnectionConfiguration> _configurations;
-        private GeneralUI _generalUI;
-        private readonly List<ConnectionConfiguration> _initialConfigurations;
-        private readonly NotifyIcon _notifyIcon = new NotifyIcon();
+        private NotifyUI _notifyUI;
         private string _path = "";
-        private Window _window;
+        Window _window;
 
-        public EditConfigurationPanel(ConnectionConfiguration configurationItem,
-            List<ConnectionConfiguration> configurations, Window window)
+        public EditConfigurationPanel(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
         {
             InitializeComponent();
             InitializeFields(configurationItem, configurations, window);
-            _initialConfigurations = new List<ConnectionConfiguration>(_configurations);
             UpdateUI();
         }
 
-        private void InitializeFields(ConnectionConfiguration configurationItem,
-            List<ConnectionConfiguration> configurations, Window window)
+        private void InitializeFields(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
         {
-            _generalUI = new GeneralUI(this);
+            _notifyUI = new NotifyUI(this, errorList);
             _configuration = configurationItem;
-            _configurations = configurations;
-            _window = window;
+            this._configurations = configurations;
+            this._window = window;
         }
 
         private void UpdateUI()
         {
-            configComboBox.Items.Add(ConfigurationMessages.ComboBoxRest);
-            configComboBox.Items.Add(ConfigurationMessages.ComboBoxCsom);
+            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxRest);
+            configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxCsom);
             _path = _configuration.DirectoryPath;
             siteUrlBox.Text = _configuration.Connection.Uri.ToString();
             syncTextBox.Text = _configuration.SyncTimeSpan.TotalMinutes.ToString();
@@ -52,56 +48,41 @@
 
         private void ListEdit(object sender, RoutedEventArgs e)
         {
-            var window = new ConfigurationListsEdit(_configuration.ListsWithColumnsNames);
+            ConfigurationListsEdit window = new ConfigurationListsEdit(_configuration.ListsWithColumnsNames);
             window.Show();
         }
 
         private void Cancel(object sender, RoutedEventArgs e)
         {
-            _configurations = new List<ConnectionConfiguration>(_initialConfigurations);
             _window.Show();
             Close();
         }
 
 
-        //TODO [CR BT] : Duplicate code in catch. Extract class eg. NotifyUI and send corresponding parameters.
-        //TODO [CR BT] : Extract try logic and move it into Business Logic. Use the UI textboxes model created above and send it to this class. 
+        
         private void Save(object sender, RoutedEventArgs e)
-        {
-            try
+        {          
+            ConfigurationUIOperations configurationOperations = new ConfigurationUIOperations();
+            ConfigurationWindowModel configurationWindowModel = new ConfigurationWindowModel
             {
-                double minutes = 0;
-                var checkSyncTime = double.TryParse(syncTextBox.Text, out minutes);
-                var connection = new Connection
-                {
-                    Credentials = new Credentials {UserName = userNameTextBox.Text, Password = passwordText.Password},
-                    Uri = new Uri(siteUrlBox.Text)
-                };
-                _configuration.Connection = connection;
-                _configuration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);
-                _configuration.Connection.Login();
-                _configuration.DirectoryPath = _path;
-                XmlFileManipulator.Serialize(_configurations);
-                _window.Show();
+                UserName = userNameTextBox.Text,
+                Password = passwordText.Password,
+                SiteUrl = siteUrlBox.Text,
+                Path = _path,
+                SyncInterval = syncTextBox.Text
+            };
+            WindowNotifyModel windowNotifyModel = new WindowNotifyModel() {NotifyUI = _notifyUI, Window = this };
+            var checkIfValid = configurationOperations.EditConfiguration(configurationWindowModel, _configurations, windowNotifyModel, _configuration);
+            if(checkIfValid)
+            {
                 Close();
-            }
-            catch (UriFormatException uriException)
-            {
-                _generalUI.NotifyError(_notifyIcon, ConfigurationMessages.BadConfigurationTitle,
-                    ConfigurationMessages.InvalidSiteUrl);
-                MyLogger.Logger.Debug(uriException);
-            }
-            catch (WebException webException)
-            {
-                _generalUI.NotifyError(_notifyIcon, ConfigurationMessages.BadConfigurationTitle,
-                    ConfigurationMessages.CredentialsError);
-                MyLogger.Logger.Debug(webException);
-            }
+                _window.Show();
+            }                    
         }
 
         private void SetFileDestination(object sender, RoutedEventArgs e)
         {
-            _path = PathConfiguration.SetPath(_configuration.DirectoryPath);
+            _path = Common.Helpers.PathConfiguration.SetPath(_configuration.DirectoryPath);
             pathLabel.Content = _path;
         }
     }

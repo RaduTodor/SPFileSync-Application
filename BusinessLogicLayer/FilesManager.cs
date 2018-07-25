@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Windows.Forms;
     using Common.ApplicationEnums;
     using Common.Helpers;
     using Configuration;
@@ -15,6 +16,8 @@
     /// </summary>
     public class FilesManager
     {
+        NotifyIcon notifyIcon = new NotifyIcon();
+        NotifyUI notifyUI = new NotifyUI();
         public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type)
         {
             ConnectionConfigurations = configurations;
@@ -43,7 +46,7 @@
                     var fileSync = new FileSynchronizer(connection, ProviderType, count);
                     fileSync.ExceptionUpdate += (sender, exception) =>
                     {
-                        //Notify with bubble
+                        notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
                     };
                     fileSync.InternetAccessException += (sender, exception) =>
                     {
@@ -67,7 +70,7 @@
                     verdicts.FinalizedSyncProccesses[count] = true;
                     MyLogger.Logger.Error(exception, exception.Message);
                     {
-                        //Notify with bubble
+                        notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
                     }
                 }
         }
