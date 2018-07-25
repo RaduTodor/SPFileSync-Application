@@ -17,7 +17,8 @@
         {
         }
 
-        protected ClientContextOperationException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected ClientContextOperationException(SerializationInfo info, StreamingContext context) : base(info,
+            context)
         {
         }
     }

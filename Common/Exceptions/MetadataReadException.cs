@@ -15,7 +15,6 @@
 
         public MetadataReadException(string message, Exception innerException) : base(message, innerException)
         {
-            
         }
 
         protected MetadataReadException(SerializationInfo info, StreamingContext context) : base(info, context)

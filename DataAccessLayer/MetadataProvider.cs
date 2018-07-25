@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Net;
     using System.Text;
     using System.Xml.Linq;
@@ -84,13 +85,13 @@
 
         private HttpWebResponse GetHttpWebResponse(string apiResult)
         {
-            var endpointRequest = (HttpWebRequest)WebRequest.Create(
+            var endpointRequest = (HttpWebRequest) WebRequest.Create(
                 ConnectionConfiguration.Connection.Uri.AbsoluteUri +
                 apiResult);
 
             AddGetHeadersToRequest(endpointRequest);
 
-            return (HttpWebResponse)endpointRequest.GetResponse();
+            return (HttpWebResponse) endpointRequest.GetResponse();
         }
 
         /// <summary>
@@ -98,13 +99,12 @@
         ///     Calls GetAllUrlsInResponse
         /// </summary>
         /// <returns></returns>
-        public List<string> GetCurrentUserUrls(EventHandler<Exception> exceptionHandler)
+        public List<string> GetCurrentUserUrls(EventHandler<Exception> exceptionHandler, EventHandler<Exception> internetAccessException)
         {
             try
             {
                 var allUrlsOfCurrentUser = new List<string>();
                 foreach (var listWithColumnsName in ConnectionConfiguration.ListsWithColumnsNames)
-                {
                     try
                     {
                         var endpointResponse = GetHttpWebResponse(string.Format(ApiConstants.SpecificListItemsOfUserApi,
@@ -123,16 +123,25 @@
                                 }
                         }
                     }
+                    catch (System.Net.WebException exception)
+                    {
+                        Exception currentException =
+                            new NoInternetAccessException(exception.Message, exception);
+                        MyLogger.Logger.Error(currentException, string.Format(
+                            DefaultExceptionMessages.NoInternetAccessExceptionMessage,
+                            DataAccessLayerConstants.SyncRetryInterval));
+                        internetAccessException?.Invoke(this, currentException);
+                        throw currentException;
+                    }
                     catch (Exception exception)
                     {
                         Exception currentException =
-                            new GetRequestException(exception.Message,exception);
-                        MyLogger.Logger.Error(currentException, string.Format(DefaultExceptionMessages.GetRequestExceptionMessage,
+                            new GetRequestException(exception.Message, exception);
+                        MyLogger.Logger.Error(currentException, string.Format(
+                            DefaultExceptionMessages.GetRequestExceptionMessage,
                             listWithColumnsName.ListName, ConnectionConfiguration.Connection.Uri));
                         exceptionHandler?.Invoke(this, currentException);
                     }
-                }
-
                 return allUrlsOfCurrentUser;
             }
             catch (Exception exception)
@@ -154,11 +163,11 @@
         {
             var elements = XElement.Parse(xmlString);
             var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
-                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
-                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
-                         from urlNameBody in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + urlColumnName)
-                         from url in urlNameBody.Elements(DataAccessLayerConstants.DNamespace + Url)
-                         select url;
+                from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
+                from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
+                from urlNameBody in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + urlColumnName)
+                from url in urlNameBody.Elements(DataAccessLayerConstants.DNamespace + Url)
+                select url;
             var urls = new List<string>();
             foreach (var element in result) urls.Add(element.Value);
             return urls;
@@ -173,10 +182,10 @@
         {
             var elements = XElement.Parse(xmlString);
             var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
-                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
-                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
-                         from modifiedDate in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + Modified)
-                         select modifiedDate;
+                from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
+                from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
+                from modifiedDate in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + Modified)
+                select modifiedDate;
             return Convert.ToDateTime(result.First().Value);
         }
     }

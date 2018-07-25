@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigurationUIOperations.cs" />
+    <Compile Include="AutomaticFileSynchronizer.cs" />
     <Compile Include="CsvMetadataFileManipulator.cs" />
     <Compile Include="FilesManager.cs" />
     <Compile Include="FileSynchronizer.cs" />

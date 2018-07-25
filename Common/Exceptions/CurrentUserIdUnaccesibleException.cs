@@ -13,11 +13,13 @@
         {
         }
 
-        public CurrentUserIdUnaccesibleException(string message, Exception innerException) : base(message, innerException)
+        public CurrentUserIdUnaccesibleException(string message, Exception innerException) : base(message,
+            innerException)
         {
         }
 
-        protected CurrentUserIdUnaccesibleException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected CurrentUserIdUnaccesibleException(SerializationInfo info, StreamingContext context) : base(info,
+            context)
         {
         }
     }

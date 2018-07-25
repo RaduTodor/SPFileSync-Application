@@ -7,36 +7,40 @@
         mc:Ignorable="d"
         Title="Configurations" Height="450" Width="800">
     <Window.Background>
-        <ImageBrush ImageSource="/Utils/background.jpg"></ImageBrush>
+        <ImageBrush ImageSource="/Utils/background.jpg" />
     </Window.Background>
     <Grid>
-        <ListBox HorizontalAlignment="Left" Height="198" Margin="226,117,0,0" VerticalAlignment="Top" Width="350" Name="allConfigsList"/>
-        <Button Content="Edit" HorizontalAlignment="Left" Margin="259,352,0,0" VerticalAlignment="Top" Width="75" Click="Edit" Name="editButton">
+        <ListBox HorizontalAlignment="Left" Height="198" Margin="226,117,0,0" VerticalAlignment="Top" Width="350"
+                 Name="allConfigsList" />
+        <Button Content="Edit" HorizontalAlignment="Left" Margin="259,352,0,0" VerticalAlignment="Top" Width="75"
+                Click="Edit" Name="editButton">
             <Button.Style>
                 <Style>
                     <Style.Triggers>
-                        <DataTrigger 
-                     Binding ="{Binding ElementName=allConfigsList, Path=SelectedIndex}" 
-                     Value="-1">
-                            <Setter Property="Button.IsEnabled" Value="false"/>
+                        <DataTrigger
+                            Binding="{Binding ElementName=allConfigsList, Path=SelectedIndex}"
+                            Value="-1">
+                            <Setter Property="Button.IsEnabled" Value="false" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="Remove" HorizontalAlignment="Left" Margin="467,352,0,0" VerticalAlignment="Top" Width="75" Click="Remove" Name="removeButton">
+        <Button Content="Remove" HorizontalAlignment="Left" Margin="467,352,0,0" VerticalAlignment="Top" Width="75"
+                Click="Remove" Name="removeButton">
             <Button.Style>
                 <Style>
                     <Style.Triggers>
-                        <DataTrigger 
-                     Binding ="{Binding ElementName=allConfigsList, Path=SelectedIndex}" 
-                     Value="-1">
-                            <Setter Property="Button.IsEnabled" Value="false"/>
+                        <DataTrigger
+                            Binding="{Binding ElementName=allConfigsList, Path=SelectedIndex}"
+                            Value="-1">
+                            <Setter Property="Button.IsEnabled" Value="false" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Button.Style>
         </Button>
-        <ComboBox HorizontalAlignment="Left" Margin="662,10,0,0" VerticalAlignment="Top" Width="120" Name="configComboBox" SelectedIndex="0"/>
+        <ComboBox HorizontalAlignment="Left" Margin="662,10,0,0" VerticalAlignment="Top" Width="120"
+                  Name="configComboBox" SelectedIndex="0" />
     </Grid>
 </Window>

@@ -74,8 +74,10 @@
     <Compile Include="Exceptions\GetRequestException.cs" />
     <Compile Include="Exceptions\LoginException.cs" />
     <Compile Include="Exceptions\MetadataReadException.cs" />
+    <Compile Include="Exceptions\NoInternetAccessException.cs" />
     <Compile Include="Exceptions\RestOperationException.cs" />
     <Compile Include="Helpers\Fixes.cs" />
+    <Compile Include="Helpers\InternetAccessHelper.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\NotifyUI.cs" />
     <Compile Include="Helpers\ObservableHashSet.cs" />
