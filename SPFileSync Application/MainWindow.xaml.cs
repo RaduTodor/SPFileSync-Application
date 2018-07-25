@@ -15,15 +15,17 @@ namespace SPFileSync_Application
     using BusinessLogicLayer;
     using Common.Constants;
     using System.ComponentModel;
+    using Common.Helpers;
 
     public partial class MainWindow
     {
         private List<ConnectionConfiguration> _connectionConfigurations = new List<ConnectionConfiguration>();
-
+        private NotifyUI notifyUI;
         public MainWindow()
         {
             InitializeComponent();
             Hide();
+            notifyUI = new NotifyUI(this, ListBox1);
             PopulateUIComboBox();
             ApplicationIcon();
             _connectionConfigurations = Common.Helpers.XmlFileManipulator.Deserialize<ConnectionConfiguration>();
@@ -91,11 +93,11 @@ namespace SPFileSync_Application
 
         private void AddConfig(object sender, RoutedEventArgs e)
         {
-            ConfigurationWindow window = new ConfigurationWindow(_connectionConfigurations, this);
+            ConfigurationWindow window = new ConfigurationWindow(_connectionConfigurations);
             window.Show();
         }
 
-        private void Sync(object sender, RoutedEventArgs e)
+        private void SyncFiles()
         {
             SyncButton.IsEnabled = false;
             WaitSync.Visibility = Visibility.Visible;
@@ -103,24 +105,16 @@ namespace SPFileSync_Application
             FilesManager fileManager = new FilesManager(_connectionConfigurations,
                 GetProviderType(configComboBox.SelectedItem.ToString()));
             fileManager.Synchronize(verdicts);
-
-            //Notify with bubble that the sync is currently on
-
+            notifyUI.BasicNotifyError(ConfigurationMessages.SyncIsActive, ConfigurationMessages.SyncActiveMessage);
             SyncProgressProvider syncProgressProvider = new SyncProgressProvider();
             syncProgressProvider.ProgressUpdate += (s, verdict) =>
             {
-                this.Dispatcher.Invoke(()=>SetSyncButtonTrue());
+                this.Dispatcher.Invoke(() => SetSyncButtonTrue());
             };
             Task.Run(() =>
             {
-                syncProgressProvider.Operation(syncProgressProvider,verdicts);               
+                syncProgressProvider.Operation(syncProgressProvider, verdicts);
             });
-        }
-
-        private void SetSyncButtonTrue()
-        {
-            SyncButton.IsEnabled = true;
-            WaitSync.Visibility = Visibility.Hidden;
         }
 
         private void Sync(object sender, RoutedEventArgs e)
@@ -128,10 +122,16 @@ namespace SPFileSync_Application
             SyncFiles();
         }
 
+        private void SetSyncButtonTrue()
+        {
+            SyncButton.IsEnabled = true;
+            WaitSync.Visibility = Visibility.Hidden;
+        }
+           
         private void SeeConfigurations(object sender, RoutedEventArgs e)
         {
             _connectionConfigurations = Common.Helpers.XmlFileManipulator.Deserialize<ConnectionConfiguration>();
-            Configurations window = new Configurations(_connectionConfigurations);
+            Configurations window = new Configurations(_connectionConfigurations,this);
             window.Show();
         }
 

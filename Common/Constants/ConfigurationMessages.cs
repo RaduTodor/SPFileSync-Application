@@ -28,5 +28,9 @@
         public const string Bin = "bin";
 
         public const string SyncTitleError = "SyncError";
+
+        public const string SyncIsActive = "Sync is active.";
+
+        public const string SyncActiveMessage = "Synchronization is running.";
     }
 }
