@@ -26,8 +26,8 @@
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string UriString
         {
-            get => Uri == null ? null : Uri.ToString();
-            set => Uri = value == null ? null : new Uri(value);
+            get { return Uri == null ? null : Uri.ToString(); }
+            set { Uri = value == null ? null : new Uri(value); }
         }
 
         public Credentials Credentials { get; set; }

@@ -27,8 +27,8 @@
         [EditorBrowsable(EditorBrowsableState.Never)]
         public long SynctimeSpanTicks
         {
-            get => SyncTimeSpan.Ticks;
-            set => SyncTimeSpan = new TimeSpan(value);
+            get { return SyncTimeSpan.Ticks; }
+            set { SyncTimeSpan = new TimeSpan(value); }
         }
     }
 }
