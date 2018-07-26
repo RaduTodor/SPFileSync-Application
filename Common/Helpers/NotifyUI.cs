@@ -37,8 +37,8 @@ namespace Common.Helpers
 
         public void NotifyError(string notificationTitle, string notificationMessage)
         {
-            notifyIcon.BalloonTipTitle = notificationTitle;
-            notifyIcon.BalloonTipText = notificationMessage;
+            _notifyIcon.BalloonTipTitle = notificationTitle;
+            _notifyIcon.BalloonTipText = notificationMessage;
             //TODO [CR BT] Remove path
             var path = Directory.GetCurrentDirectory();
             var pathCombine = Path.Combine(PathConfiguration.GetResourcesFolder(ConfigurationMessages.ResourceFolderErrorIcon));

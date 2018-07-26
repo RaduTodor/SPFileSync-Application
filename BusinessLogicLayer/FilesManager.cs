@@ -49,19 +49,19 @@
                     fileSync.ExceptionUpdate += (sender, exception) =>
                     {
                         connection.LastSyncTime = DateTime.Now.Minute;
-                        _notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
-                        notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
+                        _notifyUI.BasicNotifyError(ConfigurationMessages.SyncTitleError, exception.Message);
                         syncSuccessful = false;
                     };
                     fileSync.InternetAccessException += (sender, exception) =>
                     {
+                        connection.LastSyncTime = DateTime.Now.Minute;
                         InternetAccessLost.Invoke(this, true);
                         syncSuccessful = false;
                     };
                     fileSync.ProgressUpdate += (sender, number) =>
                     {
                         if (syncSuccessful)
-                        {
+                        {                          
                             MyLogger.Logger.Trace(string.Format(DefaultTraceMessages.ConfigurationSyncFinishedSuccessfully,
                                 connection.Connection.Uri));
                         }
@@ -70,10 +70,8 @@
                             MyLogger.Logger.Error(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
                                 connection.Connection.Uri));
                         }
-
                         verdicts.FinalizedSyncProccesses[number] = true;
-                        connection.LastSyncTime = DateTime.Now.Minute;
-                        InternetAccessLost.Invoke(this, true);
+                        connection.LastSyncTime = DateTime.Now.Minute;                       
                     };
                     Task.Run(() => fileSync.Synchronize());
                     connection.LastSyncTime = DateTime.Now.Minute;
@@ -94,19 +92,36 @@
         {
             try
             {
+                bool syncSuccessful = true;
                 verdicts.FinalizedSyncProccesses[++count] = false;
                 var fileSync = new FileSynchronizer(connection, ProviderType, count);
                 fileSync.ExceptionUpdate += (sender, exception) =>
                 {
                     connection.LastSyncTime = DateTime.Now.Minute;
-                    _notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
+                    _notifyUI.BasicNotifyError(ConfigurationMessages.SyncTitleError, exception.Message);
+                    syncSuccessful = false;
                 };
                 fileSync.InternetAccessException += (sender, exception) =>
                 {
                     connection.LastSyncTime = DateTime.Now.Minute;
                     InternetAccessLost.Invoke(this, true);
+                    syncSuccessful = false;
                 };
-                fileSync.ProgressUpdate += (sender, number) => { verdicts.FinalizedSyncProccesses[number] = true; };
+                fileSync.ProgressUpdate += (sender, number) =>
+                {
+                    if (syncSuccessful)
+                    {
+                        MyLogger.Logger.Trace(string.Format(DefaultTraceMessages.ConfigurationSyncFinishedSuccessfully,
+                            connection.Connection.Uri));
+                    }
+                    else
+                    {
+                        MyLogger.Logger.Error(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
+                            connection.Connection.Uri));
+                    }
+                    verdicts.FinalizedSyncProccesses[number] = true;
+                    connection.LastSyncTime = DateTime.Now.Minute;
+                };
                 Task.Run(() => fileSync.Synchronize());
                 connection.LastSyncTime = DateTime.Now.Minute;
             }
