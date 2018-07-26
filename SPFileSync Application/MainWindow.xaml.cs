@@ -160,6 +160,7 @@
             {
                 SyncButton.IsEnabled = true;
                 WaitSync.Visibility = Visibility.Hidden;
+                notifyUI.BasicNotifyError(ConfigurationMessages.SyncEnded, ConfigurationMessages.SyncEndMessage);
             }
         }
 
