@@ -20,6 +20,8 @@
         public string DirectoryPath { get; set; } = Path.Combine(ConfigurationManager.AppSettings["DirectoryPath"],
             DateTime.Now.Day.ToString());
 
+        public int LastSyncTime { get; set; }
+
         [XmlIgnore] public TimeSpan SyncTimeSpan { get; set; } = new TimeSpan(0, 10, 0);
 
         [XmlAttribute("syncTimeSpan")]

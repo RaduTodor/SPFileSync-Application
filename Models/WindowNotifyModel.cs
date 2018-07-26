@@ -9,6 +9,5 @@ namespace Models
     {
         public Window Window { get; set; }       
         public NotifyUI NotifyUI { get; set; }
-        public Window MainWindow { get; set; }
     }
 }

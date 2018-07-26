@@ -23,8 +23,8 @@
                 Directory.GetCurrentDirectory() + HelpersConstants.ParentDirectory);
             using (TextWriter textWriter =
                 File.CreateText(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile))
-            {
-                xmlSerializer.Serialize(textWriter, list);
+            {             
+                    xmlSerializer.Serialize(textWriter, list);                             
             }
         }
 

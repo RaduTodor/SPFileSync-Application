@@ -24,7 +24,7 @@ namespace BusinessLogicLayer
             try
             { 
                 CreateBasicConfiguration(configurationWindowModel, configuration);
-                configurations.Add(configuration);
+                
                 SerializeConfigurations(configurations);
                 return true;
             }

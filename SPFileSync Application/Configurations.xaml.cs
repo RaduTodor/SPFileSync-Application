@@ -17,9 +17,9 @@ namespace SPFileSync_Application
             _connections = connectionConfigurations;
             PopulateObservableCollection();
             allConfigsList.ItemsSource = _configurationsName;
-            mainWindow = window;
+            mainWindow = window;         
         }
-
+      
         private void PopulateComboBox()
         {
             configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxRest);
