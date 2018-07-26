@@ -35,6 +35,7 @@
         ///     which calls and runs a FileSynchronizer instance Synchronize method.
         ///     This is basically the Application Synchronization start.
         /// </summary>
+        ///    //TODO [CR RT] Please add logging when the sync was successfully finished at all and also for a specific configuration.
         public void Synchronize(Verdicts verdicts)
         {
             verdicts.FinalizedSyncProccesses = new bool[ConnectionConfigurations.Count];
