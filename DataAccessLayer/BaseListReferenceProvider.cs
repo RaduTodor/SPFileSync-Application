@@ -33,6 +33,7 @@
                 listWithColumn.UserColumnName, ConnectionConfiguration.Connection.GetCurrentUserId());
         }
 
+        //TODO [CR RT] Add parameter to summary
         /// <summary>
         ///     Returns the ModifiedDate of an listItem based on it's url
         /// </summary>

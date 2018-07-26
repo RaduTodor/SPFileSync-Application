@@ -17,6 +17,7 @@
 
         public List<ListWithColumnsName> ListsWithColumnsNames { get; set; }
 
+        //TODO [CR RT] Extract constants
         public string DirectoryPath { get; set; } = Path.Combine(ConfigurationManager.AppSettings["DirectoryPath"],
             DateTime.Now.Day.ToString());
 

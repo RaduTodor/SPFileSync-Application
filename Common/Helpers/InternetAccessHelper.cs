@@ -8,6 +8,7 @@
     public static class InternetAccessHelper
     {
         [DllImport("wininet.dll")]
+        //TODO [CR RT] Change Description -> description; ReservedValue - > reservedValue
         private static extern bool InternetGetConnectedState(out int Description, int ReservedValue);
 
         public static bool HasInternetAccess()

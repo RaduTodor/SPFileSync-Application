@@ -2,6 +2,7 @@
 {
     using System.Collections.ObjectModel;
 
+    //TODO [CR RT] Add documentation
     public class ObservableHashSet<T> : ObservableCollection<T>
     {
         public void AddItem(T item)

@@ -5,6 +5,7 @@
 
     public class BaseLoggingException : Exception
     {
+        //TODO [CR RT] Please make ctors protected where possible
         public BaseLoggingException()
         {
         }

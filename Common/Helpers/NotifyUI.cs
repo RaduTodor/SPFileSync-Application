@@ -9,11 +9,17 @@ namespace Common.Helpers
     using System.Windows;
     using System.Windows.Forms;
     using System.Windows.Controls;
+
+    //TODO [CR BT] Format code
+    //TODO [CR BT] Remove unused usings
+    //TODO [CR BT] Remove empty lines
+
     public class NotifyUI
     {
         private  Window _window;
         private ObservableHashSet<string> _configurationErrors = new ObservableHashSet<string>();
         private System.Windows.Controls.ListBox _displayConfigurationErrorsList;
+        //TODO [CR BT] Remove static keyword, add _ add the beginning of the property name
         private static NotifyIcon notifyIcon = new NotifyIcon();
 
        public NotifyUI()
@@ -26,10 +32,15 @@ namespace Common.Helpers
             this._window = window;
             _displayConfigurationErrorsList = listbox;
         }
+        //TODO [CR BT] Please make it private
+        //TODO [CR BT] Remove duplicate code from the next two methods;
+        //TODO [CR BT] Give appropiate naming for the next two methods
+
         public void NotifyError(string notificationTitle, string notificationMessage)
         {
             notifyIcon.BalloonTipTitle = notificationTitle;
             notifyIcon.BalloonTipText = notificationMessage;
+            //TODO [CR BT] Remove path
             var path = Directory.GetCurrentDirectory();
             var pathCombine = Path.Combine(PathConfiguration.GetResourcesFolder(ConfigurationMessages.ResourceFolderErrorIcon));
             notifyIcon.Icon = new Icon(pathCombine);
@@ -60,7 +71,7 @@ namespace Common.Helpers
             MyLogger.Logger.Debug(exception);
         }
 
-
+        //TODO [CR BT] Please remove unused method
         public void DisplayWarning(System.Windows.Controls.Label label, string message, int Interval = 2000)
         {
             System.Timers.Timer timer = new System.Timers.Timer();
@@ -75,6 +86,7 @@ namespace Common.Helpers
             timer.Start();
         }
 
+        //TODO [CR BT] Please make the method private
         public void AddToListButton(string logMessage)
         {
             _configurationErrors.AddItem(logMessage);

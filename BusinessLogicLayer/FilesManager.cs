@@ -14,6 +14,8 @@
     /// </summary>
     public class FilesManager
     {
+        //TODO [CR RT] Why it is not instantiated from ctor?
+        //TODO [CR RT] Remove unsused class member
         NotifyIcon notifyIcon = new NotifyIcon();
         NotifyUI notifyUI = new NotifyUI();
         public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type)
@@ -33,6 +35,7 @@
         ///     which calls and runs a FileSynchronizer instance Synchronize method.
         ///     This is basically the Application Synchronization start.
         /// </summary>
+        ///    //TODO [CR RT] Please add logging when the sync was successfully finished at all and also for a specific configuration.
         public void Synchronize(Verdicts verdicts)
         {
             verdicts.FinalizedSyncProccesses = new bool[ConnectionConfigurations.Count];
@@ -57,6 +60,7 @@
                 {
                     verdicts.FinalizedSyncProccesses[count] = true;
                     MyLogger.Logger.Error(exception, exception.Message);
+                    //TODO [CR RT] Remove block {}
                     {
                         notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
                     }
