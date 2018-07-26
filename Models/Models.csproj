@@ -64,7 +64,6 @@
     <Compile Include="MetadataModel.cs" />
     <Compile Include="MetadataModelCsvMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SyncProgressProvider.cs" />
     <Compile Include="SyncTimeValidator.cs" />
     <Compile Include="WindowNotifyModel.cs" />
     <Compile Include="Verdicts.cs" />

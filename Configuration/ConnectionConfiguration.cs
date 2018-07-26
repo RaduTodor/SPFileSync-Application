@@ -6,6 +6,7 @@
     using System.Configuration;
     using System.IO;
     using System.Xml.Serialization;
+    using Common.Constants;
     using Models;
 
     /// <summary>
@@ -17,7 +18,7 @@
 
         public List<ListWithColumnsName> ListsWithColumnsNames { get; set; }
 
-        public string DirectoryPath { get; set; } = Path.Combine(ConfigurationManager.AppSettings["DirectoryPath"],
+        public string DirectoryPath { get; set; } = Path.Combine(ConfigurationManager.AppSettings[HelpersConstants.DirectoryPath],
             DateTime.Now.Day.ToString());
 
         public int LastSyncTime { get; set; }

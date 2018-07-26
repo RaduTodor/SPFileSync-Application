@@ -10,6 +10,7 @@
 
         public const string BadConfigurationTitle = "Bad configuration";
 
+        //TODO [CR BT] Remove unused constants
         public const string CredentialsError = "Username or password dosen't exist";
 
         public const string GeneralConfigError = "There was an error with the configuration";
@@ -35,6 +36,10 @@
         public const string SyncIsActive = "Sync is active.";
 
         public const string SyncActiveMessage = "Synchronization is running.";
+
+        public const string SyncEnded = "Synchronization stopped.";
+
+        public const string SyncEndMessage = "The Synchronization has ended.";
 
         public const string InternetAccesError = "Bad internet connection";
 

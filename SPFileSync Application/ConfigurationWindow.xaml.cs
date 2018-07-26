@@ -11,6 +11,7 @@ namespace SPFileSync_Application
     using System.Windows;
     using System.Windows.Forms;
 
+    //TODO [CR BT] Resolve usings
     public partial class ConfigurationWindow
     {
 

@@ -37,6 +37,7 @@
         ///     Returns the ModifiedDate of an listItem based on it's url
         /// </summary>
         /// <param name="url"></param>
+        /// <param name="internetAccessException"></param>
         /// <returns></returns>
         public DateTime GetMetadataItem(string url, EventHandler<Exception> internetAccessException)
         {

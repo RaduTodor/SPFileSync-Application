@@ -8,7 +8,7 @@
     public static class InternetAccessHelper
     {
         [DllImport("wininet.dll")]
-        private static extern bool InternetGetConnectedState(out int Description, int ReservedValue);
+        private static extern bool InternetGetConnectedState(out int description, int reservedValue);
 
         public static bool HasInternetAccess()
         {
@@ -18,9 +18,14 @@
 
         public static bool HasInternetAccessAfterRetryInterval()
         {
-            Thread.Sleep(new TimeSpan(0,DataAccessLayerConstants.SyncRetryInterval,0));
-            int description;
-            return InternetGetConnectedState(out description, 0);
+            bool response = false;
+            while (!response)
+            {
+                Thread.Sleep(new TimeSpan(0, 0, DataAccessLayerConstants.SyncRetryInterval));
+                int description;
+                response = InternetGetConnectedState(out description, 0);
+            }
+            return true;
         }
     }
 }

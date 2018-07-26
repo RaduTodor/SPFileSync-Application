@@ -3,6 +3,7 @@
     using System.Windows;
     using System.Windows.Controls;
 
+    //TODO [CR BT] Extract constants
     public static class PasswordHelper
     {
         public static readonly DependencyProperty PasswordProperty =
@@ -53,6 +54,7 @@
             DependencyPropertyChangedEventArgs e)
         {
             var passwordBox = sender as PasswordBox;
+            //TODO [CR BT] Check for null
             passwordBox.PasswordChanged -= PasswordChanged;
 
             if (!GetIsUpdating(passwordBox)) passwordBox.Password = (string) e.NewValue;
@@ -76,6 +78,7 @@
         {
             var passwordBox = sender as PasswordBox;
             SetIsUpdating(passwordBox, true);
+            //TODO [CR BT] Check for null
             SetPassword(passwordBox, passwordBox.Password);
             SetIsUpdating(passwordBox, false);
         }

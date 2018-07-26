@@ -69,7 +69,7 @@
             catch (Exception exception)
             {
                 MyLogger.Logger.Error(exception, exception.Message);
-                throw exception;
+                throw;
             }
 
             return records;

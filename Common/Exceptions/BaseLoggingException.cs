@@ -5,11 +5,11 @@
 
     public class BaseLoggingException : Exception
     {
-        public BaseLoggingException()
+        protected BaseLoggingException()
         {
         }
 
-        public BaseLoggingException(string message) : base(message)
+        protected BaseLoggingException(string message) : base(message)
         {
         }
 
@@ -19,6 +19,7 @@
 
         protected BaseLoggingException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
+
         }
     }
 }

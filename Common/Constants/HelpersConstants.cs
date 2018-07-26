@@ -15,5 +15,7 @@
         public const string XmlParentDirectoryAndFile = @"\Data\configurations.xml";
 
         public const string ParentDirectory = @"\Data";
+
+        public const string DirectoryPath = "DirectoryPath";
     }
 }

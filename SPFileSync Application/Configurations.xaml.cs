@@ -9,6 +9,7 @@ namespace SPFileSync_Application
     {
         private List<ConnectionConfiguration> _connections;
         private MainWindow mainWindow;
+        //TODO [CR BT] Instantiate member from ctor
         private ObservableCollection<string> _configurationsName = new ObservableCollection<string>();
         public Configurations(List<ConnectionConfiguration> connectionConfigurations, MainWindow window)
         {

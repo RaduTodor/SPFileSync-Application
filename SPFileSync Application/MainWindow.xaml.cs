@@ -17,7 +17,9 @@
 
     public partial class MainWindow
     {
+        //TODO [CR BT] Instantiate member from ctor
         private List<ConnectionConfiguration> _connectionConfigurations = new List<ConnectionConfiguration>();
+        //TODO [CR BT] Please rename to _notifyUI
         FilesManager _fileManager;
         NotifyUI notifyUI;
 
@@ -35,13 +37,17 @@
             WaitSync.Visibility = Visibility.Hidden;
         }
 
+        //TODO [CR BT] Please rename, use verbs in all methods naming
+        //TODO [CR BT] Extract to multiple methods
+
         private void ApplicationIcon()
         {
             var notification = new NotifyIcon();
-            notification.Icon =
-                new Icon(PathConfiguration.GetResourcesFolder(
+            notification.Icon =         //TODO [CR BT] Remove redundant path
+                new Icon(Common.Helpers.PathConfiguration.GetResourcesFolder(
                     ConfigurationMessages.ResourceFolderAppIcon));
             notification.Visible = true;
+            //TODO [CR BT] Remove unused object
             var notificationContextStrip = new ContextMenuStrip();
             var context = new ContextMenu();
             var syncItem = new MenuItem
@@ -126,12 +132,12 @@
                 };
 
                 notifyUI.BasicNotifyError(ConfigurationMessages.SyncIsActive, ConfigurationMessages.SyncActiveMessage);
-                var syncProgressProvider = new SyncProgressProvider();
+                var syncProgressProvider = new SyncProgressManager();
                 syncProgressProvider.ProgressUpdate += (s, verdict) =>
                 {
                     Dispatcher.Invoke(() => SetSyncButtonTrue());
                 };
-                Task.Run(() => { syncProgressProvider.Operation(syncProgressProvider, verdicts); });
+                Task.Run(() => { syncProgressProvider.CheckSyncProgress(syncProgressProvider, verdicts); });
             }
             else
             {
@@ -150,16 +156,21 @@
                 Task.Run(() =>
                 {
                     if (InternetAccessHelper.HasInternetAccessAfterRetryInterval())
-                        this.Dispatcher.Invoke(() => Sync(SyncButton, new RoutedEventArgs()));
+                        Dispatcher.Invoke(()=>Sync(SyncButton, new RoutedEventArgs()));
                     RetryThreadOn = false;
+                    Dispatcher.Invoke(()=>SetSyncButtonTrue());
                 });
             }
         }
 
         private void SetSyncButtonTrue()
         {
-            SyncButton.IsEnabled = true;
-            WaitSync.Visibility = Visibility.Hidden;
+            if (!RetryThreadOn)
+            {
+                SyncButton.IsEnabled = true;
+                WaitSync.Visibility = Visibility.Hidden;
+                notifyUI.BasicNotifyError(ConfigurationMessages.SyncEnded, ConfigurationMessages.SyncEndMessage);
+            }
         }
 
         private void Sync(object sender, RoutedEventArgs e)

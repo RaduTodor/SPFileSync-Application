@@ -8,7 +8,8 @@ namespace SPFileSync_Application
     using System.Windows;
     public partial class ConfigurationListsEdit
     {
-        List<ListWithColumnsName> _selectedConfigLists;      
+        List<ListWithColumnsName> _selectedConfigLists;
+        //TODO [CR BT] Instantiate members from ctor
         private ObservableCollection<string> _observableSelectedconfigListsName = new ObservableCollection<string>();
         private List<ListWithColumnsName> _removedListsOfConfig = new List<ListWithColumnsName>();
         private int _selectedItemIndex;

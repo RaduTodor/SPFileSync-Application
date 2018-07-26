@@ -30,14 +30,14 @@
         /// <param name="internetAccessException"></param>
         public void Download(string url, string directoryPath, EventHandler<Exception> exceptionHandler, bool update, EventHandler<Exception> internetAccessException)
         {
+            var fileName = ParsingHelpers.ParseUrlFileName(url);
+            var downloadedFilePath = Path.Combine(directoryPath, fileName);
             try
             {
                 using (var response = CreateDownloadRequest(url).GetResponse())
                 {
                     using (var stream = response.GetResponseStream())
                     {
-                        var fileName = ParsingHelpers.ParseUrlFileName(url);
-                        var downloadedFilePath = Path.Combine(directoryPath, fileName);
                         FileEditingHelper.CreateAccesibleFile(downloadedFilePath, directoryPath);
                         using (var fileStream = new FileStream(downloadedFilePath, FileMode.Create))
                         {
@@ -66,13 +66,12 @@
             }
             catch (System.Net.WebException exception)
             {
-                Exception currentException =
-                    new NoInternetAccessException(exception.Message, exception);
-                MyLogger.Logger.Error(currentException, string.Format(
-                    DefaultExceptionMessages.NoInternetAccessExceptionMessage,
-                    DataAccessLayerConstants.SyncRetryInterval));
-                internetAccessException?.Invoke(this, currentException);
-                throw currentException;
+                CatchDownloadException(exception, internetAccessException);
+            }
+            catch (System.IO.IOException exception)
+            {
+                File.Delete(downloadedFilePath);
+                CatchDownloadException(exception,internetAccessException);
             }
             catch (Exception exception)
             {
@@ -82,6 +81,17 @@
                     string.Format(DefaultExceptionMessages.FileDownloadExceptionMessage, url));
                 exceptionHandler?.Invoke(this, downloadFileExceptionexception);
             }
+        }
+
+        private void CatchDownloadException(Exception exception, EventHandler<Exception> internetAccessException)
+        {
+            Exception currentException =
+                new NoInternetAccessException(exception.Message, exception);
+            MyLogger.Logger.Error(currentException, string.Format(
+                DefaultExceptionMessages.NoInternetAccessExceptionMessage,
+                DataAccessLayerConstants.SyncRetryInterval));
+            internetAccessException?.Invoke(this, currentException);
+            throw currentException;
         }
 
         /// <summary>
