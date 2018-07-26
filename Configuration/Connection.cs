@@ -89,20 +89,7 @@
 
                     if (clientContext != null)
                     {
-                        //TODO [CR RT] Extract to a separate method
-                        try
-                        {
-                            clientContext.ExecuteQuery();
-                        }
-                        catch (Exception exception)
-                        {
-                            Exception currentException = new ClientContextOperationException(
-                                DefaultExceptionMessages.ClientContextOperationExceptionMessage,
-                                exception);
-                            MyLogger.Logger.Error(currentException, currentException.Message);
-                            throw currentException;
-                        }
-
+                        ExecuteContextQuerry(clientContext);
                         return clientContext.Web.CurrentUser.Id;
                     }
                 }
@@ -117,6 +104,22 @@
             }
 
             return -1;
+        }
+
+        private void ExecuteContextQuerry(ClientContext clientContext)
+        {
+            try
+            {
+                clientContext.ExecuteQuery();
+            }
+            catch (Exception exception)
+            {
+                Exception currentException = new ClientContextOperationException(
+                    DefaultExceptionMessages.ClientContextOperationExceptionMessage,
+                    exception);
+                MyLogger.Logger.Error(currentException, currentException.Message);
+                throw currentException;
+            }
         }
 
 

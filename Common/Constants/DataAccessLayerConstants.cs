@@ -10,7 +10,9 @@
 
         public const int LibrarySegmentNumber = 3;
 
-        public const int SyncRetryInterval = 3;
+        public const int SyncRetryInterval = 30;
+
+        public const int DefaultConfigurationSyncInterval = 10;
 
         public const string ContentTypeXml = "application/xml;odata=verbose";
 

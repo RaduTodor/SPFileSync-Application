@@ -6,6 +6,7 @@
     using System.Configuration;
     using System.IO;
     using System.Xml.Serialization;
+    using Common.Constants;
     using Models;
 
     /// <summary>
@@ -17,11 +18,10 @@
 
         public List<ListWithColumnsName> ListsWithColumnsNames { get; set; }
 
-        //TODO [CR RT] Extract constants
-        public string DirectoryPath { get; set; } = Path.Combine(ConfigurationManager.AppSettings["DirectoryPath"],
+        public string DirectoryPath { get; set; } = Path.Combine(ConfigurationManager.AppSettings[HelpersConstants.DirectoryPath],
             DateTime.Now.Day.ToString());
 
-        [XmlIgnore] public TimeSpan SyncTimeSpan { get; set; } = new TimeSpan(0, 10, 0);
+        [XmlIgnore] public TimeSpan SyncTimeSpan { get; set; } = new TimeSpan(0, DataAccessLayerConstants.DefaultConfigurationSyncInterval, 0);
 
         [XmlAttribute("syncTimeSpan")]
         [Browsable(false)]

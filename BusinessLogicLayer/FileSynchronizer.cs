@@ -31,8 +31,7 @@
 
         private BaseListReferenceProvider ListReferenceProvider { get; }
 
-        //TODO [CR RT] Please make it private
-        public int ConfigurationNumber { get; set; }
+        private int ConfigurationNumber { get; set; }
 
         public event EventHandler<Exception> ExceptionUpdate;
 
@@ -69,41 +68,32 @@
                 ProgressUpdate?.Invoke(this, ConfigurationNumber);
             }
         }
-        //TODO [CR RT] Remove invalid param
         /// <summary>
         ///     Checks if given MetadataModel is in given list and if it is compares the ModifiedDate, if so calls Download on it
         /// </summary>
         /// <param name="model"></param>
         /// <param name="currentData"></param>
-        /// <param name="exceptionHandler"></param>
         private void EnsureFile(MetadataModel model, List<MetadataModel> currentData)
         {
             var match = currentData.FirstOrDefault(x => x.Url == model.Url);
             if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
-                FileOperationProvider.Download(match.Url, ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
-                    ExceptionUpdate, true, InternetAccessException);
+                DownloadFileAndAddMetadata(true, currentData, model);
                 currentData.Remove(match);
-                currentData.Add(model);
             }
             else
             {
                 if (!File.Exists(ListReferenceProvider.ConnectionConfiguration.DirectoryPath + Backslash +
                                  ParsingHelpers.ParseUrlFileName(model.Url)))
                 {
-                    //TODO [CR RT] Extract duplicate code -> Download+Add
                     if (match == null)
                     {
-                        FileOperationProvider.Download(model.Url,
-                            ListReferenceProvider.ConnectionConfiguration.DirectoryPath, ExceptionUpdate, false, InternetAccessException);
-                        currentData.Add(model);
+                        DownloadFileAndAddMetadata(false, currentData, model);
                     }
                     else
                     {
-                        FileOperationProvider.Download(model.Url,
-                            ListReferenceProvider.ConnectionConfiguration.DirectoryPath, ExceptionUpdate, false, InternetAccessException);
+                        DownloadFileAndAddMetadata(false, currentData, model);
                         currentData.Remove(match);
-                        currentData.Add(model);
                     }
                 }
                 else
@@ -111,6 +101,13 @@
                     if (match == null) currentData.Add(model);
                 }
             }
+        }
+
+        private void DownloadFileAndAddMetadata(bool updated, List<MetadataModel> currentData, MetadataModel model)
+        {
+            FileOperationProvider.Download(model.Url,
+                ListReferenceProvider.ConnectionConfiguration.DirectoryPath, ExceptionUpdate, updated, InternetAccessException);
+            currentData.Add(model);
         }
 
         /// <summary>

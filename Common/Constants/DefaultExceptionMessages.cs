@@ -41,5 +41,8 @@
         public const string LoginExceptionMessage = "There was an error while trying to login to sharepoint site";
 
         public const string NoInternetAccessExceptionMessage = "The internet access is no longer availabe. The application will retry the sync in {0} minutes";
+
+        public const string ConfigurationSyncFinishedUnssuccesful =
+            "The sync process of configuration with sharepoint site {0} has finished but there was an error";
     }
 }

@@ -8,8 +8,7 @@
     public static class InternetAccessHelper
     {
         [DllImport("wininet.dll")]
-        //TODO [CR RT] Change Description -> description; ReservedValue - > reservedValue
-        private static extern bool InternetGetConnectedState(out int Description, int ReservedValue);
+        private static extern bool InternetGetConnectedState(out int description, int reservedValue);
 
         public static bool HasInternetAccess()
         {
@@ -22,7 +21,7 @@
             bool response = false;
             while (!response)
             {
-                Thread.Sleep(new TimeSpan(0, DataAccessLayerConstants.SyncRetryInterval, 0));
+                Thread.Sleep(new TimeSpan(0, 0, DataAccessLayerConstants.SyncRetryInterval));
                 int description;
                 response = InternetGetConnectedState(out description, 0);
             }

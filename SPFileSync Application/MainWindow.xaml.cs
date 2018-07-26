@@ -129,12 +129,12 @@
                 };
 
                 notifyUI.BasicNotifyError(ConfigurationMessages.SyncIsActive, ConfigurationMessages.SyncActiveMessage);
-                var syncProgressProvider = new SyncProgressProvider();
+                var syncProgressProvider = new SyncProgressManager();
                 syncProgressProvider.ProgressUpdate += (s, verdict) =>
                 {
                     Dispatcher.Invoke(() => SetSyncButtonTrue());
                 };
-                Task.Run(() => { syncProgressProvider.Operation(syncProgressProvider, verdicts); });
+                Task.Run(() => { syncProgressProvider.CheckSyncProgress(syncProgressProvider, verdicts); });
             }
             else
             {
@@ -155,7 +155,7 @@
                     if (InternetAccessHelper.HasInternetAccessAfterRetryInterval())
                         Dispatcher.Invoke(()=>Sync(SyncButton, new RoutedEventArgs()));
                     RetryThreadOn = false;
-                    SetSyncButtonTrue();
+                    Dispatcher.Invoke(()=>SetSyncButtonTrue());
                 });
             }
         }

@@ -69,8 +69,7 @@
             catch (Exception exception)
             {
                 MyLogger.Logger.Error(exception, exception.Message);
-                //TODO [CR RT] Use throw; instead of throw exception; see  https://www.dotnetjalps.com/2013/10/throw-vs-throw-ex-csharp.html
-                throw exception;
+                throw;
             }
 
             return records;

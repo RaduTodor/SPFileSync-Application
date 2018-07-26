@@ -5,12 +5,11 @@
 
     public class BaseLoggingException : Exception
     {
-        //TODO [CR RT] Please make ctors protected where possible
-        public BaseLoggingException()
+        protected BaseLoggingException()
         {
         }
 
-        public BaseLoggingException(string message) : base(message)
+        protected BaseLoggingException(string message) : base(message)
         {
         }
 
@@ -20,6 +19,7 @@
 
         protected BaseLoggingException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
+
         }
     }
 }
