@@ -86,13 +86,9 @@
                 if (!File.Exists(ListReferenceProvider.ConnectionConfiguration.DirectoryPath + Backslash +
                                  ParsingHelpers.ParseUrlFileName(model.Url)))
                 {
-                    if (match == null)
+                    DownloadFileAndAddMetadata(false, currentData, model);
+                    if (match != null)
                     {
-                        DownloadFileAndAddMetadata(false, currentData, model);
-                    }
-                    else
-                    {
-                        DownloadFileAndAddMetadata(false, currentData, model);
                         currentData.Remove(match);
                     }
                 }

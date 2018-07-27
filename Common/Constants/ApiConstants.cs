@@ -13,7 +13,7 @@
             "_api/Web/lists/getbytitle('{0}')/items?$select=Modified&$filter=FileRef eq '{1}'";
 
         public const string SpecificListItemsOfUserApi =
-            "_api/Web/lists/getbytitle('{0}')/items?$select={1}&$filter={2} eq '{3}'";
+            "_api/Web/lists/getbytitle('{0}')/items?$select={1},{2}&$filter={3} eq '{4}'";
 
         public const string ContextInfo = "_api/contextinfo";
     }

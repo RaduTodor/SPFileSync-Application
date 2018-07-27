@@ -7,6 +7,7 @@
     using Common.Exceptions;
     using Common.Helpers;
     using Configuration;
+    using NLog;
 
     /// <summary>
     ///     From given ConnectionConfiguration can access specific files

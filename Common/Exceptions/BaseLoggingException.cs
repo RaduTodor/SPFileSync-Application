@@ -13,13 +13,12 @@
         {
         }
 
-        public BaseLoggingException(string message, Exception innerException) : base(message, innerException)
+        protected BaseLoggingException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
         protected BaseLoggingException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-
         }
     }
 }

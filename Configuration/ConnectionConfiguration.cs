@@ -33,5 +33,16 @@
             get { return SyncTimeSpan.Ticks; }
             set { SyncTimeSpan = new TimeSpan(value); }
         }
+
+        public List<string> GetAllListsNames()
+        {
+            List<string> listsNames = new List<string>();
+            foreach (ListWithColumnsName listWithColumnsName in ListsWithColumnsNames)
+            {
+                listsNames.Add(listWithColumnsName.ListName);
+            }
+
+            return listsNames;
+        }
     }
 }

@@ -32,7 +32,9 @@
             _fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()), _notifyUI);
 
             if (_connectionConfigurations.Count == 0) SyncButton.IsEnabled = false;
+
             _fileManager.TimerSyncronize(SyncButton);
+
             WaitSync.Visibility = Visibility.Hidden;
         }
 
@@ -180,6 +182,13 @@
         {
             _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
             var window = new Configurations(_connectionConfigurations, this);
+            window.Show();
+        }
+
+        private void ListOperations(object sender, RoutedEventArgs e)
+        {
+            _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
+            var window = new ReferenceListOperationsWindow(_connectionConfigurations);
             window.Show();
         }
 
