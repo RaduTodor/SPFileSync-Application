@@ -1,6 +1,4 @@
-﻿
-
-namespace Models
+﻿namespace Models
 {
     using System.Globalization;
     using System.Windows.Controls;

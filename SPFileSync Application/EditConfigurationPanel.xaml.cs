@@ -15,14 +15,14 @@ namespace SPFileSync_Application
         private List<ConnectionConfiguration> _configurations;
         private NotifyUI _notifyUI;
         private ObservableCollection<string> _configurationsName = new ObservableCollection<string>();
-        private string _path = "";
+        private string _uiPathField = "";
         Window _window;
 
         public EditConfigurationPanel(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
         {
             InitializeComponent();
             InitializeFields(configurationItem, configurations, window);
-            UpdateUI();          
+            UpdateUI();
         }
 
         private void InitializeFields(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
@@ -37,7 +37,7 @@ namespace SPFileSync_Application
         {
             configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxRest);
             configComboBox.Items.Add(Common.Constants.ConfigurationMessages.ComboBoxCsom);
-            _path = _configuration.DirectoryPath;
+            _uiPathField = _configuration.DirectoryPath;
             siteUrlBox.Text = _configuration.Connection.Uri.ToString();
             syncTextBox.Text = _configuration.SyncTimeSpan.TotalMinutes.ToString();
             userNameTextBox.Text = _configuration.Connection.Credentials.UserName;
@@ -73,28 +73,27 @@ namespace SPFileSync_Application
                 UserName = userNameTextBox.Text,
                 Password = passwordText.Password,
                 SiteUrl = siteUrlBox.Text,
-                Path = _path,
+                Path = _uiPathField,
                 SyncInterval = syncTextBox.Text
             };
-            WindowNotifyModel windowNotifyModel = new WindowNotifyModel() {NotifyUI = _notifyUI, Window = this };
+            WindowNotifyModel windowNotifyModel = new WindowNotifyModel() { NotifyUI = _notifyUI, Window = this };
             var checkIfValid = configurationOperations.EditConfiguration(configurationWindowModel, _configurations, windowNotifyModel, _configuration);
-            if(checkIfValid)
+            if (checkIfValid)
             {
                 if (_window is Configurations)
                 {
                     PopulateObservableCollection();
                     (_window as Configurations).allConfigsList.ItemsSource = _configurationsName;
                 }
-                Close();                
+                Close();
                 _window.Show();
-            }                    
+            }
         }
 
         private void SetFileDestination(object sender, RoutedEventArgs e)
         {
-            //TODO [CR BT] Remove redundant path ??
-            _path = PathConfiguration.SetPath(_configuration.DirectoryPath);
-            pathLabel.Content = _path;
+            _uiPathField = PathConfiguration.SetPath(_configuration.DirectoryPath);
+            pathLabel.Content = _uiPathField;
         }
     }
 }

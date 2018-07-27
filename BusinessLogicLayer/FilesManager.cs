@@ -153,7 +153,7 @@
 
         public void ConfigurationThreadsTimer(System.Windows.Controls.Button syncButton)
         {
-            var ticks = TimeSpan.FromMilliseconds(3).Ticks;
+            var ticks = TimeSpan.FromMilliseconds(6).Ticks;
             _timer.Interval = ticks;
             _timer.AutoReset = true;
             _timer.Enabled = true;
@@ -171,15 +171,15 @@
             var count = -1;
             if (checkIfSyncButton)
             {
-                var myList = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
-                foreach (var connection in myList)
+                ConnectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
+                foreach (var connection in ConnectionConfigurations)
                 {
-                    if (Math.Abs(DateTime.Now.Minute - connection.LastSyncTime) >= connection.SyncTimeSpan.Minutes)
+                   if (Math.Abs(DateTime.Now.Minute - connection.LastSyncTime) >= connection.SyncTimeSpan.Minutes)
                     {
                         GeneralSynchronize(verdicts, connection, count);
                     }
                 }
-                XmlFileManipulator.Serialize<ConnectionConfiguration>(myList);
+                XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
             }
         }
     }

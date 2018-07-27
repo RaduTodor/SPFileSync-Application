@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SPFileSync_Application"
-        xmlns:local1="clr-namespace:Models;assembly=Models"
+        xmlns:models="clr-namespace:Models;assembly=Models"
         mc:Ignorable="d"
         Title="EditItemListPanel" Height="450" Width="800">
     <Window.Background>
@@ -12,7 +12,7 @@
     </Window.Background>
 
     <Window.Resources>
-        <local1:ConfigurationWindowModel x:Key="CWM" />
+        <models:ConfigurationWindowModel x:Key="CWM" />
         <ControlTemplate x:Key="validationTemplate">
             <DockPanel>
                 <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
@@ -51,7 +51,7 @@
                 <Binding Path="ListName" Source="{StaticResource CWM}"
                          UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <local1:ConfigurationWindowModel />
+                        <models:ConfigurationWindowModel />
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>
@@ -63,7 +63,7 @@
                 <Binding Path="UrlColumn" Source="{StaticResource CWM}"
                          UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <local1:ConfigurationWindowModel />
+                        <models:ConfigurationWindowModel />
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>
@@ -75,7 +75,7 @@
                 <Binding Path="UserColumn" Source="{StaticResource CWM}"
                          UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <local1:ConfigurationWindowModel />
+                        <models:ConfigurationWindowModel />
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>

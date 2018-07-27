@@ -24,6 +24,7 @@
             using (TextWriter textWriter =
                 File.CreateText(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile))
             {             
+                lock(textWriter)
                     xmlSerializer.Serialize(textWriter, list);                             
             }
         }
@@ -39,6 +40,7 @@
             using (TextReader textReader =
                 File.OpenText(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile))
             {
+                lock (textReader) 
                 return (List<T>) xmlSerializer.Deserialize(textReader);
             }
         }

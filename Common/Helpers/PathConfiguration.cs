@@ -18,10 +18,8 @@
         public static string GetApplicationDirectory(string wantedResource)
         {
             var path = Directory.GetCurrentDirectory();
-            var culture = new CultureInfo("en");
-            //{culture}
             var removeSegment = path.IndexOf(ConfigurationMessages.Bin);
-            var resourceFolderPath = $@"{path.Remove(removeSegment)}{wantedResource}";
+            var resourceFolderPath = ($@"{path.Remove(removeSegment)}{wantedResource}").ToString(CultureInfo.InvariantCulture);
             return resourceFolderPath;
         }
     }
