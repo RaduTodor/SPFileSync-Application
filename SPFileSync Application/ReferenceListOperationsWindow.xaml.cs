@@ -33,6 +33,7 @@
 
         private ObservableCollection<string> _urlsNames;
 
+        //TODO [CR RT]: Extract logic in multiple methods. This method it's making almost 6 different things.
         public ReferenceListOperationsWindow(List<ConnectionConfiguration> connectionConfigurations)
         {
             InitializeComponent();
@@ -144,7 +145,7 @@
             foreach (var item in _lists) _listsName.Add(item.ListName);
         }
 
-
+        //TODO [CR RT]: Please rename methong. Do not use names of lists here like Observable collection. eg. PopulateUrlsList
         private void PopulateUrlsObservableCollection()
         {
             _urlsNames = new ObservableCollection<string>();
@@ -157,7 +158,7 @@
         }
 
         private void OperationButton_Click(object sender, RoutedEventArgs e)
-        {
+        { //TODO [CR RT]: Move the logic back here. You extracted all the logic from here only to put in on another method and this method have just one line. This have sense only if the method OperationButtonAction it's called in another location.
             OperationButtonAction(sender);
         }
 
@@ -186,7 +187,7 @@
 
             NewListSelected();
         }
-
+        //TODO [CR RT]: Please rename the method to a more intuitive name. eg GetListReferenceProvide. What means "new".
         private BaseListReferenceProvider GetNewListProvider()
         {
             BaseListReferenceProvider listReferenceProvider;
