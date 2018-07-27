@@ -18,6 +18,8 @@
 
         public const string DirectoryPath = "DirectoryPath";
 
+        public const string FilePath = "{0}\\{1}";
+
         public const string Password = "Password";
 
         public const string Attach = "Attach";

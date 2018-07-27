@@ -83,8 +83,10 @@
             }
             else
             {
-                if (!File.Exists(ListReferenceProvider.ConnectionConfiguration.DirectoryPath + Backslash +
-                                 ParsingHelpers.ParseUrlFileName(model.Url)))
+                string filePath = string.Format(HelpersConstants.FilePath,
+                    ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
+                    ParsingHelpers.ParseUrlFileName(model.Url));
+                if (!File.Exists(filePath))
                 {
                     DownloadFileAndAddMetadata(false, currentData, model);
                     if (match != null)

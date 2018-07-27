@@ -28,6 +28,8 @@
 
         private const string Modified = "Modified";
 
+        private const string Id = "ID";
+
         public MetadataProvider(ConnectionConfiguration configuration)
         {
             ConnectionConfiguration = configuration;
@@ -138,7 +140,7 @@
             try
             {
                 var endpointResponse = GetHttpWebResponse(string.Format(ApiConstants.SpecificListItemsOfUserApi,
-                    listWithColumnsName.ListName, "ID",
+                    listWithColumnsName.ListName, Id ,
                     listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
                     ConnectionConfiguration.Connection.GetCurrentUserName()));
 
@@ -196,7 +198,7 @@
             var idResult = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
                            from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
                            from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
-                           from id in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + "ID")
+                           from id in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + Id)
                            select id;
 
             var ids = new List<int>();
