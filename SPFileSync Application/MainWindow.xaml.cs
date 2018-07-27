@@ -33,7 +33,9 @@
             _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
             _fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()));
             if (_connectionConfigurations.Count == 0) SyncButton.IsEnabled = false;
+
             _fileManager.TimerSyncronize(SyncButton);
+
             WaitSync.Visibility = Visibility.Hidden;
         }
 
@@ -122,8 +124,8 @@
                 SyncButton.IsEnabled = false;
                 WaitSync.Visibility = Visibility.Visible;
                 var verdicts = new Verdicts();
-                //var fileManager = new FilesManager(_connectionConfigurations,
-                //    GetProviderType(configComboBox.SelectedItem.ToString()));
+                //var _fileManager = new FilesManager(_connectionConfigurations,
+                //   GetProviderType(configComboBox.SelectedItem.ToString()));
                 _fileManager.Synchronize(verdicts);
                 _fileManager.InternetAccessLost += (senderObject, truthValue) =>
                 {

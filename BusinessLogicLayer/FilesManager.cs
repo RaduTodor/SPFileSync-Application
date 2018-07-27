@@ -74,7 +74,7 @@
                         connection.LastSyncTime = DateTime.Now.Minute;                       
                     };
                     Task.Run(() => fileSync.Synchronize());
-                    connection.LastSyncTime = DateTime.Now.Minute;
+                   connection.LastSyncTime = DateTime.Now.Minute;
                 }
                 catch (Exception exception)
                 {
