@@ -83,9 +83,10 @@
             }
             else
             {
-                //TODO [CR RT]: Please extract in a variable and use string format, and use also url combine 
-                if (!File.Exists(ListReferenceProvider.ConnectionConfiguration.DirectoryPath + Backslash +
-                                 ParsingHelpers.ParseUrlFileName(model.Url)))
+                string filePath = string.Format(HelpersConstants.FilePath,
+                    ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
+                    ParsingHelpers.ParseUrlFileName(model.Url));
+                if (!File.Exists(filePath))
                 {
                     DownloadFileAndAddMetadata(false, currentData, model);
                     if (match != null)

@@ -17,5 +17,7 @@
         public const string ParentDirectory = @"\Data";
 
         public const string DirectoryPath = "DirectoryPath";
+
+        public const string FilePath = "{0}\\{1}";
     }
 }

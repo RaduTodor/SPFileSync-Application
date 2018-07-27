@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows;
+    using System.Windows.Controls;
     using BusinessLogicLayer;
     using Common.ApplicationEnums;
     using Common.Constants;
@@ -33,22 +34,27 @@
 
         private ObservableCollection<string> _urlsNames;
 
-        //TODO [CR RT]: Extract logic in multiple methods. This method it's making almost 6 different things.
         public ReferenceListOperationsWindow(List<ConnectionConfiguration> connectionConfigurations)
         {
             InitializeComponent();
             PopulateComboBox();
-            RemoveButton.IsEnabled = false;
-            EditButton.IsEnabled = false;
-            AddButton.IsEnabled = false;
+            
+            InstantiateFields();
 
-            _configurationsName = new ObservableCollection<string>();
-            _listsName = new ObservableCollection<string>();
-            _urlsNames = new ObservableCollection<string>();
+            AddModifyHandlerToTextBox(NewUrlTextBox);
 
-            NewUrlTextBox.TextChanged += (sender, args) =>
+            _connections = connectionConfigurations;
+            PopulateConfigsList();
+            allConfigsList.ItemsSource = _configurationsName;
+
+            AddSelectionHandlersToListViews();
+        }
+
+        public void AddModifyHandlerToTextBox(TextBox textBox)
+        {
+            textBox.TextChanged += (sender, args) =>
             {
-                if (Uri.IsWellFormedUriString(NewUrlTextBox.Text, UriKind.Absolute))
+                if (Uri.IsWellFormedUriString(textBox.Text, UriKind.Absolute))
                 {
                     AddButton.IsEnabled = true;
                     if (allUrlsList.SelectedIndex != NullChoiceValue)
@@ -61,11 +67,21 @@
                     AddButton.IsEnabled = false;
                 }
             };
+        }
 
-            _connections = connectionConfigurations;
-            PopulateConfigurationsObservableCollection();
-            allConfigsList.ItemsSource = _configurationsName;
+        private void InstantiateFields()
+        {
+            RemoveButton.IsEnabled = false;
+            EditButton.IsEnabled = false;
+            AddButton.IsEnabled = false;
 
+            _configurationsName = new ObservableCollection<string>();
+            _listsName = new ObservableCollection<string>();
+            _urlsNames = new ObservableCollection<string>();
+        }
+
+        private void AddSelectionHandlersToListViews()
+        {
             allConfigsList.SelectionChanged += (sender, args) => { NewConfigSelected(); };
             allConfigListsList.SelectionChanged += (sender, args) => { NewListSelected(); };
             allUrlsList.SelectionChanged += (sender, args) => { NewUrlSelected(); };
@@ -78,7 +94,7 @@
             _urlsNames = new ObservableCollection<string>();
             allUrlsList.ItemsSource = _urlsNames;
             _lists = _connections[allConfigsList.SelectedIndex].ListsWithColumnsNames;
-            PopulateListsObservableCollection();
+            PopulateListsList();
             allConfigListsList.UnselectAll();
             allUrlsList.UnselectAll();
             allConfigListsList.ItemsSource = _listsName;
@@ -114,7 +130,7 @@
                 var metadataProvider = new MetadataProvider(_connections[allConfigsList.SelectedIndex]);
                 _urls = metadataProvider.GetCurrentUserUrlsFromList(_lists[allConfigListsList.SelectedIndex], null,
                     null);
-                PopulateUrlsObservableCollection();
+                PopulareUrlsList();
                 allUrlsList.ItemsSource = _urlsNames;
                 if (Uri.IsWellFormedUriString(NewUrlTextBox.Text, UriKind.Absolute))
                 {
@@ -133,20 +149,19 @@
             configComboBox.Items.Add(ConfigurationMessages.ComboBoxCsom);
         }
 
-        private void PopulateConfigurationsObservableCollection()
+        private void PopulateConfigsList()
         {
             _configurationsName = new ObservableCollection<string>();
             foreach (var item in _connections) _configurationsName.Add(item.Connection.UriString);
         }
 
-        private void PopulateListsObservableCollection()
+        private void PopulateListsList()
         {
             _listsName = new ObservableCollection<string>();
             foreach (var item in _lists) _listsName.Add(item.ListName);
         }
 
-        //TODO [CR RT]: Please rename methong. Do not use names of lists here like Observable collection. eg. PopulateUrlsList
-        private void PopulateUrlsObservableCollection()
+        private void PopulareUrlsList()
         {
             _urlsNames = new ObservableCollection<string>();
             _urlsId = new List<int>();
@@ -158,13 +173,8 @@
         }
 
         private void OperationButton_Click(object sender, RoutedEventArgs e)
-        { //TODO [CR RT]: Move the logic back here. You extracted all the logic from here only to put in on another method and this method have just one line. This have sense only if the method OperationButtonAction it's called in another location.
-            OperationButtonAction(sender);
-        }
-
-        private void OperationButtonAction(object sender)
-        {
-            var listReferenceProvider = GetNewListProvider();
+        { 
+            var listReferenceProvider = GetListReferenceProvider();
             if (Equals(sender, AddButton))
             {
                 listReferenceProvider.AddListReferenceItem(_lists[allConfigListsList.SelectedIndex].ListName,
@@ -187,8 +197,8 @@
 
             NewListSelected();
         }
-        //TODO [CR RT]: Please rename the method to a more intuitive name. eg GetListReferenceProvide. What means "new".
-        private BaseListReferenceProvider GetNewListProvider()
+
+        private BaseListReferenceProvider GetListReferenceProvider()
         {
             BaseListReferenceProvider listReferenceProvider;
             if (configComboBox.SelectionBoxItem.ToString() == ConfigurationMessages.ComboBoxRest)
