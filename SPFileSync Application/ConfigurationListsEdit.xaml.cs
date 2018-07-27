@@ -9,14 +9,15 @@ namespace SPFileSync_Application
     public partial class ConfigurationListsEdit
     {
         List<ListWithColumnsName> _selectedConfigLists;
-        //TODO [CR BT] Instantiate members from ctor
-        private ObservableCollection<string> _observableSelectedconfigListsName = new ObservableCollection<string>();
-        private List<ListWithColumnsName> _removedListsOfConfig = new List<ListWithColumnsName>();
+        private ObservableCollection<string> _observableSelectedconfigListsName;
+        private List<ListWithColumnsName> _removedListsOfConfig;
         private int _selectedItemIndex;
         public ConfigurationListsEdit(List<ListWithColumnsName> list)
         {
             InitializeComponent();
             _selectedConfigLists = list;
+            _observableSelectedconfigListsName = new ObservableCollection<string>();
+            _removedListsOfConfig = new List<ListWithColumnsName>();
             _observableSelectedconfigListsName.CollectionChanged += ItemsCollectionChanged;
             GetListsNames();
             itemListBox.ItemsSource = _observableSelectedconfigListsName;
@@ -31,7 +32,7 @@ namespace SPFileSync_Application
         }
 
         private void ItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {          
+        {
             if (_observableSelectedconfigListsName.Count <= 1)
             {
                 removeButton.IsEnabled = false;
@@ -51,7 +52,7 @@ namespace SPFileSync_Application
 
         private void EditItemList(object sender, RoutedEventArgs e)
         {
-            _selectedItemIndex = itemListBox.SelectedIndex;            
+            _selectedItemIndex = itemListBox.SelectedIndex;
             var selectedConfigList = _selectedConfigLists[_selectedItemIndex];
             EditItemListPanel window = new EditItemListPanel(selectedConfigList, this);
             window.Show();
@@ -74,8 +75,8 @@ namespace SPFileSync_Application
 
         private void Add(object sender, RoutedEventArgs e)
         {
-            ListWithColumns window = new ListWithColumns(_selectedConfigLists, _observableSelectedconfigListsName);         
-            window.Show();          
+            ListWithColumns window = new ListWithColumns(_selectedConfigLists, _observableSelectedconfigListsName);
+            window.Show();
         }
     }
 }

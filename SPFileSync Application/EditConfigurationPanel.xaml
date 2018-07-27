@@ -13,7 +13,7 @@
     </Window.Background>
     <Window.Resources>
         <local1:ConfigurationWindowModel x:Key="CWM" />
-        <local1:SyncTimeValidator x:Key="STV" />
+        <w:SyncTimeValidator x:Key="STV" />
         <ControlTemplate x:Key="validationTemplate">
             <DockPanel>
                 <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
@@ -81,7 +81,7 @@
                 <Binding Path="SyncTime" Source="{StaticResource STV}"
                          UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <local1:SyncTimeValidator />
+                        <w:SyncTimeValidator />
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>

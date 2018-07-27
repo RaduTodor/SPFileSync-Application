@@ -42,7 +42,7 @@
             {
                 Exception currentException =
                     new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }
@@ -71,7 +71,7 @@
             {
                 Exception currentException =
                     new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }
@@ -103,7 +103,7 @@
             {
                 Exception currentException =
                     new GetRequestException(DefaultExceptionMessages.GetRequestExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }

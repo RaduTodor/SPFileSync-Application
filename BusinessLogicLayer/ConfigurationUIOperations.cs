@@ -1,17 +1,14 @@
-﻿using Common.Helpers;
-using Configuration;
-using Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace BusinessLogicLayer
+﻿namespace BusinessLogicLayer
 {
-    //TODO [CR BT] Put usings under namespace
-    //TODO [CR BT] Add class and public methods documentation
+    using Common.Helpers;
+    using Configuration;
+    using Models;
+    using System;
+    using System.Collections.Generic;
+
+    /// <summary>
+    ///     An instance of ConfigurationUIOperations class can add and edit configurations.
+    /// </summary>
     public class ConfigurationUIOperations
     {
         private Connection CreateConnection(ConfigurationWindowModel configurationWindowModel)
@@ -21,12 +18,14 @@ namespace BusinessLogicLayer
             return connection;
         }
 
+        /// <summary>
+        ///     Edit an existing configuration.It returns true if there was no errors.
+        /// </summary>
         public bool EditConfiguration(ConfigurationWindowModel configurationWindowModel, List<ConnectionConfiguration> configurations, WindowNotifyModel windowNotifyModel,ConnectionConfiguration configuration)
         {
             try
             { 
-                CreateBasicConfiguration(configurationWindowModel, configuration);
-                
+                CreateBasicConfiguration(configurationWindowModel, configuration);               
                 SerializeConfigurations(configurations);
                 return true;
             }
@@ -58,6 +57,9 @@ namespace BusinessLogicLayer
             connectionConfiguration.SyncTimeSpan = TimeSpan.FromMinutes(minutes);             
         }
 
+        /// <summary>
+        ///    Add a new configuration.It returns true if there was no errors.
+        /// </summary>
         public bool AddNewConfiguration(ConfigurationWindowModel configurationWindowModel, List<ConnectionConfiguration> configurations,WindowNotifyModel windowNotifyModel)
         {
             try
@@ -74,7 +76,6 @@ namespace BusinessLogicLayer
                 SerializeConfigurations(configurations);
                 windowNotifyModel.Window.Close();
                 return true;
-
             }
             catch (UriFormatException uriException)
             {

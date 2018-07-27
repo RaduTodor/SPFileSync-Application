@@ -16,12 +16,19 @@
     /// </summary>
     public class FilesManager
     {
-        private NotifyUI _notifyUI = new NotifyUI();
+        private NotifyUI _notifyUI;
         private System.Timers.Timer _timer = new System.Timers.Timer();
         public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type)
         {
             ConnectionConfigurations = configurations;
             ProviderType = type;
+        }
+
+        public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type, NotifyUI notifyUI)
+        {
+            ConnectionConfigurations = configurations;
+            ProviderType = type;
+            _notifyUI = notifyUI;
         }
 
         public EventHandler<bool> InternetAccessLost;
@@ -49,7 +56,7 @@
                     fileSync.ExceptionUpdate += (sender, exception) =>
                     {
                         connection.LastSyncTime = DateTime.Now.Minute;
-                        _notifyUI.BasicNotifyError(ConfigurationMessages.SyncTitleError, exception.Message);
+                        _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncTitleError, exception.Message);
                         syncSuccessful = false;
                     };
                     fileSync.InternetAccessException += (sender, exception) =>
@@ -61,17 +68,17 @@
                     fileSync.ProgressUpdate += (sender, number) =>
                     {
                         if (syncSuccessful)
-                        {                          
-                            MyLogger.Logger.Trace(string.Format(DefaultTraceMessages.ConfigurationSyncFinishedSuccessfully,
+                        {
+                            LoggerManager.Logger.Trace(string.Format(DefaultTraceMessages.ConfigurationSyncFinishedSuccessfully,
                                 connection.Connection.Uri));
                         }
                         else
                         {
-                            MyLogger.Logger.Error(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
+                            LoggerManager.Logger.Error(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
                                 connection.Connection.Uri));
                         }
                         verdicts.FinalizedSyncProccesses[number] = true;
-                        connection.LastSyncTime = DateTime.Now.Minute;                       
+                        connection.LastSyncTime = DateTime.Now.Minute;
                     };
                     Task.Run(() => fileSync.Synchronize());
                     connection.LastSyncTime = DateTime.Now.Minute;
@@ -80,9 +87,9 @@
                 {
                     connection.LastSyncTime = DateTime.Now.Minute;
                     verdicts.FinalizedSyncProccesses[count] = true;
-                    MyLogger.Logger.Error(exception, exception.Message);
+                    LoggerManager.Logger.Error(exception, exception.Message);
                     {
-                        _notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
+                        _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncTitleError, exception.Message);
                     }
                 }
             XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
@@ -98,7 +105,7 @@
                 fileSync.ExceptionUpdate += (sender, exception) =>
                 {
                     connection.LastSyncTime = DateTime.Now.Minute;
-                    _notifyUI.BasicNotifyError(ConfigurationMessages.SyncTitleError, exception.Message);
+                    _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncTitleError, exception.Message);
                     syncSuccessful = false;
                 };
                 fileSync.InternetAccessException += (sender, exception) =>
@@ -111,12 +118,12 @@
                 {
                     if (syncSuccessful)
                     {
-                        MyLogger.Logger.Trace(string.Format(DefaultTraceMessages.ConfigurationSyncFinishedSuccessfully,
+                        LoggerManager.Logger.Trace(string.Format(DefaultTraceMessages.ConfigurationSyncFinishedSuccessfully,
                             connection.Connection.Uri));
                     }
                     else
                     {
-                        MyLogger.Logger.Error(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
+                        LoggerManager.Logger.Error(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
                             connection.Connection.Uri));
                     }
                     verdicts.FinalizedSyncProccesses[number] = true;
@@ -129,13 +136,12 @@
             {
                 connection.LastSyncTime = DateTime.Now.Minute;
                 verdicts.FinalizedSyncProccesses[count] = true;
-                MyLogger.Logger.Error(exception, exception.Message);
+                LoggerManager.Logger.Error(exception, exception.Message);
                 {
-                    _notifyUI.BasicNotifyError(Common.Constants.ConfigurationMessages.SyncTitleError, exception.Message);
+                    _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncTitleError, exception.Message);
                 }
             }
         }
-
         /// <summary>
         ///    Sync automatically every configuration after an interval
         /// </summary>
@@ -163,18 +169,18 @@
                 FinalizedSyncProccesses = new bool[ConnectionConfigurations.Count]
             };
             var count = -1;
-            if(checkIfSyncButton )
+            if (checkIfSyncButton)
             {
                 var myList = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
                 foreach (var connection in myList)
-            {
-                if (Math.Abs(DateTime.Now.Minute - connection.LastSyncTime) >= connection.SyncTimeSpan.Minutes)
                 {
-                    GeneralSynchronize(verdicts, connection, count);
+                    if (Math.Abs(DateTime.Now.Minute - connection.LastSyncTime) >= connection.SyncTimeSpan.Minutes)
+                    {
+                        GeneralSynchronize(verdicts, connection, count);
+                    }
                 }
+                XmlFileManipulator.Serialize<ConnectionConfiguration>(myList);
             }
-            XmlFileManipulator.Serialize<ConnectionConfiguration>(myList);
-            }           
         }
     }
 }

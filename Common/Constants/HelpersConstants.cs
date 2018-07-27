@@ -17,5 +17,11 @@
         public const string ParentDirectory = @"\Data";
 
         public const string DirectoryPath = "DirectoryPath";
+
+        public const string Password = "Password";
+
+        public const string Attach = "Attach";
+
+        public const string IsUpdating = "IsUpdating";
     }
 }

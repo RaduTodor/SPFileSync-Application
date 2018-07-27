@@ -1,20 +1,13 @@
-﻿using Common.Constants;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Common.Helpers
+﻿namespace Common.Helpers
 {
-    //TODO [CR BT] Resolve usings
-    //TODO [CR BT] Make class static
+    using Common.Constants;
+    using System.Globalization;
+    using System.IO;
+    using System.Windows.Forms;
 
-    public class PathConfiguration
+    public static class PathConfiguration
     {
-        public static string SetPath(string defaultPath="")
+        public static string SetPath(string defaultPath = "")
         {
             FolderBrowserDialog folder = new FolderBrowserDialog();
             folder.SelectedPath = defaultPath;
@@ -22,10 +15,11 @@ namespace Common.Helpers
             return folder.SelectedPath;
         }
 
-        public static string GetResourcesFolder(string wantedResource)
+        public static string GetApplicationDirectory(string wantedResource)
         {
             var path = Directory.GetCurrentDirectory();
-            //TODO [CR BT] Specify culture e.g. StringComparison.InvariantCultureIgnoreCase
+            var culture = new CultureInfo("en");
+            //{culture}
             var removeSegment = path.IndexOf(ConfigurationMessages.Bin);
             var resourceFolderPath = $@"{path.Remove(removeSegment)}{wantedResource}";
             return resourceFolderPath;

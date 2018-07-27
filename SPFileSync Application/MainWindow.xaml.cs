@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
-    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Forms;
@@ -17,38 +16,28 @@
 
     public partial class MainWindow
     {
-        //TODO [CR BT] Instantiate member from ctor
-        private List<ConnectionConfiguration> _connectionConfigurations = new List<ConnectionConfiguration>();
-        //TODO [CR BT] Please rename to _notifyUI
+        private List<ConnectionConfiguration> _connectionConfigurations;
         FilesManager _fileManager;
-        NotifyUI notifyUI;
+        NotifyUI _notifyUI;
 
         public MainWindow()
         {
             InitializeComponent();
             Hide();
-            notifyUI = new NotifyUI(this, ListBox1);
+            _connectionConfigurations = new List<ConnectionConfiguration>();
+            _notifyUI = new NotifyUI(this, ListBox1);
             PopulateUIComboBox();
-            ApplicationIcon();
+            CreateApplicationIcon();
             _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
-            _fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()));
+            _fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()), _notifyUI);
+
             if (_connectionConfigurations.Count == 0) SyncButton.IsEnabled = false;
             _fileManager.TimerSyncronize(SyncButton);
             WaitSync.Visibility = Visibility.Hidden;
         }
 
-        //TODO [CR BT] Please rename, use verbs in all methods naming
-        //TODO [CR BT] Extract to multiple methods
-
-        private void ApplicationIcon()
+        private ContextMenu NotificationIconContextMenu()
         {
-            var notification = new NotifyIcon();
-            notification.Icon =         //TODO [CR BT] Remove redundant path
-                new Icon(Common.Helpers.PathConfiguration.GetResourcesFolder(
-                    ConfigurationMessages.ResourceFolderAppIcon));
-            notification.Visible = true;
-            //TODO [CR BT] Remove unused object
-            var notificationContextStrip = new ContextMenuStrip();
             var context = new ContextMenu();
             var syncItem = new MenuItem
             {
@@ -64,14 +53,25 @@
             exitItem.Click += ExitItemClick;
             context.MenuItems.Add(syncItem);
             context.MenuItems.Add(exitItem);
-            notification.ContextMenu = context;
+            return context;
+        }
+
+        private void CreateApplicationIcon()
+        {
+            var notification = new NotifyIcon();
+            notification.Icon =
+                new Icon(PathConfiguration.GetApplicationDirectory(
+                    ConfigurationMessages.ResourceFolderAppIcon));
+            notification.Visible = true;
+            notification.ContextMenu = NotificationIconContextMenu();
             notification.Text = ConfigurationMessages.AppName;
-            notification.DoubleClick +=
-                delegate
-                {
-                    Show();
-                    WindowState = WindowState.Normal;
-                };
+            notification.DoubleClick += (sender, e) => ShowWindow(sender, e);
+        }
+
+        private void ShowWindow(object sender, EventArgs e)
+        {
+            Show();
+            WindowState = WindowState.Normal;
         }
 
         private void ExitItemClick(object sender, EventArgs e)
@@ -122,16 +122,14 @@
                 SyncButton.IsEnabled = false;
                 WaitSync.Visibility = Visibility.Visible;
                 var verdicts = new Verdicts();
-                //var fileManager = new FilesManager(_connectionConfigurations,
-                //    GetProviderType(configComboBox.SelectedItem.ToString()));
                 _fileManager.Synchronize(verdicts);
                 _fileManager.InternetAccessLost += (senderObject, truthValue) =>
                 {
-                    notifyUI.BasicNotifyError(ConfigurationMessages.InternetAccesError, ConfigurationMessages.InternetAccesErrorMessage);
+                    _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.InternetAccesError, ConfigurationMessages.InternetAccesErrorMessage);
                     Dispatcher.Invoke(() => AutomaticSync());
                 };
 
-                notifyUI.BasicNotifyError(ConfigurationMessages.SyncIsActive, ConfigurationMessages.SyncActiveMessage);
+                _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncIsActive, ConfigurationMessages.SyncActiveMessage);
                 var syncProgressProvider = new SyncProgressManager();
                 syncProgressProvider.ProgressUpdate += (s, verdict) =>
                 {
@@ -156,9 +154,9 @@
                 Task.Run(() =>
                 {
                     if (InternetAccessHelper.HasInternetAccessAfterRetryInterval())
-                        Dispatcher.Invoke(()=>Sync(SyncButton, new RoutedEventArgs()));
+                        Dispatcher.Invoke(() => Sync(SyncButton, new RoutedEventArgs()));
                     RetryThreadOn = false;
-                    Dispatcher.Invoke(()=>SetSyncButtonTrue());
+                    Dispatcher.Invoke(() => SetSyncButtonTrue());
                 });
             }
         }
@@ -169,7 +167,7 @@
             {
                 SyncButton.IsEnabled = true;
                 WaitSync.Visibility = Visibility.Hidden;
-                notifyUI.BasicNotifyError(ConfigurationMessages.SyncEnded, ConfigurationMessages.SyncEndMessage);
+                _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncEnded, ConfigurationMessages.SyncEndMessage);
             }
         }
 

@@ -5,13 +5,9 @@ namespace SPFileSync_Application
     using Common.Helpers;
     using Configuration;
     using Models;
-    using System;
     using System.Collections.Generic;
-    using System.Net;
     using System.Windows;
-    using System.Windows.Forms;
 
-    //TODO [CR BT] Resolve usings
     public partial class ConfigurationWindow
     {
 

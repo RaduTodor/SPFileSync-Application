@@ -5,14 +5,10 @@ namespace SPFileSync_Application
     using Common.Helpers;
     using Configuration;
     using Models;
-    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Net;
     using System.Windows;
-    using System.Windows.Forms;
 
-    //TODO [CR BT] Resolve usings
     public partial class EditConfigurationPanel
     {
         private ConnectionConfiguration _configuration;
@@ -96,8 +92,8 @@ namespace SPFileSync_Application
 
         private void SetFileDestination(object sender, RoutedEventArgs e)
         {
-            //TODO [CR BT] Remove redundant path
-            _path = Common.Helpers.PathConfiguration.SetPath(_configuration.DirectoryPath);
+            //TODO [CR BT] Remove redundant path ??
+            _path = PathConfiguration.SetPath(_configuration.DirectoryPath);
             pathLabel.Content = _path;
         }
     }

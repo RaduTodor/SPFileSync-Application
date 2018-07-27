@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SPFileSync_Application"
         xmlns:local1="clr-namespace:Models;assembly=Models"
+        xmlns:local2="clr-namespace:Common.Helpers;assembly=Common"
         mc:Ignorable="d"
         Title="ListWithColumns" Height="300" Width="350">
     <Window.Background>
@@ -13,7 +14,6 @@
 
     <Window.Resources>
         <local1:ConfigurationWindowModel x:Key="CWM" />
-        <local1:SyncTimeValidator x:Key="STV" />
         <ControlTemplate x:Key="validationTemplate">
             <DockPanel>
                 <TextBlock Foreground="Red" FontSize="20">!</TextBlock>

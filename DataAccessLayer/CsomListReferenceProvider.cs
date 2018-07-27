@@ -34,7 +34,7 @@
             {
                 Exception currentException =
                     new CsomOperationException(DefaultExceptionMessages.CsomAddExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }
@@ -60,7 +60,7 @@
             {
                 Exception currentException =
                     new CsomOperationException(DefaultExceptionMessages.CsomChangeExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }
@@ -99,7 +99,7 @@
             {
                 Exception currentException =
                     new CsomOperationException(DefaultExceptionMessages.CsomRemoveExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }

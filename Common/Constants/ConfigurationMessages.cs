@@ -10,9 +10,6 @@
 
         public const string BadConfigurationTitle = "Bad configuration";
 
-        //TODO [CR BT] Remove unused constants
-        public const string CredentialsError = "Username or password dosen't exist";
-
         public const string GeneralConfigError = "There was an error with the configuration";
 
         public const string ResourceFolderAppIcon = @"Utils\UFO.ico";

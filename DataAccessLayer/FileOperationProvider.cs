@@ -54,11 +54,11 @@
                         }
 
                         if (!update)
-                            MyLogger.Logger.Trace(string.Format(DefaultTraceMessages.FileDownloadSuccessful, fileName,
+                            LoggerManager.Logger.Trace(string.Format(DefaultTraceMessages.FileDownloadSuccessful, fileName,
                                 url,
                                 directoryPath));
                         else
-                            MyLogger.Logger.Trace(string.Format(DefaultTraceMessages.FileUpdateSuccessful, fileName,
+                            LoggerManager.Logger.Trace(string.Format(DefaultTraceMessages.FileUpdateSuccessful, fileName,
                                 url,
                                 directoryPath));
                     }
@@ -77,7 +77,7 @@
             {
                 Exception downloadFileExceptionexception =
                     new DownloadFileException(exception.Message, exception);
-                MyLogger.Logger.Debug(downloadFileExceptionexception,
+                LoggerManager.Logger.Debug(downloadFileExceptionexception,
                     string.Format(DefaultExceptionMessages.FileDownloadExceptionMessage, url));
                 exceptionHandler?.Invoke(this, downloadFileExceptionexception);
             }
@@ -87,7 +87,7 @@
         {
             Exception currentException =
                 new NoInternetAccessException(exception.Message, exception);
-            MyLogger.Logger.Error(currentException, string.Format(
+            LoggerManager.Logger.Error(currentException, string.Format(
                 DefaultExceptionMessages.NoInternetAccessExceptionMessage,
                 DataAccessLayerConstants.SyncRetryInterval));
             internetAccessException?.Invoke(this, currentException);

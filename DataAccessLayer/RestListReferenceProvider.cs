@@ -90,7 +90,7 @@
             {
                 Exception currentException =
                     new RestOperationException(DefaultExceptionMessages.RestAddExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }
@@ -153,7 +153,7 @@
             {
                 Exception currentException =
                     new RestOperationException(DefaultExceptionMessages.RestChangeExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }
@@ -181,7 +181,7 @@
             {
                 Exception currentException =
                     new RestOperationException(DefaultExceptionMessages.RestRemoveExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }

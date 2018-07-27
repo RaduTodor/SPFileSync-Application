@@ -75,11 +75,11 @@
                     return GetModifiedDateInResponse(result);
                 }
             }
-            catch (System.Net.WebException exception)
+            catch (WebException exception)
             {
                 Exception currentException =
                     new NoInternetAccessException(exception.Message, exception);
-                MyLogger.Logger.Error(currentException, string.Format(
+                LoggerManager.Logger.Error(currentException, string.Format(
                     DefaultExceptionMessages.NoInternetAccessExceptionMessage,
                     DataAccessLayerConstants.SyncRetryInterval));
                 internetAccessException?.Invoke(this, currentException);
@@ -89,7 +89,7 @@
             {
                 Exception currentException =
                     new GetRequestException(exception.Message, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }
@@ -134,11 +134,11 @@
                                 }
                         }
                     }
-                    catch (System.Net.WebException exception)
+                    catch (WebException exception)
                     {
                         Exception currentException =
                             new NoInternetAccessException(exception.Message, exception);
-                        MyLogger.Logger.Error(currentException, string.Format(
+                        LoggerManager.Logger.Error(currentException, string.Format(
                             DefaultExceptionMessages.NoInternetAccessExceptionMessage,
                             DataAccessLayerConstants.SyncRetryInterval));
                         internetAccessException?.Invoke(this, currentException);
@@ -148,7 +148,7 @@
                     {
                         Exception currentException =
                             new GetRequestException(exception.Message, exception);
-                        MyLogger.Logger.Error(currentException, string.Format(
+                        LoggerManager.Logger.Error(currentException, string.Format(
                             DefaultExceptionMessages.GetRequestExceptionMessage,
                             listWithColumnsName.ListName, ConnectionConfiguration.Connection.Uri));
                         exceptionHandler?.Invoke(this, currentException);
@@ -159,7 +159,7 @@
             {
                 Exception currentException =
                     new GetRequestException(exception.Message, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }

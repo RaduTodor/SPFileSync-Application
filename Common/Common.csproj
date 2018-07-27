@@ -63,6 +63,7 @@
     <Compile Include="Constants\DefaultTraceMessages.cs" />
     <Compile Include="Constants\DefaultExceptionMessages.cs" />
     <Compile Include="Constants\HelpersConstants.cs" />
+    <Compile Include="Constants\NotifyIconTextMessages.cs" />
     <Compile Include="Constants\QuerryTemplates.cs" />
     <Compile Include="Constants\RequestHeaderConstants.cs" />
     <Compile Include="Exceptions\BaseLoggingException.cs" />
@@ -76,13 +77,14 @@
     <Compile Include="Exceptions\MetadataReadException.cs" />
     <Compile Include="Exceptions\NoInternetAccessException.cs" />
     <Compile Include="Exceptions\RestOperationException.cs" />
-    <Compile Include="Helpers\Fixes.cs" />
+    <Compile Include="Helpers\NotifyIconTextCharactersExpend.cs" />
     <Compile Include="Helpers\InternetAccessHelper.cs" />
-    <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Helpers\LoggerManager.cs" />
     <Compile Include="Helpers\NotifyUI.cs" />
     <Compile Include="Helpers\ObservableHashSet.cs" />
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Helpers\PathConfiguration.cs" />
+    <Compile Include="Helpers\SyncTimeValidator.cs" />
     <Compile Include="Helpers\XmlFileManipulator.cs" />
     <Compile Include="Helpers\FileEditingHelper.cs" />
     <Compile Include="Helpers\ParsingHelpers.cs" />

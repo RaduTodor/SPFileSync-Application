@@ -63,7 +63,7 @@
             }
             catch (Exception exception)
             {
-                MyLogger.Logger.Error(exception);
+                LoggerManager.Logger.Error(exception);
                 ExceptionUpdate?.Invoke(this, exception);
                 ProgressUpdate?.Invoke(this, ConfigurationNumber);
             }

@@ -60,7 +60,7 @@
                             Exception currentException =
                                 new MetadataReadException(DefaultExceptionMessages.ErrorMetadataReadExceptionMessage,
                                     exception);
-                            MyLogger.Logger.Error(currentException, currentException.Message);
+                            LoggerManager.Logger.Error(currentException, currentException.Message);
                             throw currentException;
                         }
                     }
@@ -68,7 +68,7 @@
             }
             catch (Exception exception)
             {
-                MyLogger.Logger.Error(exception, exception.Message);
+                LoggerManager.Logger.Error(exception, exception.Message);
                 throw;
             }
 

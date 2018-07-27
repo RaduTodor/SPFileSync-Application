@@ -99,7 +99,7 @@
                 Exception currentException = new CurrentUserIdUnaccesibleException(
                     DefaultExceptionMessages.CurrentUserExceptionMessage,
                     exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
 
@@ -117,7 +117,7 @@
                 Exception currentException = new ClientContextOperationException(
                     DefaultExceptionMessages.ClientContextOperationExceptionMessage,
                     exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }
@@ -146,7 +146,7 @@
             {
                 Exception currentException =
                     new LoginException(DefaultExceptionMessages.LoginExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }

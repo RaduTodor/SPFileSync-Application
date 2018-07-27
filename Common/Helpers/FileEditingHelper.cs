@@ -42,7 +42,7 @@
             {
                 Exception currentException =
                     new CreateFileException(DefaultExceptionMessages.CreateFileExceptionMessage, exception);
-                MyLogger.Logger.Error(currentException, currentException.Message);
+                LoggerManager.Logger.Error(currentException, currentException.Message);
                 throw currentException;
             }
         }
