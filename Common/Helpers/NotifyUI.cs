@@ -19,8 +19,7 @@ namespace Common.Helpers
         private  Window _window;
         private ObservableHashSet<string> _configurationErrors = new ObservableHashSet<string>();
         private System.Windows.Controls.ListBox _displayConfigurationErrorsList;
-        //TODO [CR BT] Remove static keyword, add _ add the beginning of the property name
-        private static NotifyIcon notifyIcon = new NotifyIcon();
+        private static NotifyIcon _notifyIcon = new NotifyIcon();
 
        public NotifyUI()
         {
@@ -38,30 +37,30 @@ namespace Common.Helpers
 
         public void NotifyError(string notificationTitle, string notificationMessage)
         {
-            notifyIcon.BalloonTipTitle = notificationTitle;
-            notifyIcon.BalloonTipText = notificationMessage;
+            _notifyIcon.BalloonTipTitle = notificationTitle;
+            _notifyIcon.BalloonTipText = notificationMessage;
             //TODO [CR BT] Remove path
             var path = Directory.GetCurrentDirectory();
             var pathCombine = Path.Combine(PathConfiguration.GetResourcesFolder(ConfigurationMessages.ResourceFolderErrorIcon));
-            notifyIcon.Icon = new Icon(pathCombine);
-            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-            notifyIcon.Visible = true;
-            notifyIcon.ShowBalloonTip(5000);
-            notifyIcon.Click += NotifyIconClick;
-            Fixes.SetNotifyIconText(notifyIcon, notificationMessage);            
+            _notifyIcon.Icon = new Icon(pathCombine);
+            _notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+            _notifyIcon.Visible = true;
+            _notifyIcon.ShowBalloonTip(5000);
+            _notifyIcon.Click += NotifyIconClick;
+            Fixes.SetNotifyIconText(_notifyIcon, notificationMessage);            
         }
 
         public void BasicNotifyError(string notificationTitle, string notificationMessage)
         {
-            notifyIcon.BalloonTipTitle = notificationTitle;
-            notifyIcon.BalloonTipText = notificationMessage;
+            _notifyIcon.BalloonTipTitle = notificationTitle;
+            _notifyIcon.BalloonTipText = notificationMessage;
             var path = Directory.GetCurrentDirectory();
             var pathCombine = Path.Combine(PathConfiguration.GetResourcesFolder(ConfigurationMessages.ResourceFolderErrorIcon));
-            notifyIcon.Icon = new Icon(pathCombine);
-            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-            notifyIcon.Visible = true;
-            notifyIcon.ShowBalloonTip(5000);
-            Fixes.SetNotifyIconText(notifyIcon, notificationMessage);          
+            _notifyIcon.Icon = new Icon(pathCombine);
+            _notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+            _notifyIcon.Visible = true;
+            _notifyIcon.ShowBalloonTip(5000);
+            Fixes.SetNotifyIconText(_notifyIcon, notificationMessage);          
         }
 
         public void CatchErrorNotifier(Exception exception,string notifyMessage)

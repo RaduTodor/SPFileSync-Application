@@ -21,7 +21,9 @@
         public string DirectoryPath { get; set; } = Path.Combine(ConfigurationManager.AppSettings[HelpersConstants.DirectoryPath],
             DateTime.Now.Day.ToString());
 
-        [XmlIgnore] public TimeSpan SyncTimeSpan { get; set; } = new TimeSpan(0, DataAccessLayerConstants.DefaultConfigurationSyncInterval, 0);
+        public int LastSyncTime { get; set; }
+
+        [XmlIgnore] public TimeSpan SyncTimeSpan { get; set; } = new TimeSpan(0, 10, 0);
 
         [XmlAttribute("syncTimeSpan")]
         [Browsable(false)]

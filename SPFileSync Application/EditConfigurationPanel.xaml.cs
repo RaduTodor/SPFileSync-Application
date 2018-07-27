@@ -7,6 +7,7 @@ namespace SPFileSync_Application
     using Models;
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Net;
     using System.Windows;
     using System.Windows.Forms;
@@ -17,6 +18,7 @@ namespace SPFileSync_Application
         private ConnectionConfiguration _configuration;
         private List<ConnectionConfiguration> _configurations;
         private NotifyUI _notifyUI;
+        private ObservableCollection<string> _configurationsName = new ObservableCollection<string>();
         private string _path = "";
         Window _window;
 
@@ -24,7 +26,7 @@ namespace SPFileSync_Application
         {
             InitializeComponent();
             InitializeFields(configurationItem, configurations, window);
-            UpdateUI();
+            UpdateUI();          
         }
 
         private void InitializeFields(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
@@ -59,10 +61,16 @@ namespace SPFileSync_Application
             Close();
         }
 
+        private void PopulateObservableCollection()
+        {
+            foreach (var item in _configurations)
+            {
+                _configurationsName.Add(item.Connection.UriString);
+            }
+        }
 
-        
         private void Save(object sender, RoutedEventArgs e)
-        {          
+        {
             ConfigurationUIOperations configurationOperations = new ConfigurationUIOperations();
             ConfigurationWindowModel configurationWindowModel = new ConfigurationWindowModel
             {
@@ -76,7 +84,12 @@ namespace SPFileSync_Application
             var checkIfValid = configurationOperations.EditConfiguration(configurationWindowModel, _configurations, windowNotifyModel, _configuration);
             if(checkIfValid)
             {
-                Close();
+                if (_window is Configurations)
+                {
+                    PopulateObservableCollection();
+                    (_window as Configurations).allConfigsList.ItemsSource = _configurationsName;
+                }
+                Close();                
                 _window.Show();
             }                    
         }

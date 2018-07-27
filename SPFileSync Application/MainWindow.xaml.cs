@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Forms;
@@ -19,6 +20,7 @@
         //TODO [CR BT] Instantiate member from ctor
         private List<ConnectionConfiguration> _connectionConfigurations = new List<ConnectionConfiguration>();
         //TODO [CR BT] Please rename to _notifyUI
+        FilesManager _fileManager;
         NotifyUI notifyUI;
 
         public MainWindow()
@@ -27,10 +29,11 @@
             Hide();
             notifyUI = new NotifyUI(this, ListBox1);
             PopulateUIComboBox();
-            ApplicationIcon();            
+            ApplicationIcon();
             _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
+            _fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()));
             if (_connectionConfigurations.Count == 0) SyncButton.IsEnabled = false;
-
+            _fileManager.TimerSyncronize(SyncButton);
             WaitSync.Visibility = Visibility.Hidden;
         }
 
@@ -119,10 +122,10 @@
                 SyncButton.IsEnabled = false;
                 WaitSync.Visibility = Visibility.Visible;
                 var verdicts = new Verdicts();
-                var fileManager = new FilesManager(_connectionConfigurations,
-                    GetProviderType(configComboBox.SelectedItem.ToString()));
-                fileManager.Synchronize(verdicts);
-                fileManager.InternetAccessLost += (senderObject, truthValue) =>
+                //var fileManager = new FilesManager(_connectionConfigurations,
+                //    GetProviderType(configComboBox.SelectedItem.ToString()));
+                _fileManager.Synchronize(verdicts);
+                _fileManager.InternetAccessLost += (senderObject, truthValue) =>
                 {
                     notifyUI.BasicNotifyError(ConfigurationMessages.InternetAccesError, ConfigurationMessages.InternetAccesErrorMessage);
                     Dispatcher.Invoke(() => AutomaticSync());
