@@ -20,6 +20,8 @@
                   Name="configComboBox" SelectedIndex="0" />
         <Button Content="See configurations" HorizontalAlignment="Left" Margin="68,252,0,0" VerticalAlignment="Top"
                 Width="119" Height="24" Click="SeeConfigurations" />
+        <Button Content="List Operations" HorizontalAlignment="Left" Margin="68,304,0,0" VerticalAlignment="Top"
+                Width="119" Height="24" Click="ListOperations" />
         <Image Name="WaitSync" gif:ImageBehavior.AnimatedSource="/Utils/weirdGif.gif" HorizontalAlignment="Left"
                Margin="169,122,0,0" VerticalAlignment="Top" Height="70" Width="54" RenderTransformOrigin="0.864,0.907" />
     </Grid>

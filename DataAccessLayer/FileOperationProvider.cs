@@ -7,6 +7,7 @@
     using Common.Exceptions;
     using Common.Helpers;
     using Configuration;
+    using NLog;
 
     /// <summary>
     ///     From given ConnectionConfiguration can access specific files
@@ -77,7 +78,7 @@
             {
                 Exception downloadFileExceptionexception =
                     new DownloadFileException(exception.Message, exception);
-                MyLogger.Logger.Debug(downloadFileExceptionexception,
+                MyLogger.Logger.Warn(downloadFileExceptionexception,
                     string.Format(DefaultExceptionMessages.FileDownloadExceptionMessage, url));
                 exceptionHandler?.Invoke(this, downloadFileExceptionexception);
             }

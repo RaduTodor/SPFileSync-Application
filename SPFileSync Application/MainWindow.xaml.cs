@@ -182,6 +182,13 @@
             window.Show();
         }
 
+        private void ListOperations(object sender, RoutedEventArgs e)
+        {
+            _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
+            var window = new ReferenceListOperationsWindow(_connectionConfigurations);
+            window.Show();
+        }
+
         private static ListReferenceProviderType GetProviderType(string choice)
         {
             switch (choice)

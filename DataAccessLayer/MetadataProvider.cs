@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Linq.Expressions;
     using System.Net;
     using System.Text;
     using System.Xml.Linq;
@@ -12,6 +11,7 @@
     using Common.Exceptions;
     using Common.Helpers;
     using Configuration;
+    using Models;
 
     /// <summary>
     ///     Can get MetadataModel(Url with ModifiedDate)
@@ -96,13 +96,13 @@
 
         private HttpWebResponse GetHttpWebResponse(string apiResult)
         {
-            var endpointRequest = (HttpWebRequest) WebRequest.Create(
+            var endpointRequest = (HttpWebRequest)WebRequest.Create(
                 ConnectionConfiguration.Connection.Uri.AbsoluteUri +
                 apiResult);
 
             AddGetHeadersToRequest(endpointRequest);
 
-            return (HttpWebResponse) endpointRequest.GetResponse();
+            return (HttpWebResponse)endpointRequest.GetResponse();
         }
 
         /// <summary>
@@ -116,43 +116,12 @@
             {
                 var allUrlsOfCurrentUser = new List<string>();
                 foreach (var listWithColumnsName in ConnectionConfiguration.ListsWithColumnsNames)
-                    try
-                    {
-                        var endpointResponse = GetHttpWebResponse(string.Format(ApiConstants.SpecificListItemsOfUserApi,
-                            listWithColumnsName.ListName,
-                            listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
-                            ConnectionConfiguration.Connection.GetCurrentUserName()));
+                {
+                    foreach (var element in GetCurrentUserUrlsFromList(listWithColumnsName, exceptionHandler,
+                        internetAccessException))
+                        allUrlsOfCurrentUser.Add(element.Url);
+                }
 
-                        using (var stream = endpointResponse.GetResponseStream())
-                        {
-                            if (stream != null)
-                                using (var sr = new StreamReader(stream, Encoding.UTF8))
-                                {
-                                    var result = sr.ReadToEnd().Trim();
-                                    allUrlsOfCurrentUser.AddRange(GetAllUrlsInResponse(result,
-                                        listWithColumnsName.UrlColumnName));
-                                }
-                        }
-                    }
-                    catch (System.Net.WebException exception)
-                    {
-                        Exception currentException =
-                            new NoInternetAccessException(exception.Message, exception);
-                        MyLogger.Logger.Error(currentException, string.Format(
-                            DefaultExceptionMessages.NoInternetAccessExceptionMessage,
-                            DataAccessLayerConstants.SyncRetryInterval));
-                        internetAccessException?.Invoke(this, currentException);
-                        throw currentException;
-                    }
-                    catch (Exception exception)
-                    {
-                        Exception currentException =
-                            new GetRequestException(exception.Message, exception);
-                        MyLogger.Logger.Error(currentException, string.Format(
-                            DefaultExceptionMessages.GetRequestExceptionMessage,
-                            listWithColumnsName.ListName, ConnectionConfiguration.Connection.Uri));
-                        exceptionHandler?.Invoke(this, currentException);
-                    }
                 return allUrlsOfCurrentUser;
             }
             catch (Exception exception)
@@ -164,24 +133,80 @@
             }
         }
 
+        public List<UrlListItem> GetCurrentUserUrlsFromList(ListWithColumnsName listWithColumnsName, EventHandler<Exception> exceptionHandler, EventHandler<Exception> internetAccessException)
+        {
+            try
+            {
+                var endpointResponse = GetHttpWebResponse(string.Format(ApiConstants.SpecificListItemsOfUserApi,
+                    listWithColumnsName.ListName, "ID",
+                    listWithColumnsName.UrlColumnName, listWithColumnsName.UserColumnName,
+                    ConnectionConfiguration.Connection.GetCurrentUserName()));
+
+                using (var stream = endpointResponse.GetResponseStream())
+                {
+                    if (stream != null)
+                        using (var sr = new StreamReader(stream, Encoding.UTF8))
+                        {
+                            var result = sr.ReadToEnd().Trim();
+                            return (GetAllUrlsInResponse(result,
+                                listWithColumnsName.UrlColumnName));
+                        }
+                }
+            }
+            catch (System.Net.WebException exception)
+            {
+                Exception currentException =
+                    new NoInternetAccessException(exception.Message, exception);
+                MyLogger.Logger.Error(currentException, string.Format(
+                    DefaultExceptionMessages.NoInternetAccessExceptionMessage,
+                    DataAccessLayerConstants.SyncRetryInterval));
+                internetAccessException?.Invoke(this, currentException);
+                throw currentException;
+            }
+            catch (Exception exception)
+            {
+                Exception currentException =
+                    new GetRequestException(exception.Message, exception);
+                MyLogger.Logger.Error(currentException, string.Format(
+                    DefaultExceptionMessages.GetRequestExceptionMessage,
+                    listWithColumnsName.ListName, ConnectionConfiguration.Connection.Uri));
+                exceptionHandler?.Invoke(this, currentException);
+            }
+            return new List<UrlListItem>();
+        }
+
         /// <summary>
         ///     Gets every url from xml response
         /// </summary>
         /// <param name="xmlString"></param>
         /// <param name="urlColumnName"></param>
         /// <returns></returns>
-        private List<string> GetAllUrlsInResponse(string xmlString, string urlColumnName)
+        private List<UrlListItem> GetAllUrlsInResponse(string xmlString, string urlColumnName)
         {
             var elements = XElement.Parse(xmlString);
-            var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
-                from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
-                from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
-                from urlNameBody in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + urlColumnName)
-                from url in urlNameBody.Elements(DataAccessLayerConstants.DNamespace + Url)
-                select url;
+            var urlResult = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
+                            from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
+                            from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
+                            from urlNameBody in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + urlColumnName)
+                            from url in urlNameBody.Elements(DataAccessLayerConstants.DNamespace + Url)
+                            select url;
             var urls = new List<string>();
-            foreach (var element in result) urls.Add(element.Value);
-            return urls;
+            foreach (var element in urlResult) urls.Add(element.Value);
+
+            var idResult = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
+                           from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
+                           from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
+                           from id in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + "ID")
+                           select id;
+
+            var ids = new List<int>();
+            foreach (var element in idResult) ids.Add(Convert.ToInt32(element.Value));
+            var urlListItem = new List<UrlListItem>();
+            for (int elementNumber = 0; elementNumber < ids.Count; elementNumber++)
+            {
+                urlListItem.Add(new UrlListItem { Id = ids[elementNumber], Url = urls[elementNumber] });
+            };
+            return urlListItem;
         }
 
         /// <summary>
@@ -193,10 +218,10 @@
         {
             var elements = XElement.Parse(xmlString);
             var result = from entryBody in elements.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Entry)
-                from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
-                from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
-                from modifiedDate in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + Modified)
-                select modifiedDate;
+                         from contentBody in entryBody.Elements(DataAccessLayerConstants.MetadataBaseNamespace + Content)
+                         from propertiesBody in contentBody.Elements(DataAccessLayerConstants.MNamespace + Properties)
+                         from modifiedDate in propertiesBody.Elements(DataAccessLayerConstants.DNamespace + Modified)
+                         select modifiedDate;
             return Convert.ToDateTime(result.First().Value);
         }
     }
