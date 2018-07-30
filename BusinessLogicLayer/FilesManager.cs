@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Windows.Forms;
     using Common.ApplicationEnums;
     using Common.Constants;
     using Common.Helpers;
@@ -18,13 +17,7 @@
     {
         private NotifyUI _notifyUI;
         //TODO [CR BT]: Initialize timer on the used contructor 
-        //TODO [CR RT]: Remove contructor if it's not used 
         private System.Timers.Timer _timer = new System.Timers.Timer();
-        public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type)
-        {
-            ConnectionConfigurations = configurations;
-            ProviderType = type;
-        }
 
         public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type, NotifyUI notifyUI)
         {
