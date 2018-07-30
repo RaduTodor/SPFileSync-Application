@@ -55,13 +55,13 @@
                     var fileSync = new FileSynchronizer(connection, ProviderType, count);
                     fileSync.ExceptionUpdate += (sender, exception) =>
                     {
-                        connection.LastSyncTime = DateTime.Now.Minute;
+                        connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
                         _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncTitleError, exception.Message);
                         syncSuccessful = false;
                     };
                     fileSync.InternetAccessException += (sender, exception) =>
                     {
-                        connection.LastSyncTime = DateTime.Now.Minute;
+                        connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
                         InternetAccessLost.Invoke(this, true);
                         syncSuccessful = false;
                     };
@@ -78,14 +78,14 @@
                                 connection.Connection.Uri));
                         }
                         verdicts.FinalizedSyncProccesses[number] = true;
-                        connection.LastSyncTime = DateTime.Now.Minute;
+                        connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
                     };
                     Task.Run(() => fileSync.Synchronize());
-                   connection.LastSyncTime = DateTime.Now.Minute;
+                    connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
                 }
                 catch (Exception exception)
                 {
-                    connection.LastSyncTime = DateTime.Now.Minute;
+                    connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
                     verdicts.FinalizedSyncProccesses[count] = true;
                     LoggerManager.Logger.Error(exception, exception.Message);
                     {
@@ -104,13 +104,13 @@
                 var fileSync = new FileSynchronizer(connection, ProviderType, count);
                 fileSync.ExceptionUpdate += (sender, exception) =>
                 {
-                    connection.LastSyncTime = DateTime.Now.Minute;
+                    connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
                     _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncTitleError, exception.Message);
                     syncSuccessful = false;
                 };
                 fileSync.InternetAccessException += (sender, exception) =>
                 {
-                    connection.LastSyncTime = DateTime.Now.Minute;
+                    connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
                     InternetAccessLost.Invoke(this, true);
                     syncSuccessful = false;
                 };
@@ -127,14 +127,14 @@
                             connection.Connection.Uri));
                     }
                     verdicts.FinalizedSyncProccesses[number] = true;
-                    connection.LastSyncTime = DateTime.Now.Minute;
+                    connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
                 };
                 Task.Run(() => fileSync.Synchronize());
-                connection.LastSyncTime = DateTime.Now.Minute;
+                connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
             }
             catch (Exception exception)
             {
-                connection.LastSyncTime = DateTime.Now.Minute;
+                connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
                 verdicts.FinalizedSyncProccesses[count] = true;
                 LoggerManager.Logger.Error(exception, exception.Message);
                 {
@@ -153,7 +153,7 @@
 
         public void ConfigurationThreadsTimer(System.Windows.Controls.Button syncButton)
         {
-            var ticks = TimeSpan.FromMilliseconds(6).Ticks;
+            var ticks = TimeSpan.FromMilliseconds(1).Ticks;
             _timer.Interval = ticks;
             _timer.AutoReset = true;
             _timer.Enabled = true;
@@ -174,12 +174,14 @@
                 ConnectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
                 foreach (var connection in ConnectionConfigurations)
                 {
-                   if (Math.Abs(DateTime.Now.Minute - connection.LastSyncTime) >= connection.SyncTimeSpan.Minutes)
+                    if (Math.Abs(DateTime.Now.Ticks - connection.LastSyncTime.Ticks) >= connection.SyncTimeSpan.Ticks)
                     {
+                        syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = false; });
                         GeneralSynchronize(verdicts, connection, count);
                     }
                 }
                 XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
+                syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = true; });
             }
         }
     }

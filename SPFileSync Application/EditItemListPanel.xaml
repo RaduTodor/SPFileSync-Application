@@ -7,9 +7,6 @@
         xmlns:models="clr-namespace:Models;assembly=Models"
         mc:Ignorable="d"
         Title="EditItemListPanel" Height="450" Width="800">
-    <Window.Background>
-        <ImageBrush ImageSource="/Utils/background.jpg" />
-    </Window.Background>
 
     <Window.Resources>
         <models:ConfigurationWindowModel x:Key="CWM" />
@@ -43,7 +40,7 @@
 
     <Grid>
         <Label Content="List name" HorizontalAlignment="Left" Margin="10,113,0,0" VerticalAlignment="Top"
-               Foreground="#FFFFFBFB" FontSize="14" />
+                FontSize="14" />
         <TextBox HorizontalAlignment="Left" Height="23" Margin="98,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
                  Width="120" Name="listTextBox" Validation.ErrorTemplate="{StaticResource validationTemplate}"
                  Style="{StaticResource TextBoxInError}">
@@ -81,9 +78,9 @@
             </TextBox.Text>
         </TextBox>
         <Label Content="URL Column" HorizontalAlignment="Left" Margin="0,170,0,0" VerticalAlignment="Top"
-               Foreground="#FFFFFBFB" FontSize="14" />
+                FontSize="14" />
         <Label Content="User Column" HorizontalAlignment="Left" Margin="0,234,0,0" VerticalAlignment="Top"
-               Foreground="#FFFFFBFB" FontSize="14" />
+                FontSize="14" />
         <Button Content="Ok" HorizontalAlignment="Left" Margin="15,349,0,0" VerticalAlignment="Top" Width="75"
                 Click="Save">
             <Button.Style>

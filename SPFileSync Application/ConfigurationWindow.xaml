@@ -9,10 +9,6 @@
         xmlns:w="clr-namespace:Common.Helpers;assembly=Common"
         mc:Ignorable="d"
         Title="ConfigurationWindow" Height="600" Width="800">
-    <Window.Background>
-        <ImageBrush ImageSource="/Utils/background.jpg" />
-    </Window.Background>
-
     <Window.Resources>
         <local1:ConfigurationWindowModel x:Key="CWM" />
         <local2:SyncTimeValidator x:Key="STV" />
@@ -63,9 +59,9 @@
             </TextBox.Text>
         </TextBox>
         <Label Content="Destination" HorizontalAlignment="Left" Margin="6,375,0,0" VerticalAlignment="Top"
-               Foreground="White" FontSize="14" />
+                FontSize="14" />
         <Label Content="SyncInterval" HorizontalAlignment="Left" Margin="6,433,0,0" VerticalAlignment="Top"
-               Foreground="White" FontSize="14" />
+                FontSize="14" />
         <Button Content="Save" HorizontalAlignment="Left" Margin="293,473,0,0" VerticalAlignment="Top" Width="85"
                 Click="Save" Name="saveButton">
             <Button.Style>
@@ -142,7 +138,7 @@
         <ComboBox HorizontalAlignment="Left" Margin="662,10,0,0" VerticalAlignment="Top" Width="120"
                   Name="configComboBox" SelectedIndex="0" />
         <Label Content="Site url" HorizontalAlignment="Left" Margin="10,153,0,0" VerticalAlignment="Top"
-               Foreground="#FFFFFBFB" FontSize="14" />
+                FontSize="14" />
         <TextBox HorizontalAlignment="Left" Height="23" Margin="98,153,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
                  Width="190" Name="siteUrlBox" Validation.ErrorTemplate="{StaticResource validationTemplate}"
                  Style="{StaticResource TextBoxInError}">
@@ -168,11 +164,11 @@
             </TextBox.Text>
         </TextBox>
         <Label Content="URL Column" HorizontalAlignment="Left" Margin="6,263,0,0" VerticalAlignment="Top"
-               Foreground="#FFFFFBFB" FontSize="14" />
+                FontSize="14" />
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="498,473,0,0" VerticalAlignment="Top" Width="75"
                 Click="Cancel" />
         <Label Content="List name" HorizontalAlignment="Left" Margin="11,206,0,0" VerticalAlignment="Top"
-               Foreground="#FFFFFBFB" FontSize="14" />
+                FontSize="14" />
         <TextBox HorizontalAlignment="Left" Height="23" Margin="98,263,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
                  Width="120" Name="urlColumnTextBox" Validation.ErrorTemplate="{StaticResource validationTemplate}"
                  Style="{StaticResource TextBoxInError}">
@@ -186,9 +182,9 @@
             </TextBox.Text>
         </TextBox>
         <Label Content="Username" HorizontalAlignment="Left" Margin="11,32,0,0" VerticalAlignment="Top"
-               Foreground="#FFFBFBFB" />
+                />
         <Label Content="Password" HorizontalAlignment="Left" Margin="14,91,0,0" VerticalAlignment="Top"
-               Foreground="#FFFBFBFB" />
+               />
         <TextBox HorizontalAlignment="Left" Height="23" Margin="98,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
                  Width="120" Name="userNameTextBox" Validation.ErrorTemplate="{StaticResource validationTemplate}"
                  Style="{StaticResource TextBoxInError}">
@@ -218,7 +214,7 @@
             </w:PasswordHelper.Password>
         </PasswordBox>
         <Label Content="User Column" HorizontalAlignment="Left" Margin="3,316,0,0" VerticalAlignment="Top"
-               Foreground="#FFFFFBFB" FontSize="14" />
+               FontSize="14" />
         <TextBox HorizontalAlignment="Left" Height="23" Margin="98,322,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
                  Width="120" Name="userColumnTextBox" Validation.ErrorTemplate="{StaticResource validationTemplate}"
                  Style="{StaticResource TextBoxInError}">

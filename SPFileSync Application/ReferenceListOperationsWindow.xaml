@@ -6,9 +6,6 @@
         xmlns:local="clr-namespace:SPFileSync_Application"
         mc:Ignorable="d"
         Title="ReferenceListOperationsWindow" Height="500" Width="1100">
-    <Window.Background>
-        <ImageBrush ImageSource="/Utils/background.jpg" />
-    </Window.Background>
     <Grid>
         <ListBox HorizontalAlignment="Left" Height="422" Margin="22,18,0,0" VerticalAlignment="Top" Width="292"
                  Name="allConfigsList" />

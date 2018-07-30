@@ -29,12 +29,9 @@
             PopulateUIComboBox();
             CreateApplicationIcon();
             _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
-            _fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()), _notifyUI);
-
+            _fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()), _notifyUI);         
             if (_connectionConfigurations.Count == 0) SyncButton.IsEnabled = false;
-
             _fileManager.TimerSyncronize(SyncButton);
-
             WaitSync.Visibility = Visibility.Hidden;
         }
 

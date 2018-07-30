@@ -8,9 +8,6 @@
         xmlns:w="clr-namespace:Common.Helpers;assembly=Common"
         mc:Ignorable="d"
         Title="EditConfigurationPanel" Height="550" Width="800">
-    <Window.Background>
-        <ImageBrush ImageSource="/Utils/background.jpg" />
-    </Window.Background>
     <Window.Resources>
         <local1:ConfigurationWindowModel x:Key="CWM" />
         <w:SyncTimeValidator x:Key="STV" />
@@ -87,13 +84,13 @@
             </TextBox.Text>
         </TextBox>
         <Label Content="Username" HorizontalAlignment="Left" Margin="12,37,0,0" VerticalAlignment="Top"
-               Foreground="#FFFBFBFB" />
+                />
         <Label Content="Password" HorizontalAlignment="Left" Margin="11,97,0,0" VerticalAlignment="Top"
-               Foreground="#FFFBFBFB" />
+                />
         <Label Content="Destination" HorizontalAlignment="Left" Margin="6,216,0,0" VerticalAlignment="Top"
-               Foreground="White" FontSize="14" />
+                FontSize="14" />
         <Label Content="SyncInterval" HorizontalAlignment="Left" Margin="3,281,0,0" VerticalAlignment="Top"
-               Foreground="White" FontSize="14" />
+                FontSize="14" />
         <Button Content="Save" HorizontalAlignment="Left" Margin="235,409,0,0" VerticalAlignment="Top" Width="85"
                 Click="Save">
             <Button.Style>
@@ -143,7 +140,7 @@
         <ComboBox HorizontalAlignment="Left" Margin="662,10,0,0" VerticalAlignment="Top" Width="120"
                   Name="configComboBox" SelectedIndex="0" />
         <Label Content="Site url" HorizontalAlignment="Left" Margin="10,153,0,0" VerticalAlignment="Top"
-               Foreground="#FFFFFBFB" FontSize="14" />
+                FontSize="14" />
         <TextBox HorizontalAlignment="Left" Height="23" Margin="98,153,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
                  Width="190" Name="siteUrlBox" Validation.ErrorTemplate="{StaticResource validationTemplate}"
                  Style="{StaticResource TextBoxInError}">
