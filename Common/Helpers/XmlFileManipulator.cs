@@ -1,5 +1,6 @@
 ﻿namespace Common.Helpers
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Xml.Serialization;
@@ -40,8 +41,15 @@
             using (TextReader textReader =
                 File.OpenText(Directory.GetCurrentDirectory() + HelpersConstants.XmlParentDirectoryAndFile))
             {
-                lock (textReader) 
-                return (List<T>) xmlSerializer.Deserialize(textReader);
+                lock (textReader)
+                    try
+                    {
+                        return (List<T>)xmlSerializer.Deserialize(textReader);
+                    }
+                    catch (Exception e)
+                    {
+                        return new List<T>();
+                    }
             }
         }
     }

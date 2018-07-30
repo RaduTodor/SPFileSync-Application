@@ -31,8 +31,9 @@
             _connectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
             _fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()), _notifyUI);         
             if (_connectionConfigurations.Count == 0) SyncButton.IsEnabled = false;
-            _fileManager.TimerSyncronize(SyncButton);
+            _fileManager.TimerSyncronize(SyncButton, WaitAutomaticSync);
             WaitSync.Visibility = Visibility.Hidden;
+            WaitAutomaticSync.Visibility = Visibility.Hidden;
         }
 
         private ContextMenu NotificationIconContextMenu()

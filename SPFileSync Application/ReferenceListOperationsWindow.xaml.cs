@@ -56,7 +56,11 @@
             {
                 if (Uri.IsWellFormedUriString(textBox.Text, UriKind.Absolute))
                 {
-                    AddButton.IsEnabled = true;
+                    if (allConfigListsList.SelectedIndex != NullChoiceValue)
+                    {
+                        AddButton.IsEnabled = true;
+                    }
+
                     if (allUrlsList.SelectedIndex != NullChoiceValue)
                     {
                         EditButton.IsEnabled = true;
@@ -173,29 +177,36 @@
         }
 
         private void OperationButton_Click(object sender, RoutedEventArgs e)
-        { 
-            var listReferenceProvider = GetListReferenceProvider();
-            if (Equals(sender, AddButton))
+        {
+            try
             {
-                listReferenceProvider.AddListReferenceItem(_lists[allConfigListsList.SelectedIndex].ListName,
-                    new Uri(NewUrlTextBox.Text));
-                NewUrlTextBox.Text = DefaultUrlBoxMessage;
+                var listReferenceProvider = GetListReferenceProvider();
+                if (Equals(sender, AddButton))
+                {
+                    listReferenceProvider.AddListReferenceItem(_lists[allConfigListsList.SelectedIndex].ListName,
+                        new Uri(NewUrlTextBox.Text));
+                    NewUrlTextBox.Text = DefaultUrlBoxMessage;
+                }
+                else if (Equals(sender, EditButton))
+                {
+                    listReferenceProvider.ChangeListReferenceItem(new Uri(NewUrlTextBox.Text),
+                        _urlsId[allUrlsList.SelectedIndex], _lists[allConfigListsList.SelectedIndex].ListName);
+                    NewUrlTextBox.Text = DefaultUrlBoxMessage;
+                }
+                else if (Equals(sender, RemoveButton))
+                {
+                    listReferenceProvider.RemoveListReferenceItem(_lists[allConfigListsList.SelectedIndex].ListName,
+                        _urlsId[allUrlsList.SelectedIndex]);
+                    RemoveButton.IsEnabled = false;
+                    EditButton.IsEnabled = false;
+                }
+
+                NewListSelected();
             }
-            else if (Equals(sender, EditButton))
+            catch (Exception exception)
             {
-                listReferenceProvider.ChangeListReferenceItem(new Uri(NewUrlTextBox.Text),
-                    _urlsId[allUrlsList.SelectedIndex], _lists[allConfigListsList.SelectedIndex].ListName);
-                NewUrlTextBox.Text = DefaultUrlBoxMessage;
-            }
-            else if (Equals(sender, RemoveButton))
-            {
-                listReferenceProvider.RemoveListReferenceItem(_lists[allConfigListsList.SelectedIndex].ListName,
-                    _urlsId[allUrlsList.SelectedIndex]);
-                RemoveButton.IsEnabled = false;
-                EditButton.IsEnabled = false;
             }
 
-            NewListSelected();
         }
 
         private BaseListReferenceProvider GetListReferenceProvider()

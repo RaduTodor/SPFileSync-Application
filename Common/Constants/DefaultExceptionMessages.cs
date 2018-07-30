@@ -44,5 +44,8 @@
 
         public const string ConfigurationSyncFinishedUnssuccesful =
             "The sync process of configuration with sharepoint site {0} has finished but there was an error";
+
+        public const string AccessFileUrlExceptionMessage =
+            "There was an error while accessing the file from url: {0}";
     }
 }

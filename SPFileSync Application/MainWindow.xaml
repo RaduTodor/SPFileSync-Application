@@ -21,5 +21,7 @@
                 Width="119" Height="24" Click="ListOperations" />
         <Image Name="WaitSync" gif:ImageBehavior.AnimatedSource="/Utils/weirdGif.gif" HorizontalAlignment="Left"
                Margin="169,122,0,0" VerticalAlignment="Top" Height="70" Width="54" RenderTransformOrigin="0.864,0.907" />
+        <Image Name="WaitAutomaticSync" gif:ImageBehavior.AnimatedSource="/Utils/spinning.gif" HorizontalAlignment="Left"
+               Margin="33,132,0,0" VerticalAlignment="Top" Height="43" Width="42" RenderTransformOrigin="0.864,0.907" />
     </Grid>
 </Window>

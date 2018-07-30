@@ -4,6 +4,9 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Threading;
     using Common.ApplicationEnums;
     using Common.Constants;
     using Common.Helpers;
@@ -41,10 +44,11 @@
         public void Synchronize(Verdicts verdicts)
         {
             verdicts.FinalizedSyncProccesses = new bool[ConnectionConfigurations.Count];
-            var count = -1;
+            var syncThreadNumber = -1;
             foreach (var connection in ConnectionConfigurations)
             {
-                SynchronizeConfigurations(verdicts, connection, count);
+                SynchronizeConfigurations(verdicts, connection, syncThreadNumber);
+                syncThreadNumber++;
             }
             XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
         }
@@ -81,6 +85,7 @@
                             connection.Connection.Uri));
                     }
                     verdicts.FinalizedSyncProccesses[number] = true;
+
                     connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
                 };
                 Task.Run(() => fileSync.Synchronize());
@@ -99,49 +104,69 @@
         /// <summary>
         ///    Sync automatically every configuration after an interval
         /// </summary>
-        public void TimerSyncronize(System.Windows.Controls.Button syncButton)
+        public void TimerSyncronize(Button syncButton, Image waitImage)
         {
-            Thread thread = new Thread(() => ConfigurationThreadsTimer(syncButton));
+            Thread thread = new Thread(() => ConfigurationThreadsTimer(syncButton, waitImage));
             thread.Start();
         }
         /// <summary>
         ///   This method sets the timer and at every 60 seconds calls SyncFilesForConfigurationsTime which check for last sync date and if sync button is enabled.
         /// </summary>
-        private void ConfigurationThreadsTimer(System.Windows.Controls.Button syncButton)
+        private void ConfigurationThreadsTimer(System.Windows.Controls.Button syncButton, Image waitImage)
         {
             var ticks = TimeSpan.FromMilliseconds(1).Ticks;
             _timer.Interval = ticks;
             _timer.AutoReset = true;
             _timer.Enabled = true;
-            _timer.Elapsed += (sender, e) => SyncFilesForConfigurationsTime(syncButton);
+            _timer.Elapsed += (sender, e) => SyncFilesForConfigurationsTime(syncButton,waitImage);
         }
 
         /// <summary>
         ///   This method creates a task for every configuration and synchronize them.
         /// </summary>
-        private void SyncFilesForConfigurationsTime(System.Windows.Controls.Button syncButton)
+        private void SyncFilesForConfigurationsTime(System.Windows.Controls.Button syncButton, Image waitImage)
         {
             bool checkIfSyncButton = false;
             syncButton.Dispatcher.Invoke(() => { checkIfSyncButton = syncButton.IsEnabled; });
-            Verdicts verdicts = new Verdicts
-            {
-                FinalizedSyncProccesses = new bool[ConnectionConfigurations.Count]
-            };
             var syncThreadNumber = -1;
             if (checkIfSyncButton)
             {
                 ConnectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
+                var numberOfConfigurationsTriggered = 0;
+                foreach (var connection in ConnectionConfigurations)
+                {
+                    if (Math.Abs(DateTime.Now.Ticks - connection.LastSyncTime.Ticks) >= connection.SyncTimeSpan.Ticks)
+                    {
+                        numberOfConfigurationsTriggered++;
+                    }
+                }
+
+                Verdicts verdicts = new Verdicts
+                {
+                    FinalizedSyncProccesses = new bool[numberOfConfigurationsTriggered]
+                };
+
                 foreach (var connection in ConnectionConfigurations)
                 {
                     if (Math.Abs(DateTime.Now.Ticks - connection.LastSyncTime.Ticks) >= connection.SyncTimeSpan.Ticks)
                     {
                         syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = false; });
+                        waitImage.Dispatcher.Invoke(() => { waitImage.Visibility = Visibility.Visible; });
                         SynchronizeConfigurations(verdicts, connection, syncThreadNumber);
+                        syncThreadNumber++;
                     }
                 }
+                var syncProgressProvider = new SyncProgressManager();
+                syncProgressProvider.ProgressUpdate += (s, verdict) =>
+                {
+                    syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = true; });
+                    waitImage.Dispatcher.Invoke(() => { waitImage.Visibility = Visibility.Hidden; });
+                };
+                Task.Run(() => { syncProgressProvider.CheckSyncProgress(syncProgressProvider, verdicts); });
+
                 XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
-                syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = true; });
             }
+
         }
     }
 }
