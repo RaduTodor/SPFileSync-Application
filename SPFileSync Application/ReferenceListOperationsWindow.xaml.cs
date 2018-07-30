@@ -8,6 +8,7 @@
     using BusinessLogicLayer;
     using Common.ApplicationEnums;
     using Common.Constants;
+    using Common.Helpers;
     using Configuration;
     using DataAccessLayer;
     using Models;
@@ -15,43 +16,30 @@
     /// <summary>
     ///     Interaction logic for ReferenceListOperationsWindow.xaml
     /// </summary>
-    /// TODO:[CR RT]: Remove empty lines 
     public partial class ReferenceListOperationsWindow : Window
     {
         private const string DefaultUrlBoxMessage = "Insert New URL";
-
         private const int NullChoiceValue = -1;
         private readonly List<ConnectionConfiguration> _connections;
-
         private ObservableCollection<string> _configurationsName;
-
         private List<ListWithColumnsName> _lists;
-
         private ObservableCollection<string> _listsName;
-
         private List<UrlListItem> _urls;
-
         private List<int> _urlsId;
-
         private ObservableCollection<string> _urlsNames;
-        /// TODO:[CR RT]: Remove empty lines 
+
         public ReferenceListOperationsWindow(List<ConnectionConfiguration> connectionConfigurations)
         {
             InitializeComponent();
             PopulateComboBox();
-            
             InstantiateFields();
-
             AddModifyHandlerToTextBox(NewUrlTextBox);
-
             _connections = connectionConfigurations;
             PopulateConfigsList();
             allConfigsList.ItemsSource = _configurationsName;
-
             AddSelectionHandlersToListViews();
         }
-        /// TODO:[CR RT]: Make method private
-        public void AddModifyHandlerToTextBox(TextBox textBox)
+        private void AddModifyHandlerToTextBox(TextBox textBox)
         {
             textBox.TextChanged += (sender, args) =>
             {
@@ -176,12 +164,12 @@
                 _urlsId.Add(item.Id);
             }
         }
-        /// TODO:[CR RT]: nothing done in catch?
+
         private void OperationButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var listReferenceProvider = GetListReferenceProvider();
+                var listReferenceProvider = CreateListReferenceProvider();
                 if (Equals(sender, AddButton))
                 {
                     listReferenceProvider.AddListReferenceItem(_lists[allConfigListsList.SelectedIndex].ListName,
@@ -206,11 +194,13 @@
             }
             catch (Exception exception)
             {
+                NotifyUI notifyUi = new NotifyUI();
+                notifyUi.CatchErrorNotifier(exception, exception.Message);
             }
 
         }
 
-        private BaseListReferenceProvider GetListReferenceProvider()
+        private BaseListReferenceProvider CreateListReferenceProvider()
         {
             BaseListReferenceProvider listReferenceProvider;
             if (configComboBox.SelectionBoxItem.ToString() == ConfigurationMessages.ComboBoxRest)

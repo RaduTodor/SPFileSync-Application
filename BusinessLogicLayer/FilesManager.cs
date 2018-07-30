@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Threading;
     using Common.ApplicationEnums;
     using Common.Constants;
     using Common.Helpers;
