@@ -29,6 +29,7 @@ namespace SPFileSync_Application
 
         private void PopulateObservableCollection()
         {
+            _configurationsName = new ObservableCollection<string>();
             foreach (var item in _connections)
             {
                 _configurationsName.Add(item.Connection.UriString);
@@ -45,10 +46,11 @@ namespace SPFileSync_Application
 
         private void Remove(object sender, RoutedEventArgs e)
         {
-            allConfigsList.Focus();
             _connections.RemoveAt(allConfigsList.SelectedIndex);
-            _configurationsName.Remove((string)allConfigsList.SelectedItem);
+            _configurationsName.Remove(_configurationsName[allConfigsList.SelectedIndex]);
             Common.Helpers.XmlFileManipulator.Serialize(_connections);
+            PopulateObservableCollection();
+            allConfigsList.ItemsSource = _configurationsName;
             if (_connections.Count == 0)
             {
                 mainWindow.SyncButton.IsEnabled = false;

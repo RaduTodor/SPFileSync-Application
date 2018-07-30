@@ -16,14 +16,14 @@
     public class FilesManager
     {
         private NotifyUI _notifyUI;
-        //TODO [CR BT]: Initialize timer on the used contructor 
-        private System.Timers.Timer _timer = new System.Timers.Timer();
+        private System.Timers.Timer _timer;
 
         public FilesManager(List<ConnectionConfiguration> configurations, ListReferenceProviderType type, NotifyUI notifyUI)
         {
             ConnectionConfigurations = configurations;
             ProviderType = type;
             _notifyUI = notifyUI;
+            _timer = new System.Timers.Timer();
         }
 
         public EventHandler<bool> InternetAccessLost;
@@ -43,63 +43,19 @@
             verdicts.FinalizedSyncProccesses = new bool[ConnectionConfigurations.Count];
             var count = -1;
             foreach (var connection in ConnectionConfigurations)
-                try
-                {
-                    bool syncSuccessful = true;
-                    verdicts.FinalizedSyncProccesses[++count] = false;
-                    var fileSync = new FileSynchronizer(connection, ProviderType, count);
-                    fileSync.ExceptionUpdate += (sender, exception) =>
-                    {
-                        connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
-                        _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncTitleError, exception.Message);
-                        syncSuccessful = false;
-                    };
-                    fileSync.InternetAccessException += (sender, exception) =>
-                    {
-                        connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
-                        InternetAccessLost.Invoke(this, true);
-                        syncSuccessful = false;
-                    };
-                    fileSync.ProgressUpdate += (sender, number) =>
-                    {
-                        if (syncSuccessful)
-                        {
-                            LoggerManager.Logger.Trace(string.Format(DefaultTraceMessages.ConfigurationSyncFinishedSuccessfully,
-                                connection.Connection.Uri));
-                        }
-                        else
-                        {
-                            LoggerManager.Logger.Warn(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
-                                connection.Connection.Uri));
-                        }
-                        verdicts.FinalizedSyncProccesses[number] = true;
-                        connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
-                    };
-                    Task.Run(() => fileSync.Synchronize());
-                    connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
-                }
-                catch (Exception exception)
-                {
-                    connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
-                    verdicts.FinalizedSyncProccesses[count] = true;
-                    LoggerManager.Logger.Error(exception, exception.Message);
-                    {
-                        _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncTitleError, exception.Message);
-                    }
-                }
+            {
+                SynchronizeConfigurations(verdicts, connection, count);
+            }
             XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
         }
-        //TODO [CR BT]: Rename method with a more specific name
-        //TODO [CR BT]: To much code duplication with above method. Extract all the try -> catch code in another method.
-        //TODO [CR BT]: Rename count parameter with a more specific name
-        //TODO [CR BT]: Why did you initialize the count with -1 if you already send the value -1 where you called this method
-        private void GeneralSynchronize(Verdicts verdicts, ConnectionConfiguration connection, int count = -1)
+        
+        private void SynchronizeConfigurations(Verdicts verdicts, ConnectionConfiguration connection, int syncThreadNumber)
         {
             try
             {
                 bool syncSuccessful = true;
-                verdicts.FinalizedSyncProccesses[++count] = false;
-                var fileSync = new FileSynchronizer(connection, ProviderType, count);
+                verdicts.FinalizedSyncProccesses[++syncThreadNumber] = false;
+                var fileSync = new FileSynchronizer(connection, ProviderType, syncThreadNumber);
                 fileSync.ExceptionUpdate += (sender, exception) =>
                 {
                     connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
@@ -133,7 +89,7 @@
             catch (Exception exception)
             {
                 connection.LastSyncTime = DateTime.Now.AddSeconds(-DateTime.Now.Second);
-                verdicts.FinalizedSyncProccesses[count] = true;
+                verdicts.FinalizedSyncProccesses[syncThreadNumber] = true;
                 LoggerManager.Logger.Error(exception, exception.Message);
                 {
                     _notifyUI.NotifyUserWithTrayBarBalloon(ConfigurationMessages.SyncTitleError, exception.Message);
@@ -148,22 +104,22 @@
             Thread thread = new Thread(() => ConfigurationThreadsTimer(syncButton));
             thread.Start();
         }
-        //TODO [CR BT]: Make this method private
-        //TODO [CR BT]: Add documentation
-        public void ConfigurationThreadsTimer(System.Windows.Controls.Button syncButton)
+        /// <summary>
+        ///   This method sets the timer and at every 60 seconds calls SyncFilesForConfigurationsTime which check for last sync date and if sync button is enabled.
+        /// </summary>
+        private void ConfigurationThreadsTimer(System.Windows.Controls.Button syncButton)
         {
             var ticks = TimeSpan.FromMilliseconds(1).Ticks;
             _timer.Interval = ticks;
             _timer.AutoReset = true;
             _timer.Enabled = true;
-            //TODO [CR BT]: Why did you pass the sender and e to the SyncFilesForConfigurationsTime method if they are not used there? Please remove them if they are not used.
-            _timer.Elapsed += (sender, e) => SyncFilesForConfigurationsTime(sender, e, syncButton);
+            _timer.Elapsed += (sender, e) => SyncFilesForConfigurationsTime(syncButton);
         }
 
-        //TODO [CR BT]: Make this method private
-        //TODO [CR BT]: Add documentation
-        //TODO [CR BT]: Remove unused parameters
-        public void SyncFilesForConfigurationsTime(object sender, System.Timers.ElapsedEventArgs e, System.Windows.Controls.Button syncButton)
+        /// <summary>
+        ///   This method creates a task for every configuration and synchronize them.
+        /// </summary>
+        private void SyncFilesForConfigurationsTime(System.Windows.Controls.Button syncButton)
         {
             bool checkIfSyncButton = false;
             syncButton.Dispatcher.Invoke(() => { checkIfSyncButton = syncButton.IsEnabled; });
@@ -171,7 +127,7 @@
             {
                 FinalizedSyncProccesses = new bool[ConnectionConfigurations.Count]
             };
-            var count = -1;
+            var syncThreadNumber = -1;
             if (checkIfSyncButton)
             {
                 ConnectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
@@ -180,7 +136,7 @@
                     if (Math.Abs(DateTime.Now.Ticks - connection.LastSyncTime.Ticks) >= connection.SyncTimeSpan.Ticks)
                     {
                         syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = false; });
-                        GeneralSynchronize(verdicts, connection, count);
+                        SynchronizeConfigurations(verdicts, connection, syncThreadNumber);
                     }
                 }
                 XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
