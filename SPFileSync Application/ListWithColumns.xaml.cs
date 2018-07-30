@@ -8,6 +8,7 @@
     public partial class ListWithColumns
     {
         private readonly List<ListWithColumnsName> _addListsToConfiguration;
+        /// TODO:[CR BT]: Add _ to configurationListsName
         private readonly ObservableCollection<string> configurationListsName;
 
         public ListWithColumns(List<ListWithColumnsName> list)
