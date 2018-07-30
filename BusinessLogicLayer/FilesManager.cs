@@ -124,6 +124,8 @@
         /// <summary>
         ///   This method creates a task for every configuration and synchronize them.
         /// </summary>
+        /// TODO:[CR BT]: Extract in multiple methods. There are at least 3 different operations on this method.
+        /// TODO:[CR BT]: Remove code duplication (foreach and if).
         private void SyncFilesForConfigurationsTime(System.Windows.Controls.Button syncButton, Image waitImage)
         {
             bool checkIfSyncButton = false;
@@ -138,6 +140,7 @@
                     if (Math.Abs(DateTime.Now.Ticks - connection.LastSyncTime.Ticks) >= connection.SyncTimeSpan.Ticks)
                     {
                         numberOfConfigurationsTriggered++;
+
                     }
                 }
 

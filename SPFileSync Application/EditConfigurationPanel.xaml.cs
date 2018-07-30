@@ -14,6 +14,7 @@ namespace SPFileSync_Application
         private ConnectionConfiguration _configuration;
         private List<ConnectionConfiguration> _configurations;
         private NotifyUI _notifyUI;
+        /// TODO:[CR BT]: Initialize on the used constructor.
         private ObservableCollection<string> _configurationsName = new ObservableCollection<string>();
         private string _uiPathField = "";
         Window _window;

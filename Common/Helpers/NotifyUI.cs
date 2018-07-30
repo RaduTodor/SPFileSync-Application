@@ -6,7 +6,7 @@
     using System.IO;
     using System.Windows;
     using System.Windows.Forms;
-
+    /// TODO:[CR BT]: Add documentation for public methonds
     public class NotifyUI
     {
         private Window _window;

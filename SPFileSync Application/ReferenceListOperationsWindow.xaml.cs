@@ -15,6 +15,7 @@
     /// <summary>
     ///     Interaction logic for ReferenceListOperationsWindow.xaml
     /// </summary>
+    /// TODO:[CR RT]: Remove empty lines 
     public partial class ReferenceListOperationsWindow : Window
     {
         private const string DefaultUrlBoxMessage = "Insert New URL";
@@ -33,7 +34,7 @@
         private List<int> _urlsId;
 
         private ObservableCollection<string> _urlsNames;
-
+        /// TODO:[CR RT]: Remove empty lines 
         public ReferenceListOperationsWindow(List<ConnectionConfiguration> connectionConfigurations)
         {
             InitializeComponent();
@@ -49,7 +50,7 @@
 
             AddSelectionHandlersToListViews();
         }
-
+        /// TODO:[CR RT]: Make method private
         public void AddModifyHandlerToTextBox(TextBox textBox)
         {
             textBox.TextChanged += (sender, args) =>
@@ -175,7 +176,7 @@
                 _urlsId.Add(item.Id);
             }
         }
-
+        /// TODO:[CR RT]: nothing done in catch?
         private void OperationButton_Click(object sender, RoutedEventArgs e)
         {
             try
