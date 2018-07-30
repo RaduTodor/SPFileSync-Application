@@ -74,7 +74,7 @@
                         }
                         else
                         {
-                            LoggerManager.Logger.Error(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
+                            LoggerManager.Logger.Warn(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
                                 connection.Connection.Uri));
                         }
                         verdicts.FinalizedSyncProccesses[number] = true;
@@ -123,7 +123,7 @@
                     }
                     else
                     {
-                        LoggerManager.Logger.Error(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
+                        LoggerManager.Logger.Warn(string.Format(DefaultExceptionMessages.ConfigurationSyncFinishedUnssuccesful,
                             connection.Connection.Uri));
                     }
                     verdicts.FinalizedSyncProccesses[number] = true;
