@@ -87,6 +87,17 @@
                 internetAccessException?.Invoke(this, currentException);
                 throw currentException;
             }
+            catch (InvalidOperationException exception)
+            {
+                Exception currentException =
+                    new GetRequestException(exception.Message, exception);
+                string loggingMessage =
+                    string.Format(DefaultExceptionMessages.FileNotAvailableExceptionMessage, fileUrl);
+                LoggerManager.Logger.Error(currentException, loggingMessage);
+                NotifyUI notifyUi = new NotifyUI();
+                notifyUi.NotifyUserWithTrayBarBalloon(ConfigurationMessages.FileNotAvailalbeTitle, loggingMessage);
+                return (DateTime.MinValue);
+            }
             catch (Exception exception)
             {
                 Exception currentException =

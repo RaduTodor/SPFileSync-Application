@@ -47,5 +47,8 @@
 
         public const string AccessFileUrlExceptionMessage =
             "There was an error while accessing the file from url: {0}";
+
+        public const string FileNotAvailableExceptionMessage =
+            "The file from url: {0} is no longer available";
     }
 }

@@ -41,5 +41,9 @@
         public const string InternetAccesError = "Bad internet connection";
 
         public const string InternetAccesErrorMessage = "Solve your internet problems";
+
+        public const string FileUpdatedTitle = "A file was updated!";
+
+        public const string FileNotAvailalbeTitle = "A file is no longer availalbe!";
     }
 }

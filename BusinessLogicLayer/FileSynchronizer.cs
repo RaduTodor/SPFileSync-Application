@@ -76,7 +76,11 @@
         private void EnsureFile(MetadataModel model, List<MetadataModel> currentData)
         {
             var match = currentData.FirstOrDefault(x => x.Url == model.Url);
-            if (match != null && match.ModifiedDate < model.ModifiedDate)
+            if (model.ModifiedDate == DateTime.MinValue)
+            {
+
+            }
+            else if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
                 DownloadFileAndAddMetadata(true, currentData, model);
                 currentData.Remove(match);

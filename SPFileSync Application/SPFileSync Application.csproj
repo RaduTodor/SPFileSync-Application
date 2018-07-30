@@ -82,6 +82,9 @@
     <Compile Include="ReferenceListOperationsWindow.xaml.cs">
       <DependentUpon>ReferenceListOperationsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UpdatedFilesWindow.xaml.cs">
+      <DependentUpon>UpdatedFilesWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="ConfigurationListsEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -131,6 +134,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ReferenceListOperationsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UpdatedFilesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -24,7 +24,7 @@
         /// </summary>
         /// <param name="url"></param>
         /// <param name="listName"></param>
-        public void AddSyncListItem(string url, string listName)
+        public void AddSyncListItem(string listName, string url)
         {
             var listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
             listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
@@ -36,7 +36,7 @@
         /// </summary>
         /// <param name="id"></param>
         /// <param name="listName"></param>
-        public void RemoveSyncListItem(int id, string listName)
+        public void RemoveSyncListItem(string listName, int id)
         {
             var listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
             listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
