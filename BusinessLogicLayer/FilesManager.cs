@@ -109,7 +109,7 @@
         /// </summary>
         private void ConfigurationThreadsTimer(System.Windows.Controls.Button syncButton)
         {
-            var ticks = TimeSpan.FromMilliseconds(1).Ticks;
+            var ticks = TimeSpan.FromMilliseconds(60).Ticks;
             _timer.Interval = ticks;
             _timer.AutoReset = true;
             _timer.Enabled = true;
