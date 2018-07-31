@@ -77,7 +77,7 @@ namespace SPFileSync_Application
                 Path = _uiPathField,
                 SyncInterval = syncTextBox.Text
             };
-            WindowNotifyModel windowNotifyModel = new WindowNotifyModel() { NotifyUI = _notifyUI, Window = this };
+            WindowNotifyModel windowNotifyModel = new WindowNotifyModel() { NotifyUi = _notifyUI, Window = this };
             var checkIfValid = configurationOperations.EditConfiguration(configurationWindowModel, _configurations, windowNotifyModel, _configuration);
             if (checkIfValid)
             {

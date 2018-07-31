@@ -2,7 +2,6 @@
 {
     using System;
     using System.IO;
-    using System.Linq;
     using System.Net;
     using Common.Constants;
     using Common.Exceptions;
@@ -13,7 +12,6 @@
     /// <summary>
     ///     From given ConnectionConfiguration can access specific files
     /// </summary>
-    //TODO [CR RT]: Remove unused namespaces
     public class FileOperationProvider
     {
         public FileOperationProvider(ConnectionConfiguration configuration)
@@ -98,17 +96,14 @@
 
         private void AddUpdatedFileInformations(string url, string fileName, string downloadedFilePath)
         {
-            UpdatedFilesModel updatedFilesModel = UpdatedFilesModel.Instance;
-            int existentFilePosition = updatedFilesModel.UpdatedFilesUrl.FindIndex(file => file == url);
-            if (existentFilePosition != -1)
+            UpdatedFiles updatedFiles = UpdatedFiles.Instance;
+            updatedFiles.Files.Add(new UpdatedFileModel
             {
-                updatedFilesModel.RemoveElementAt(existentFilePosition);
-            }
-            //TODO [CR RT]: Use a model instead multiple lists
-            updatedFilesModel.UpdatedFilesUrl.Add(url);
-            updatedFilesModel.UpdatedFilesName.Add(fileName);
-            updatedFilesModel.UpdatedFilesLocation.Add(downloadedFilePath);
-            updatedFilesModel.UpdatedFilesUpdateMoment.Add(DateTime.Now);
+                Url = url,
+                FileName = fileName,
+                FileLocation = downloadedFilePath,
+                UpdatedDate = DateTime.Now
+            });
         }
 
         private void CatchDownloadException(Exception exception, EventHandler<Exception> internetAccessException)
