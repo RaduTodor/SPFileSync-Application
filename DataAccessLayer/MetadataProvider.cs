@@ -103,7 +103,7 @@
                 Exception currentException =
                     new GetRequestException(exception.Message, exception);
                 LoggerManager.Logger.Error(currentException, string.Format(DefaultExceptionMessages.AccessFileUrlExceptionMessage,fileUrl));
-                throw currentException;
+                return (DateTime.MinValue);
             }
         }
 
