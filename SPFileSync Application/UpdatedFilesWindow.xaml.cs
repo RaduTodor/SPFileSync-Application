@@ -1,71 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-//TODO [CR RT]: Remove unused namespaces
-namespace SPFileSync_Application
+﻿namespace SPFileSync_Application
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.IO;
-    using Common.Constants;
+    using System.Windows;
     using Models;
 
     /// <summary>
-    /// Interaction logic for UpdatedFilesWindow.xaml
+    ///     Interaction logic for UpdatedFilesWindow.xaml
     /// </summary>
     public partial class UpdatedFilesWindow : Window
     {
+        private readonly List<string> _files;
         private ObservableCollection<string> _filesDetails;
-        private List<string> _files;
+        private string _explorerApplication = "explorer.exe";
+        private string _selectOption = "/select, ";
+
         public UpdatedFilesWindow()
         {
             InitializeComponent();
-            PopulateComboBox();
             _files = new List<string>();
-            UpdatedFilesModel updatedFilesModel = UpdatedFilesModel.Instance;
-            for (int position = 0; position < updatedFilesModel.UpdatedFilesName.Count; position++)
-            {
-                _files.Add(updatedFilesModel.GetFileDetailsAt(position)); 
-            }
+            var updatedFilesSingleton = UpdatedFiles.Instance;
+            for (var position = 0; position < updatedFilesSingleton.Files.Count; position++)
+                _files.Add(updatedFilesSingleton.GetFileDetailsAt(position));
             PopulateUpdatedFilesList();
             allUpdatedFiles.ItemsSource = _filesDetails;
             GoToButton.IsEnabled = false;
             allUpdatedFiles.SelectionChanged += (sender, args) => { GoToButton.IsEnabled = true; };
         }
 
-        private void PopulateComboBox()
-        {
-            configComboBox.Items.Add(ConfigurationMessages.ComboBoxRest);
-            configComboBox.Items.Add(ConfigurationMessages.ComboBoxCsom);
-        }
-
         private void PopulateUpdatedFilesList()
         {
             _filesDetails = new ObservableCollection<string>();
-            foreach (var item in _files)
-            {
-                _filesDetails.Add(item);
-            }
+            foreach (var item in _files) _filesDetails.Add(item);
         }
-        //TODO [CR RT]: Extract constants
+
         private void GotToFile_OnClick(object sender, RoutedEventArgs e)
         {
-            UpdatedFilesModel updatedFilesModel = UpdatedFilesModel.Instance;
-            string filePath = updatedFilesModel.UpdatedFilesLocation[allUpdatedFiles.SelectedIndex];
-            if (File.Exists(updatedFilesModel.UpdatedFilesLocation[allUpdatedFiles.SelectedIndex]))
-            {
-                Process.Start("explorer.exe", "/select, " + filePath);
-            }
+            var updatedFiles = UpdatedFiles.Instance;
+            var filePath = updatedFiles.Files[allUpdatedFiles.SelectedIndex].FileLocation;
+            if (File.Exists(filePath)) Process.Start(_explorerApplication, _selectOption + filePath);
         }
     }
 }

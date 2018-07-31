@@ -7,6 +7,6 @@ namespace Models
     public class WindowNotifyModel
     {
         public Window Window { get; set; }       
-        public NotifyUI NotifyUI { get; set; }
+        public NotifyUI NotifyUi { get; set; }
     }
 }

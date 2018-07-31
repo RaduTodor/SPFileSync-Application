@@ -31,17 +31,17 @@
             }
             catch (UriFormatException uriException)
             {
-                windowNotifyModel.NotifyUI.CatchErrorNotifier(uriException,Common.Constants.ConfigurationMessages.InvalidSiteUrl);
+                windowNotifyModel.NotifyUi.CatchErrorNotifier(uriException,Common.Constants.ConfigurationMessages.InvalidSiteUrl);
                 return false;
             }
             catch (Common.Exceptions.LoginException webException)
             {
-                windowNotifyModel.NotifyUI.CatchErrorNotifier(webException,webException.Message);
+                windowNotifyModel.NotifyUi.CatchErrorNotifier(webException,webException.Message);
                 return false;
             }
             catch (Exception exception)
             {
-                windowNotifyModel.NotifyUI.CatchErrorNotifier(exception,exception.Message);
+                windowNotifyModel.NotifyUi.CatchErrorNotifier(exception,exception.Message);
                 return false;
             }
         }
@@ -79,17 +79,17 @@
             }
             catch (UriFormatException uriException)
             {
-                windowNotifyModel.NotifyUI.CatchErrorNotifier(uriException,Common.Constants.ConfigurationMessages.InvalidSiteUrl);
+                windowNotifyModel.NotifyUi.CatchErrorNotifier(uriException,Common.Constants.ConfigurationMessages.InvalidSiteUrl);
                 return false;
             }
             catch (Common.Exceptions.LoginException webException)
             {
-                windowNotifyModel.NotifyUI.CatchErrorNotifier(webException,webException.Message);
+                windowNotifyModel.NotifyUi.CatchErrorNotifier(webException,webException.Message);
                 return false;
             }
             catch (Exception exception)
             {
-                windowNotifyModel.NotifyUI.CatchErrorNotifier(exception,exception.Message);
+                windowNotifyModel.NotifyUi.CatchErrorNotifier(exception,exception.Message);
                 return false;
             }
         }

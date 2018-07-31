@@ -53,7 +53,13 @@
                         HelpersConstants.MetadataFileLocation,
                         ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
                     Directory.GetCurrentDirectory() + HelpersConstants.ParentDirectory);
-                foreach (var model in spData) EnsureFile(model, currentData);
+                foreach (var model in spData)
+                {
+                    if (model.ModifiedDate != DateTime.MinValue)
+                    {
+                        EnsureFile(model, currentData);
+                    }
+                }
                 CsvMetadataFileManipulator.WriteMetadata(Directory.GetCurrentDirectory() + string.Format(
                                                              HelpersConstants.MetadataFileLocation,
                                                              ListReferenceProvider.ConnectionConfiguration.Connection
@@ -76,12 +82,7 @@
         private void EnsureFile(MetadataModel model, List<MetadataModel> currentData)
         {
             var match = currentData.FirstOrDefault(x => x.Url == model.Url);
-            //TODO [CR RT]: Move this if where you call this method. Never use code like if or while without conde inside it.
-            if (model.ModifiedDate == DateTime.MinValue)
-            {
-
-            }
-            else if (match != null && match.ModifiedDate < model.ModifiedDate)
+            if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
                 DownloadFileAndAddMetadata(true, currentData, model);
                 currentData.Remove(match);
@@ -124,7 +125,7 @@
             foreach (var url in userUrLs)
             {
                 var dateTime = ListReferenceProvider.GetMetadataItem(url, InternetAccessException);
-                metadatas.Add(new MetadataModel {Url = url, ModifiedDate = dateTime});
+                metadatas.Add(new MetadataModel { Url = url, ModifiedDate = dateTime });
             }
 
             return metadatas;
