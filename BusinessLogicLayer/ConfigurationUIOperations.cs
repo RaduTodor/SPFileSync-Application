@@ -9,7 +9,6 @@
     /// <summary>
     ///     An instance of ConfigurationUIOperations class can add and edit configurations.
     /// </summary>
- /// TODO:[CR BT]: Add documentation for public methonds
     public class ConfigurationUIOperations
     {
         private Connection CreateConnection(ConfigurationWindowModel configurationWindowModel)

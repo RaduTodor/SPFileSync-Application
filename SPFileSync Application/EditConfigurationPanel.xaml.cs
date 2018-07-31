@@ -14,14 +14,14 @@ namespace SPFileSync_Application
         private ConnectionConfiguration _configuration;
         private List<ConnectionConfiguration> _configurations;
         private NotifyUI _notifyUI;
-        /// TODO:[CR BT]: Initialize on the used constructor.
-        private ObservableCollection<string> _configurationsName = new ObservableCollection<string>();
+        private ObservableCollection<string> _configurationsName;
         private string _uiPathField = "";
         Window _window;
 
         public EditConfigurationPanel(ConnectionConfiguration configurationItem, List<ConnectionConfiguration> configurations, Window window)
         {
             InitializeComponent();
+            _configurationsName = new ObservableCollection<string>();
             InitializeFields(configurationItem, configurations, window);
             UpdateUI();
         }

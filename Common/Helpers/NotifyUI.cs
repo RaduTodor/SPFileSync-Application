@@ -6,7 +6,10 @@
     using System.IO;
     using System.Windows;
     using System.Windows.Forms;
-    /// TODO:[CR BT]: Add documentation for public methonds
+
+    /// <summary>
+    ///     An instance of NotifyUI class is used for notifying in tray bar when an error occurs or when an operation is happening.
+    /// </summary>
     public class NotifyUI
     {
         private Window _window;
@@ -24,7 +27,9 @@
             this._window = window;
             _displayConfigurationErrorsList = listbox;
         }
-
+        /// <summary>
+        /// NotifyUserWithTrayBarBalloon method is used to notify a message in tray bar.     
+        /// </summary>
         public void NotifyUserWithTrayBarBalloon(string notificationTitle, string notificationMessage)
         {
             _notifyIcon.BalloonTipTitle = notificationTitle;
@@ -37,7 +42,9 @@
             _notifyIcon.Click += NotifyIconClick;
             NotifyIconTextCharactersExpend.SetNotifyIconText(_notifyIcon, notificationMessage);
         }
-
+        /// <summary>
+        /// CatchErrorNotifier method is used to notify an error in tray bar.     
+        /// </summary>
         public void CatchErrorNotifier(Exception exception, string notifyMessage)
         {
             NotifyUserWithTrayBarBalloon(ConfigurationMessages.BadConfigurationTitle, notifyMessage);

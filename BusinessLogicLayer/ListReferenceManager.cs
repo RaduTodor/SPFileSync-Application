@@ -55,5 +55,13 @@
             listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
             listReferenceProvider.ChangeListReferenceItem(new Uri(url), id, listName);
         }
+
+        public void SearchFiles()
+        {
+            var listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
+            listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
+            listReferenceProvider.SearchSPFiles();
+        }
+
     }
 }

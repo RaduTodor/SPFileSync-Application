@@ -185,5 +185,10 @@
                 throw currentException;
             }
         }
+
+        public override void SearchSPFiles()
+        {
+            //throw new NotImplementedException();
+        }
     }
 }

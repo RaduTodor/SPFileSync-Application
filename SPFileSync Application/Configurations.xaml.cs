@@ -9,8 +9,7 @@ namespace SPFileSync_Application
     {
         private List<ConnectionConfiguration> _connections;
         private MainWindow mainWindow;
-        // TODO:[CR BT]: If it's initialized on constructor remove this initialization.
-        private ObservableCollection<string> _configurationsName = new ObservableCollection<string>();
+        private ObservableCollection<string> _configurationsName;
         public Configurations(List<ConnectionConfiguration> connectionConfigurations, MainWindow window)
         {
             InitializeComponent();

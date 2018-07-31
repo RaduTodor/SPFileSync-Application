@@ -16,7 +16,7 @@ namespace SPFileSync_Application
         {
             InitializeComponent();
             _selectedConfigLists = list;
-            _observableSelectedconfigListsName = new ObservableCollection<string>();
+            _observableSelectedconfigListsName = new ObservableCollection<string>();                  
             _removedListsOfConfig = new List<ListWithColumnsName>();
             _observableSelectedconfigListsName.CollectionChanged += ItemsCollectionChanged;
             GetListsNames();
