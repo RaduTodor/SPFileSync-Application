@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+//TODO [CR RT]: Remove unused namespaces
 namespace SPFileSync_Application
 {
     using System.Collections.ObjectModel;
@@ -57,7 +57,7 @@ namespace SPFileSync_Application
                 _filesDetails.Add(item);
             }
         }
-
+        //TODO [CR RT]: Extract constants
         private void GotToFile_OnClick(object sender, RoutedEventArgs e)
         {
             UpdatedFilesModel updatedFilesModel = UpdatedFilesModel.Instance;

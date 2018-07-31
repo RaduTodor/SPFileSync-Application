@@ -13,6 +13,7 @@
     /// <summary>
     ///     From given ConnectionConfiguration can access specific files
     /// </summary>
+    //TODO [CR RT]: Remove unused namespaces
     public class FileOperationProvider
     {
         public FileOperationProvider(ConnectionConfiguration configuration)
@@ -103,7 +104,7 @@
             {
                 updatedFilesModel.RemoveElementAt(existentFilePosition);
             }
-
+            //TODO [CR RT]: Use a model instead multiple lists
             updatedFilesModel.UpdatedFilesUrl.Add(url);
             updatedFilesModel.UpdatedFilesName.Add(fileName);
             updatedFilesModel.UpdatedFilesLocation.Add(downloadedFilePath);
