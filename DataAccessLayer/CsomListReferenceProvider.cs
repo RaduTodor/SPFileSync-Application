@@ -7,6 +7,7 @@
     using Common.Helpers;
     using Microsoft.SharePoint.Client;
     using Models;
+    using Microsoft.SharePoint.Client.Search.Query;
 
     /// <summary>
     ///     An implementation of BaseListReferenceProvider which uses CSOM technology to implement base methods.
@@ -79,6 +80,19 @@
             listItem[$"{list.UserColumnName}"] = clientContext.Web.CurrentUser;
             listItem.Update();
             clientContext.ExecuteQuery();
+        }
+
+
+        public override void SearchSPFiles()
+        {
+            using (ClientContext clientContext = new ClientContext(@"http://sp2013dc/sites/iship/_layouts/15/start.aspx#/"))
+            {
+                KeywordQuery keywordQuery = new KeywordQuery(clientContext);
+                keywordQuery.QueryText = "SharePoint";
+                SearchExecutor searchExecutor = new SearchExecutor(clientContext);
+                ClientResult<ResultTableCollection> results = searchExecutor.ExecuteQuery(keywordQuery);
+                clientContext.ExecuteQuery();
+            }
         }
 
         /// <summary>

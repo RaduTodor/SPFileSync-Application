@@ -8,22 +8,21 @@
     public partial class ListWithColumns
     {
         private readonly List<ListWithColumnsName> _addListsToConfiguration;
-        /// TODO:[CR BT]: Add _ to configurationListsName
-        private readonly ObservableCollection<string> configurationListsName;
+        private readonly ObservableCollection<string> _configurationListsName;
 
         public ListWithColumns(List<ListWithColumnsName> list)
         {
             InitializeComponent();
             _addListsToConfiguration = list;
-            configurationListsName = new ObservableCollection<string>();
-            configurationListsName = new ObservableCollection<string>();
+            _configurationListsName = new ObservableCollection<string>();
+            _configurationListsName = new ObservableCollection<string>();
         }
 
         public ListWithColumns(List<ListWithColumnsName> list, ObservableCollection<string> observableCollection)
         {
             InitializeComponent();
             _addListsToConfiguration = list;
-            configurationListsName = observableCollection;
+            _configurationListsName = observableCollection;
         }
 
         private void ConfirmList(object sender, RoutedEventArgs e)
@@ -35,7 +34,7 @@
                 UserColumnName = userColumnTextBox.Text
             };
             _addListsToConfiguration.Add(list);
-            configurationListsName.Add(list.ListName);
+            _configurationListsName.Add(list.ListName);
             Close();
         }
 

@@ -111,20 +111,46 @@
         /// <summary>
         ///   This method sets the timer and at every 60 seconds calls SyncFilesForConfigurationsTime which check for last sync date and if sync button is enabled.
         /// </summary>
-        private void ConfigurationThreadsTimer(System.Windows.Controls.Button syncButton, Image waitImage)
+        private void ConfigurationThreadsTimer(Button syncButton, Image waitImage)
         {
-            var ticks = TimeSpan.FromMilliseconds(60).Ticks;
+            var ticks = TimeSpan.FromMilliseconds(6).Ticks;
             _timer.Interval = ticks;
             _timer.AutoReset = true;
             _timer.Enabled = true;
             _timer.Elapsed += (sender, e) => SyncFilesForConfigurationsTime(syncButton,waitImage);
         }
 
+        private List<ConnectionConfiguration> GetOutdatedConfigurations(Verdicts verdicts)
+        {
+            ConnectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
+            var numberOfConfigurationsTriggered = 0;
+            List<ConnectionConfiguration> outdatedConfigurations = new List<ConnectionConfiguration>();
+            foreach (var configuration in ConnectionConfigurations)
+            {
+                if (Math.Abs(DateTime.Now.Ticks - configuration.LastSyncTime.Ticks) >= configuration.SyncTimeSpan.Ticks)
+                {
+                    numberOfConfigurationsTriggered++;
+                    outdatedConfigurations.Add(configuration);
+                }
+            }
+            verdicts.FinalizedSyncProccesses = new bool[numberOfConfigurationsTriggered];
+            return outdatedConfigurations;
+        }
+
+        private void EnableUIComponentsWhenFinish(Verdicts verdicts, Button syncButton, Image waitImage)
+        {
+            var syncProgressProvider = new SyncProgressManager();
+            syncProgressProvider.ProgressUpdate += (s, verdict) =>
+            {
+                syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = true; });
+                waitImage.Dispatcher.Invoke(() => { waitImage.Visibility = Visibility.Hidden; });
+            };
+            Task.Run(() => { syncProgressProvider.CheckSyncProgress(syncProgressProvider, verdicts); });
+        }
+
         /// <summary>
         ///   This method creates a task for every configuration and synchronize them.
         /// </summary>
-        /// TODO:[CR BT]: Extract in multiple methods. There are at least 3 different operations on this method.
-        /// TODO:[CR BT]: Remove code duplication (foreach and if).
         private void SyncFilesForConfigurationsTime(System.Windows.Controls.Button syncButton, Image waitImage)
         {
             bool checkIfSyncButton = false;
@@ -158,14 +184,14 @@
                         syncThreadNumber++;
                     }
                 }
-                var syncProgressProvider = new SyncProgressManager();
-                syncProgressProvider.ProgressUpdate += (s, verdict) =>
-                {
-                    syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = true; });
-                    waitImage.Dispatcher.Invoke(() => { waitImage.Visibility = Visibility.Hidden; });
-                };
-                Task.Run(() => { syncProgressProvider.CheckSyncProgress(syncProgressProvider, verdicts); });
-
+                //var syncProgressProvider = new SyncProgressManager();
+                //syncProgressProvider.ProgressUpdate += (s, verdict) =>
+                //{
+                //    syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = true; });
+                //    waitImage.Dispatcher.Invoke(() => { waitImage.Visibility = Visibility.Hidden; });
+                //};
+                //Task.Run(() => { syncProgressProvider.CheckSyncProgress(syncProgressProvider, verdicts); });
+                EnableUIComponentsWhenFinish(verdicts,syncButton,waitImage);
                 XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
             }
 
