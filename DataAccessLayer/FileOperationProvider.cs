@@ -2,16 +2,18 @@
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Net;
     using Common.Constants;
     using Common.Exceptions;
     using Common.Helpers;
     using Configuration;
-    using NLog;
+    using Models;
 
     /// <summary>
     ///     From given ConnectionConfiguration can access specific files
     /// </summary>
+    //TODO [CR RT]: Remove unused namespaces
     public class FileOperationProvider
     {
         public FileOperationProvider(ConnectionConfiguration configuration)
@@ -55,13 +57,23 @@
                         }
 
                         if (!update)
-                            LoggerManager.Logger.Trace(string.Format(DefaultTraceMessages.FileDownloadSuccessful, fileName,
+                        {
+                            LoggerManager.Logger.Trace(string.Format(DefaultTraceMessages.FileDownloadSuccessful,
+                                fileName,
                                 url,
                                 directoryPath));
+                        }
                         else
-                            LoggerManager.Logger.Trace(string.Format(DefaultTraceMessages.FileUpdateSuccessful, fileName,
+                        {
+                            string updateMessage = string.Format(DefaultTraceMessages.FileUpdateSuccessful,
+                                fileName,
                                 url,
-                                directoryPath));
+                                directoryPath);
+                            LoggerManager.Logger.Trace(updateMessage);
+                            NotifyUI notifyUi = new NotifyUI();
+                            notifyUi.NotifyUserWithTrayBarBalloon(ConfigurationMessages.FileUpdatedTitle, updateMessage);
+                            AddUpdatedFileInformations(url, fileName, downloadedFilePath);
+                        }
                     }
                 }
             }
@@ -72,7 +84,7 @@
             catch (System.IO.IOException exception)
             {
                 File.Delete(downloadedFilePath);
-                CatchDownloadException(exception,internetAccessException);
+                CatchDownloadException(exception, internetAccessException);
             }
             catch (Exception exception)
             {
@@ -82,6 +94,21 @@
                     string.Format(DefaultExceptionMessages.FileDownloadExceptionMessage, url));
                 exceptionHandler?.Invoke(this, downloadFileExceptionexception);
             }
+        }
+
+        private void AddUpdatedFileInformations(string url, string fileName, string downloadedFilePath)
+        {
+            UpdatedFilesModel updatedFilesModel = UpdatedFilesModel.Instance;
+            int existentFilePosition = updatedFilesModel.UpdatedFilesUrl.FindIndex(file => file == url);
+            if (existentFilePosition != -1)
+            {
+                updatedFilesModel.RemoveElementAt(existentFilePosition);
+            }
+            //TODO [CR RT]: Use a model instead multiple lists
+            updatedFilesModel.UpdatedFilesUrl.Add(url);
+            updatedFilesModel.UpdatedFilesName.Add(fileName);
+            updatedFilesModel.UpdatedFilesLocation.Add(downloadedFilePath);
+            updatedFilesModel.UpdatedFilesUpdateMoment.Add(DateTime.Now);
         }
 
         private void CatchDownloadException(Exception exception, EventHandler<Exception> internetAccessException)
@@ -102,7 +129,7 @@
         /// <returns></returns>
         private HttpWebRequest CreateDownloadRequest(string url)
         {
-            var request = (HttpWebRequest) WebRequest.Create(url);
+            var request = (HttpWebRequest)WebRequest.Create(url);
             var credentials = ConnectionConfiguration.Connection.Credentials;
             request.Credentials = new NetworkCredential(credentials.UserName, credentials.Password);
             request.Timeout = DataAccessLayerConstants.WebRequestTimeoutValue;

@@ -169,22 +169,22 @@
         {
             try
             {
-                var listReferenceProvider = CreateListReferenceProvider();
+                var listReferenceManager = CreateListReferenceProvider();
                 if (Equals(sender, AddButton))
                 {
-                    listReferenceProvider.AddListReferenceItem(_lists[allConfigListsList.SelectedIndex].ListName,
-                        new Uri(NewUrlTextBox.Text));
+                    listReferenceManager.AddSyncListItem(_lists[allConfigListsList.SelectedIndex].ListName,
+                        NewUrlTextBox.Text);
                     NewUrlTextBox.Text = DefaultUrlBoxMessage;
                 }
                 else if (Equals(sender, EditButton))
                 {
-                    listReferenceProvider.ChangeListReferenceItem(new Uri(NewUrlTextBox.Text),
+                    listReferenceManager.ChangeSyncListItem(NewUrlTextBox.Text,
                         _urlsId[allUrlsList.SelectedIndex], _lists[allConfigListsList.SelectedIndex].ListName);
                     NewUrlTextBox.Text = DefaultUrlBoxMessage;
                 }
                 else if (Equals(sender, RemoveButton))
                 {
-                    listReferenceProvider.RemoveListReferenceItem(_lists[allConfigListsList.SelectedIndex].ListName,
+                    listReferenceManager.RemoveSyncListItem(_lists[allConfigListsList.SelectedIndex].ListName,
                         _urlsId[allUrlsList.SelectedIndex]);
                     RemoveButton.IsEnabled = false;
                     EditButton.IsEnabled = false;
@@ -200,16 +200,14 @@
 
         }
 
-        private BaseListReferenceProvider CreateListReferenceProvider()
+        private ListReferenceManager CreateListReferenceProvider()
         {
-            BaseListReferenceProvider listReferenceProvider;
+            ListReferenceManager listReferenceManager;
             if (configComboBox.SelectionBoxItem.ToString() == ConfigurationMessages.ComboBoxRest)
-                listReferenceProvider = OperationsFactory.GetOperations(ListReferenceProviderType.Rest);
+                listReferenceManager = new ListReferenceManager(_connections[allConfigsList.SelectedIndex], ListReferenceProviderType.Rest);
             else
-                listReferenceProvider = OperationsFactory.GetOperations(ListReferenceProviderType.Csom);
-
-            listReferenceProvider.ConnectionConfiguration = _connections[allConfigsList.SelectedIndex];
-            return listReferenceProvider;
+                listReferenceManager = new ListReferenceManager(_connections[allConfigsList.SelectedIndex], ListReferenceProviderType.Csom);
+            return listReferenceManager;
         }
     }
 }

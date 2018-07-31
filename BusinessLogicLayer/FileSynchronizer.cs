@@ -76,7 +76,12 @@
         private void EnsureFile(MetadataModel model, List<MetadataModel> currentData)
         {
             var match = currentData.FirstOrDefault(x => x.Url == model.Url);
-            if (match != null && match.ModifiedDate < model.ModifiedDate)
+            //TODO [CR RT]: Move this if where you call this method. Never use code like if or while without conde inside it.
+            if (model.ModifiedDate == DateTime.MinValue)
+            {
+
+            }
+            else if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
                 DownloadFileAndAddMetadata(true, currentData, model);
                 currentData.Remove(match);
