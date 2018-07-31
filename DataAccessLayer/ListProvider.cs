@@ -7,7 +7,7 @@
     using Common.Helpers;
     using Configuration;
     using Microsoft.SharePoint.Client;
-
+    //TODO [CR RT]: remove unused class
     /// <summary>
     ///     Has methods which get sharepoint Lists or ListItems.
     ///     Needs to be instanced

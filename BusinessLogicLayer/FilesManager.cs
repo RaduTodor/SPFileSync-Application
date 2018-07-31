@@ -51,7 +51,7 @@
             }
             XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
         }
-        
+
         private void SynchronizeConfigurations(Verdicts verdicts, ConnectionConfiguration connection, int syncThreadNumber)
         {
             try
@@ -117,7 +117,7 @@
             _timer.Interval = ticks;
             _timer.AutoReset = true;
             _timer.Enabled = true;
-            _timer.Elapsed += (sender, e) => SyncFilesForConfigurationsTime(syncButton,waitImage);
+            _timer.Elapsed += (sender, e) => SyncFilesForConfigurationsTime(syncButton, waitImage);
         }
 
         private List<ConnectionConfiguration> GetOutdatedConfigurations(Verdicts verdicts)
@@ -158,40 +158,18 @@
             var syncThreadNumber = -1;
             if (checkIfSyncButton)
             {
-                ConnectionConfigurations = XmlFileManipulator.Deserialize<ConnectionConfiguration>();
-                var numberOfConfigurationsTriggered = 0;
+                Verdicts verdicts = new Verdicts();
+                //TODO [CR BT]: remove unused code
+                List<ConnectionConfiguration> outDatedConnectionConfigurations = new List<ConnectionConfiguration>();
+                outDatedConnectionConfigurations = GetOutdatedConfigurations(verdicts);
                 foreach (var connection in ConnectionConfigurations)
                 {
-                    if (Math.Abs(DateTime.Now.Ticks - connection.LastSyncTime.Ticks) >= connection.SyncTimeSpan.Ticks)
-                    {
-                        numberOfConfigurationsTriggered++;
-
-                    }
+                    syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = false; });
+                    waitImage.Dispatcher.Invoke(() => { waitImage.Visibility = Visibility.Visible; });
+                    SynchronizeConfigurations(verdicts, connection, syncThreadNumber);
+                    syncThreadNumber++;
                 }
-
-                Verdicts verdicts = new Verdicts
-                {
-                    FinalizedSyncProccesses = new bool[numberOfConfigurationsTriggered]
-                };
-
-                foreach (var connection in ConnectionConfigurations)
-                {
-                    if (Math.Abs(DateTime.Now.Ticks - connection.LastSyncTime.Ticks) >= connection.SyncTimeSpan.Ticks)
-                    {
-                        syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = false; });
-                        waitImage.Dispatcher.Invoke(() => { waitImage.Visibility = Visibility.Visible; });
-                        SynchronizeConfigurations(verdicts, connection, syncThreadNumber);
-                        syncThreadNumber++;
-                    }
-                }
-                //var syncProgressProvider = new SyncProgressManager();
-                //syncProgressProvider.ProgressUpdate += (s, verdict) =>
-                //{
-                //    syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = true; });
-                //    waitImage.Dispatcher.Invoke(() => { waitImage.Visibility = Visibility.Hidden; });
-                //};
-                //Task.Run(() => { syncProgressProvider.CheckSyncProgress(syncProgressProvider, verdicts); });
-                EnableUIComponentsWhenFinish(verdicts,syncButton,waitImage);
+                EnableUIComponentsWhenFinish(verdicts, syncButton, waitImage);
                 XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
             }
 
