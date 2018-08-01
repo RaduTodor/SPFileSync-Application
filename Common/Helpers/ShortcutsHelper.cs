@@ -45,6 +45,7 @@
             }
         }
 
+        //TODO [CR RT]: first letter of parameters should be lowerCase.
         private static IWshShortcut ConstructShortcut(string ShortcutLocation, string ShortcutDirectory, string fileName, string filePath, string arguments)
         {
             if (!File.Exists(string.Format(ShortcutLocation, fileName)))
@@ -71,7 +72,7 @@
 
             return null;
         }
-
+        //TODO [CR RT]: first letter of parameters should be lowerCase.
         private static void AddShortcutDirectoryInLibrary(string LibraryName, string ShortcutDirectory)
         {
             CreateLibrary(LibraryName);
@@ -86,7 +87,7 @@
                 ShellFileSystemFolder.FromFolderPath(folderPath);
             if (!shellLibrary.Contains(shortcutsFolder)) shellLibrary.Add(shortcutsFolder);
         }
-
+        //TODO [CR RT]: removre unused code like createdLibrary
         private static void CreateLibrary(string libraryName)
         {
             try
