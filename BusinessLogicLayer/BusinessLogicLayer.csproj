@@ -80,6 +80,7 @@
     <Compile Include="ListReferenceManager.cs" />
     <Compile Include="OperationsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SharepointCustomActions.cs" />
     <Compile Include="SyncProgressManager.cs" />
   </ItemGroup>
   <ItemGroup>
