@@ -114,7 +114,7 @@ namespace SPFileSync_Application
             searchedItems.UnselectAll();
             PopulateDictionary();
             PopulateListElements();
-            searchedItems.ItemsSource = _dictionaryKeys;
+            searchedItems.ItemsSource = _dictionaryValues;
         }
 
         private static ListReferenceProviderType GetProviderType(string choice)
