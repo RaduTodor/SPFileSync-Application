@@ -15,18 +15,19 @@
         public string Path { get; set; }
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            //TODO [CR BT]: check value for null
-            if (string.IsNullOrEmpty(value.ToString()))
+            if(value!=null)
             {
-                return new ValidationResult(false, Common.Constants.ConfigurationMessages.EmptyField);
-            }
+                if (string.IsNullOrEmpty(value.ToString()))
+                {
+                    return new ValidationResult(false, Common.Constants.ConfigurationMessages.EmptyField);
+                }
+            }          
             int intValue = 0;
             var checkIfInteger = int.TryParse(value.ToString(),out intValue);
             if(checkIfInteger && intValue <=0)
             {
                 return new ValidationResult(false,Common.Constants.ConfigurationMessages.InvalidValue);
             }
-
             return ValidationResult.ValidResult;
         }
     }

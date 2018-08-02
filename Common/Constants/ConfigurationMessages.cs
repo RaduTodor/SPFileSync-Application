@@ -9,8 +9,6 @@
         public const string InvalidSiteUrl = "Site field has an invalid url";
 
         public const string BadConfigurationTitle = "Bad configuration";
-        //TODO [CR BT]: remove unused code
-        public const string GeneralConfigError = "There was an error with the configuration";
 
         public const string ResourceFolderAppIcon = @"Utils\UFO.ico";
 

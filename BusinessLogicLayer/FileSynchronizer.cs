@@ -20,9 +20,6 @@
     /// </summary>
     public class FileSynchronizer
     {
-        //TODO [CR BT]: remove unused code
-        private const string Backslash = "\\";
-
         public FileSynchronizer(ConnectionConfiguration configuration, ListReferenceProviderType type, int count)
         {
             FileOperationProvider = new FileOperationProvider(configuration);

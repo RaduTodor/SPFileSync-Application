@@ -13,20 +13,20 @@
     public class NotifyUI
     {
         private Window _window;
-        //TODO [CR BT]: initialize on constructor
-        private ObservableHashSet<string> _configurationErrors = new ObservableHashSet<string>();
+        private ObservableHashSet<string> _configurationErrors;
         private System.Windows.Controls.ListBox _displayConfigurationErrorsList;
         private static NotifyIcon _notifyIcon = new NotifyIcon();
 
         public NotifyUI()
         {
-
+            _configurationErrors = new ObservableHashSet<string>();
         }
 
         public NotifyUI(Window window, System.Windows.Controls.ListBox listbox)
         {
             this._window = window;
             _displayConfigurationErrorsList = listbox;
+            _configurationErrors = new ObservableHashSet<string>();
         }
         /// <summary>
         /// NotifyUserWithTrayBarBalloon method is used to notify a message in tray bar.     
