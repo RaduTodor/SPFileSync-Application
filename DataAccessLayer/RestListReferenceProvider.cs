@@ -1,11 +1,16 @@
 ﻿namespace DataAccessLayer
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Net;
+    using System.Text;
+    using System.Xml.Linq;
     using Common.Constants;
     using Common.Exceptions;
     using Common.Helpers;
+    using Models;
     using Newtonsoft.Json.Linq;
 
     /// <summary>
@@ -124,7 +129,7 @@
         {
             var connectionUri = new Uri(Path.Combine(ConnectionConfiguration.Connection.Uri.AbsoluteUri,
                 apiResult));
-            var httpWebRequest = (HttpWebRequest) WebRequest.Create(connectionUri);
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(connectionUri);
             httpWebRequest.Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName,
                 ConnectionConfiguration.Connection.Credentials.Password);
             return httpWebRequest;
@@ -186,9 +191,72 @@
             }
         }
 
-        public override void SearchSPFiles()
+        private IEnumerable<XElement> GetSearchedXElements(Stream receiveStream)
         {
-            //throw new NotImplementedException();
+            using (var stream = receiveStream)
+            {
+                if (stream != null)
+                {
+                    using (var sr = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        var result = sr.ReadToEnd().Trim();
+                        var elements = XElement.Parse(result);
+                        var wantedElements = from primaryQuery in elements.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.PQR)
+                                             from relevantResults in primaryQuery.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.RelevantResults)
+                                             from table in relevantResults.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.Table)
+                                             from rows in table.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.Rows)
+                                             from elementss in rows.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.Element)
+                                             from cells in elementss.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.Cells)
+                                             select cells;
+                        return wantedElements;
+                    }
+                }
+                return new List<XElement>();
+            }
+        }
+
+        private Dictionary<string, string> CreateDictionaryFromXelements(Stream receiveStream)
+        {
+            var wantedElements = GetSearchedXElements(receiveStream);
+            var elementsPath = wantedElements.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.Element).
+            Where(x => x.Element(DataAccessLayerConstants.DNamespace + SearchConstants.Key).
+            Value.StartsWith(SearchConstants.ElementPath))
+            .Select(x => x.Value.Remove(SearchConstants.RemoveStartIndex, SearchConstants.ElementPath.Length).Replace(SearchConstants.UselessTitleSegment, ""))
+            .ToList();
+            var elementsTitle = wantedElements.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.Element)
+                .Where(x => x.Element(DataAccessLayerConstants.DNamespace + SearchConstants.Key).
+            Value.Equals(SearchConstants.Title))
+            .Select(x => x.Value.Remove(SearchConstants.RemoveStartIndex, SearchConstants.Title.Length).Replace(SearchConstants.UselessTitleSegment, ""))
+            .ToList();
+            var elementsDictionary = elementsPath.Zip(elementsTitle, (path, title) => new { path, title })
+            .ToDictionary(x => x.path, x => x.title);
+            return elementsDictionary;
+        }
+
+
+
+        public override Dictionary<string, string> SearchSPFiles(string wantedItem)
+        {
+            var request = BuildCommonRequest(string.Format(ApiConstants.SearchItems, wantedItem));
+            var response = (HttpWebResponse)request.GetResponse();
+            Stream receiveStream = response.GetResponseStream();
+            Dictionary<string, string> searchedElementsOnWantedSiteCollection = new Dictionary<string, string>();
+            var elementsDictionary = CreateDictionaryFromXelements(receiveStream);
+            foreach (var element in elementsDictionary)
+            {
+                if (element.Key.StartsWith(ConnectionConfiguration.Connection.UriString))
+                {
+                    foreach (var list in ConnectionConfiguration.ListsWithColumnsNames)
+                    {
+                        if (!element.Key.Contains(list.ListName))
+                        {
+                            searchedElementsOnWantedSiteCollection.Add(element.Key, element.Value);
+                        }
+                    }
+                }
+            }
+            return searchedElementsOnWantedSiteCollection;
         }
     }
 }
+

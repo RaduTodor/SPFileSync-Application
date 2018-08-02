@@ -51,7 +51,7 @@
             }
             XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
         }
-
+   
         private void SynchronizeConfigurations(Verdicts verdicts, ConnectionConfiguration connection, int syncThreadNumber)
         {
             try

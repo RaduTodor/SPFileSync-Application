@@ -82,6 +82,9 @@
     <Compile Include="ReferenceListOperationsWindow.xaml.cs">
       <DependentUpon>ReferenceListOperationsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SearchWindow.xaml.cs">
+      <DependentUpon>SearchWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UpdatedFilesWindow.xaml.cs">
       <DependentUpon>UpdatedFilesWindow.xaml</DependentUpon>
     </Compile>
@@ -134,6 +137,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ReferenceListOperationsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SearchWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

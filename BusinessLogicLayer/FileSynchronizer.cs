@@ -127,7 +127,6 @@
                 var dateTime = ListReferenceProvider.GetMetadataItem(url, InternetAccessException);
                 metadatas.Add(new MetadataModel { Url = url, ModifiedDate = dateTime });
             }
-
             return metadatas;
         }
     }

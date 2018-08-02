@@ -25,5 +25,7 @@
         public const string Attach = "Attach";
 
         public const string IsUpdating = "IsUpdating";
+
+        public const string Path = "Path";
     }
 }

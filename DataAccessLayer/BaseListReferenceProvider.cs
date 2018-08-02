@@ -17,7 +17,7 @@
 
         public abstract void RemoveListReferenceItem(string listName, int itemId);
 
-        public abstract void SearchSPFiles();
+        public abstract Dictionary<string,string> SearchSPFiles(string item);
 
         public abstract void ChangeListReferenceItem(Uri uri, int itemId, string listName);
 

@@ -12,5 +12,14 @@
                                            "</Where>" +
                                            "</Query>" +
                                            "</View>";
+
+        public const string SearchItems = "<Where>" +
+            "<Contains>" +
+            "<FieldRef Name=\"AssignedTo\" />" +
+            "<Value Type='Text'>" +
+            "'{0}'" +
+            "</Value>" +
+            "</Contains>" +
+            "</Where>";
     }
 }

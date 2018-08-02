@@ -32,7 +32,7 @@
             _fileManager = new FilesManager(_connectionConfigurations, GetProviderType(configComboBox.SelectedItem.ToString()), _notifyUI);         
             if (_connectionConfigurations.Count == 0) SyncButton.IsEnabled = false;
             _fileManager.TimerSyncronize(SyncButton, WaitAutomaticSync);
-            WaitSync.Visibility = Visibility.Hidden;            
+            WaitSync.Visibility = Visibility.Hidden;          
             WaitAutomaticSync.Visibility = Visibility.Hidden;
         }
 
@@ -208,6 +208,12 @@
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var window = new UpdatedFilesWindow();
+            window.Show();
+        }
+
+        private void SearchFiles(object sender, RoutedEventArgs e)
+        {
+            SearchWindow window = new SearchWindow(_connectionConfigurations);
             window.Show();
         }
     }
