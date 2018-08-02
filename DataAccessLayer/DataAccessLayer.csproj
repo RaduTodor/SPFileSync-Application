@@ -50,7 +50,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ListProvider.cs" />
     <Compile Include="BaseListReferenceProvider.cs" />
     <Compile Include="CsomListReferenceProvider.cs" />
     <Compile Include="FileOperationProvider.cs" />

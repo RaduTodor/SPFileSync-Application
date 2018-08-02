@@ -9,7 +9,10 @@
     using Common.Helpers;
     using Configuration;
     using DataAccessLayer;
+    using IWshRuntimeLibrary;
+    using Microsoft.WindowsAPICodePack.Shell;
     using Models;
+    using File = System.IO.File;
 
     /// <summary>
     ///     The FileSynchronizer instance can Synchronize (check and download) all referenceListItems (theirs urls) from a
@@ -17,6 +20,7 @@
     /// </summary>
     public class FileSynchronizer
     {
+        //TODO [CR BT]: remove unused code
         private const string Backslash = "\\";
 
         public FileSynchronizer(ConnectionConfiguration configuration, ListReferenceProviderType type, int count)
@@ -82,6 +86,11 @@
         private void EnsureFile(MetadataModel model, List<MetadataModel> currentData)
         {
             var match = currentData.FirstOrDefault(x => x.Url == model.Url);
+            string fileName = ParsingHelpers.ParseUrlFileName(model.Url);
+            string directoryPath = ListReferenceProvider.ConnectionConfiguration.DirectoryPath;
+            string filePath = string.Format(HelpersConstants.FilePath,
+                directoryPath,
+                fileName);
             if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
                 DownloadFileAndAddMetadata(true, currentData, model);
@@ -89,9 +98,7 @@
             }
             else
             {
-                string filePath = string.Format(HelpersConstants.FilePath,
-                    ListReferenceProvider.ConnectionConfiguration.DirectoryPath,
-                    ParsingHelpers.ParseUrlFileName(model.Url));
+                
                 if (!File.Exists(filePath))
                 {
                     DownloadFileAndAddMetadata(false, currentData, model);
@@ -129,5 +136,6 @@
             }
             return metadatas;
         }
+
     }
 }

@@ -13,6 +13,7 @@
             if (text == null) throw new ArgumentNullException(NotifyIconTextMessages.NullObject);
             Type notifyIconType = typeof(NotifyIcon);
             BindingFlags hidden = BindingFlags.NonPublic | BindingFlags.Instance;
+            //TODO [CR BT]: check notifyIconType for null
             notifyIconType.GetField(NotifyIconTextMessages.Text, hidden).SetValue(notification, text);
             if ((bool)notifyIconType.GetField(NotifyIconTextMessages.Added, hidden).GetValue(notification))
                 notifyIconType.GetMethod(NotifyIconTextMessages.UdateImg, hidden).Invoke(notification, new object[] { true });

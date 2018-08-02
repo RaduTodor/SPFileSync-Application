@@ -11,7 +11,7 @@
         public const int LibrarySegmentNumber = 3;
 
         public const int SyncRetryInterval = 30;
-
+        //TODO [CR BT]: remove unused code
         public const int DefaultConfigurationSyncInterval = 10;
 
         public const string ContentTypeXml = "application/xml;odata=verbose";

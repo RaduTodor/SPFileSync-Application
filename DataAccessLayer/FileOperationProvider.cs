@@ -21,6 +21,8 @@
 
         private ConnectionConfiguration ConnectionConfiguration { get; }
 
+        private const string SharepointIdentifier = "Sharepoint - ";
+
         /// <summary>
         ///     Writes the file from <paramref name="url" /> in a directory given by <paramref name="directoryPath" />
         /// </summary>
@@ -56,14 +58,14 @@
 
                         if (!update)
                         {
-                            LoggerManager.Logger.Trace(string.Format(DefaultTraceMessages.FileDownloadSuccessful,
+                            LoggerManager.Logger.Trace(String.Format(DefaultTraceMessages.FileDownloadSuccessful,
                                 fileName,
                                 url,
                                 directoryPath));
                         }
                         else
                         {
-                            string updateMessage = string.Format(DefaultTraceMessages.FileUpdateSuccessful,
+                            string updateMessage = String.Format(DefaultTraceMessages.FileUpdateSuccessful,
                                 fileName,
                                 url,
                                 directoryPath);
@@ -72,14 +74,16 @@
                             notifyUi.NotifyUserWithTrayBarBalloon(ConfigurationMessages.FileUpdatedTitle, updateMessage);
                             AddUpdatedFileInformations(url, fileName, downloadedFilePath);
                         }
+                        ShortcutsHelper.CreateUrlShortcut(SharepointIdentifier + fileName, url, directoryPath);
+                        ShortcutsHelper.CreateFileShortcut(fileName, downloadedFilePath, directoryPath, "");
                     }
                 }
             }
-            catch (System.Net.WebException exception)
+            catch (WebException exception)
             {
                 CatchDownloadException(exception, internetAccessException);
             }
-            catch (System.IO.IOException exception)
+            catch (IOException exception)
             {
                 File.Delete(downloadedFilePath);
                 CatchDownloadException(exception, internetAccessException);
@@ -89,7 +93,7 @@
                 Exception downloadFileExceptionexception =
                     new DownloadFileException(exception.Message, exception);
                 LoggerManager.Logger.Debug(downloadFileExceptionexception,
-                    string.Format(DefaultExceptionMessages.FileDownloadExceptionMessage, url));
+                    String.Format(DefaultExceptionMessages.FileDownloadExceptionMessage, url));
                 exceptionHandler?.Invoke(this, downloadFileExceptionexception);
             }
         }
@@ -110,7 +114,7 @@
         {
             Exception currentException =
                 new NoInternetAccessException(exception.Message, exception);
-            LoggerManager.Logger.Error(currentException, string.Format(
+            LoggerManager.Logger.Error(currentException, String.Format(
                 DefaultExceptionMessages.NoInternetAccessExceptionMessage,
                 DataAccessLayerConstants.SyncRetryInterval));
             internetAccessException?.Invoke(this, currentException);

@@ -13,6 +13,7 @@
     public class NotifyUI
     {
         private Window _window;
+        //TODO [CR BT]: initialize on constructor
         private ObservableHashSet<string> _configurationErrors = new ObservableHashSet<string>();
         private System.Windows.Controls.ListBox _displayConfigurationErrorsList;
         private static NotifyIcon _notifyIcon = new NotifyIcon();

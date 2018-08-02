@@ -15,6 +15,7 @@
         public string Path { get; set; }
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
+            //TODO [CR BT]: check value for null
             if (string.IsNullOrEmpty(value.ToString()))
             {
                 return new ValidationResult(false, Common.Constants.ConfigurationMessages.EmptyField);
