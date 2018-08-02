@@ -162,7 +162,7 @@
                 //TODO [CR BT]: remove unused code
                 List<ConnectionConfiguration> outDatedConnectionConfigurations = new List<ConnectionConfiguration>();
                 outDatedConnectionConfigurations = GetOutdatedConfigurations(verdicts);
-                foreach (var connection in ConnectionConfigurations)
+                foreach (var connection in outDatedConnectionConfigurations)
                 {
                     syncButton.Dispatcher.Invoke(() => { syncButton.IsEnabled = false; });
                     waitImage.Dispatcher.Invoke(() => { waitImage.Visibility = Visibility.Visible; });
