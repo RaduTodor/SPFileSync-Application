@@ -27,7 +27,7 @@
         /// <param name="listName"></param>
         /// <param name="uri"></param>
         /// <returns></returns>
-        protected string CreateNewReferenceListItem(string listName, Uri uri)
+        public string CreateNewReferenceListItem(string listName, Uri uri)
         {
             var url = uri.AbsoluteUri;
             var listWithColumn = ConnectionConfiguration.ListsWithColumnsNames.First(list => list.ListName == listName);
