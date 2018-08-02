@@ -31,6 +31,12 @@
             listReferenceProvider.AddListReferenceItem(listName, new Uri(url));
         }
 
+        public void AddItemToSyncList(string url)
+        {
+            var listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
+            listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
+        }
+
         /// <summary>
         ///     Calls RemoveListReferenceItem of current instance of BaseListReferenceProvider
         /// </summary>
@@ -56,11 +62,11 @@
             listReferenceProvider.ChangeListReferenceItem(new Uri(url), id, listName);
         }
 
-        public void SearchFiles()
+        public void SearchFiles(string item)
         {
             var listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
             listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
-            listReferenceProvider.SearchSPFiles();
+            listReferenceProvider.SearchSPFiles(item);
         }
 
     }

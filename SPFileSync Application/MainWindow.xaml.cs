@@ -210,5 +210,11 @@
             var window = new UpdatedFilesWindow();
             window.Show();
         }
+
+        private void SearchFiles(object sender, RoutedEventArgs e)
+        {
+            SearchWindow window = new SearchWindow(_connectionConfigurations);
+            window.Show();
+        }
     }
 }

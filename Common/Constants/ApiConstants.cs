@@ -4,6 +4,8 @@
     {
         public const string ListItemsApi = "_api/web/lists/getbytitle('{0}')/items";
 
+        public const string SearchItems = "_api/search/query?querytext='{0}'&selectproperties='Path,Title'&refinementfilters='or(fileExtension:equals(docx),fileExtension:equals(pdf),fileExtension:equals(xml),fileExtension:equals(txt),fileExtension:equals(csv),fileExtension:equals(xls),fileExtension:equals(xlsx))'";
+
         public const string ListItemByIdApi = "_api/web/lists/getbytitle('{0}')/items({1})";
 
         public const string NewReferenceItem =

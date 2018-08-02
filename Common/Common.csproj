@@ -83,10 +83,12 @@
     <Compile Include="Constants\DataAccessLayerConstants.cs" />
     <Compile Include="Constants\DefaultTraceMessages.cs" />
     <Compile Include="Constants\DefaultExceptionMessages.cs" />
+    <Compile Include="Constants\Extensions.cs" />
     <Compile Include="Constants\HelpersConstants.cs" />
     <Compile Include="Constants\NotifyIconTextMessages.cs" />
     <Compile Include="Constants\QuerryTemplates.cs" />
     <Compile Include="Constants\RequestHeaderConstants.cs" />
+    <Compile Include="Constants\SearchConstants.cs" />
     <Compile Include="Exceptions\BaseLoggingException.cs" />
     <Compile Include="Exceptions\ClientContextOperationException.cs" />
     <Compile Include="Exceptions\CreateFileException.cs" />

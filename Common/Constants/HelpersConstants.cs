@@ -44,5 +44,7 @@
         public const string SharepointFileShortcutsLibraryName = "Sharepoint File Shortcuts";
 
         public const string FileSharepointShortcutPath = "\\\\{0}\\DavWWWRoot{1}";
+
+        public const string Path = "Path";
     }
 }

@@ -51,7 +51,7 @@
             }
             XmlFileManipulator.Serialize<ConnectionConfiguration>(ConnectionConfigurations);
         }
-
+   
         private void SynchronizeConfigurations(Verdicts verdicts, ConnectionConfiguration connection, int syncThreadNumber)
         {
             try
@@ -159,7 +159,6 @@
             if (checkIfSyncButton)
             {
                 Verdicts verdicts = new Verdicts();
-                //TODO [CR BT]: remove unused code
                 List<ConnectionConfiguration> outDatedConnectionConfigurations = new List<ConnectionConfiguration>();
                 outDatedConnectionConfigurations = GetOutdatedConfigurations(verdicts);
                 foreach (var connection in outDatedConnectionConfigurations)
