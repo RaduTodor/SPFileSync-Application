@@ -45,21 +45,20 @@
             }
         }
 
-        //TODO [CR RT]: first letter of parameters should be lowerCase.
-        private static IWshShortcut ConstructShortcut(string ShortcutLocation, string ShortcutDirectory, string fileName, string filePath, string arguments)
+        private static IWshShortcut ConstructShortcut(string shortcutLocation, string shortcutDirectory, string fileName, string filePath, string arguments)
         {
-            if (!File.Exists(string.Format(ShortcutLocation, fileName)))
+            if (!File.Exists(string.Format(shortcutLocation, fileName)))
             {
 
                 FileEditingHelper.CreateAccesibleFile(
                     Directory.GetCurrentDirectory() +
-                    string.Format(ShortcutLocation, fileName),
-                    Directory.GetCurrentDirectory() + ShortcutDirectory);
+                    string.Format(shortcutLocation, fileName),
+                    Directory.GetCurrentDirectory() + shortcutDirectory);
 
                 var wsh = new WshShellClass();
                 var shortcut = wsh.CreateShortcut(
                     Directory.GetCurrentDirectory() +
-                    string.Format(ShortcutLocation, fileName)) as IWshShortcut;
+                    string.Format(shortcutLocation, fileName)) as IWshShortcut;
                 if (shortcut != null)
                 {
                     shortcut.Arguments = arguments;
@@ -72,12 +71,12 @@
 
             return null;
         }
-        //TODO [CR RT]: first letter of parameters should be lowerCase.
-        private static void AddShortcutDirectoryInLibrary(string LibraryName, string ShortcutDirectory)
+
+        private static void AddShortcutDirectoryInLibrary(string libraryName, string shortcutDirectory)
         {
-            CreateLibrary(LibraryName);
-            AddFolderToLibrary(LibraryName,
-                Directory.GetCurrentDirectory() + ShortcutDirectory);
+            CreateLibrary(libraryName);
+            AddFolderToLibrary(libraryName,
+                Directory.GetCurrentDirectory() + shortcutDirectory);
         }
 
         private static void AddFolderToLibrary(string libraryName, string folderPath)
@@ -87,13 +86,12 @@
                 ShellFileSystemFolder.FromFolderPath(folderPath);
             if (!shellLibrary.Contains(shortcutsFolder)) shellLibrary.Add(shortcutsFolder);
         }
-        //TODO [CR RT]: removre unused code like createdLibrary
+
         private static void CreateLibrary(string libraryName)
         {
             try
             {
-                var createdLibrary =
-                    new ShellLibrary(libraryName, HelpersConstants.WindowsLibrariesLocation, false);
+                 new ShellLibrary(libraryName, HelpersConstants.WindowsLibrariesLocation, false);
             }
             catch (Exception exception)
             {
