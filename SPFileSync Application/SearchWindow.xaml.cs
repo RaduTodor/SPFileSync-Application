@@ -18,7 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+//TODO CR: Remove unused using and move the rest inside the namespace
 namespace SPFileSync_Application
 {
     /// <summary>

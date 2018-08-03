@@ -49,9 +49,12 @@
             try
             {
                 var spData = GetUserUrlsWithDate();
+                
+                //TODO CR: Please create the path using string format or url utility classes
                 var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(
                     Directory.GetCurrentDirectory() + string.Format(
                         HelpersConstants.MetadataFileLocation,
+                        //TODO CR: Too many dots. Please keep the ConnectionConfiguration as a member of this class or just find a way to access the method without so many dots. 
                         ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
                     Directory.GetCurrentDirectory() + HelpersConstants.ParentDirectory);
                 foreach (var model in spData)
@@ -61,6 +64,7 @@
                         EnsureFile(model, currentData);
                     }
                 }
+                //TODO CR: Please create the path using string format or url utility classes
                 CsvMetadataFileManipulator.WriteMetadata(Directory.GetCurrentDirectory() + string.Format(
                                                              HelpersConstants.MetadataFileLocation,
                                                              ListReferenceProvider.ConnectionConfiguration.Connection

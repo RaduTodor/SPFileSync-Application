@@ -85,6 +85,7 @@
 
         private void NewConfigSelected(List<string> listsName, List<ListWithColumnsName> lists)
         {
+            //TODO CR: Remove duplicated line
             listsName = new List<string>();
             lists = ConnectionConfiguration.ListsWithColumnsNames;
             listsName = new List<string>();
@@ -101,6 +102,7 @@
             SearchExecutor searchExecutor = new SearchExecutor(clientContext);
             ClientResult<ResultTableCollection> results = searchExecutor.ExecuteQuery(keywordQuery);
             clientContext.ExecuteQuery();
+            //TODO CR: Remove unused variable
             var result = results.Value;
             foreach (var resultRow in results.Value[0].ResultRows)
             {

@@ -16,6 +16,7 @@
         private const string ShortcutApplicationArgument = "-k";
         private const string ShortcutEmptyArgument = "";
 
+        //TODO CR: Too many parameters. Please consider to extract a class with these parameters and use the new class as parameter also in ConstructShortcut method
         public static void CreateFileShortcut(string fileName, string filePath, string fileDirectoryPath,
             string arguments)
         {
@@ -45,17 +46,19 @@
             }
         }
 
+        //TODO CR: Too many parameters. 
         private static IWshShortcut ConstructShortcut(string shortcutLocation, string shortcutDirectory, string fileName, string filePath, string arguments)
         {
             if (!File.Exists(string.Format(shortcutLocation, fileName)))
             {
-
+                //TODO CR: Please extract a variable and do not use + when the path is created. Plaese use string format or url utility classes.
                 FileEditingHelper.CreateAccesibleFile(
                     Directory.GetCurrentDirectory() +
                     string.Format(shortcutLocation, fileName),
                     Directory.GetCurrentDirectory() + shortcutDirectory);
 
                 var wsh = new WshShellClass();
+                //TODO CR: Please extract a variable and do not use + when the path is created. Plaese use string format or url utility classes.
                 var shortcut = wsh.CreateShortcut(
                     Directory.GetCurrentDirectory() +
                     string.Format(shortcutLocation, fileName)) as IWshShortcut;
@@ -74,7 +77,8 @@
 
         private static void AddShortcutDirectoryInLibrary(string libraryName, string shortcutDirectory)
         {
-            CreateLibrary(libraryName);
+            CreateLibrary(libraryName); 
+            //TODO CR: Please extract a variable and do not use + when the path is created. Plaese use string format or url utility classes.
             AddFolderToLibrary(libraryName,
                 Directory.GetCurrentDirectory() + shortcutDirectory);
         }

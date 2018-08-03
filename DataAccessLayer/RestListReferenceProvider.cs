@@ -64,6 +64,7 @@
         {
             var webClient = new WebClient
             {
+                //TODO CR: Too many dots. Can you please try to avoid accessing members with so many dots? Maybe we can keep as a member of the class the Connection or directly the Credentials
                 Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName,
                     ConnectionConfiguration.Connection.Credentials.Password)
             };
