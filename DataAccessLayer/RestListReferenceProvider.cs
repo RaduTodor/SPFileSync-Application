@@ -64,9 +64,8 @@
         {
             var webClient = new WebClient
             {
-                //TODO CR: Too many dots. Can you please try to avoid accessing members with so many dots? Maybe we can keep as a member of the class the Connection or directly the Credentials
-                Credentials = new NetworkCredential(ConnectionConfiguration.Connection.Credentials.UserName,
-                    ConnectionConfiguration.Connection.Credentials.Password)
+                Credentials = new NetworkCredential(ConnectionConfiguration.GetUserName(),
+                    ConnectionConfiguration.GetPassword())
             };
             webClient.Headers.Add(RequestHeaderConstants.AuthAccept, F);
             webClient.Headers.Add(HttpRequestHeader.ContentType, DataAccessLayerConstants.ContentTypeJson);
@@ -106,7 +105,6 @@
         ///     If itemId is -1 then it's obvious it's a POST request and acts as needed
         ///     Elsewhere it's a MERGE request
         /// </summary>
-        /// <param name="uri"></param>
         /// <param name="itemId"></param>
         /// <param name="listName"></param>
         /// <returns></returns>

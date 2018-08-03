@@ -56,5 +56,10 @@
             var metadataProvider = new MetadataProvider(ConnectionConfiguration);
             return metadataProvider.GetCurrentUserUrls(exceptionHandler,internetAccessException);
         }
+
+        public string GetSharepointIdentifier()
+        {
+            return ConnectionConfiguration.Connection.GetSharepointIdentifier();
+        }
     }
 }

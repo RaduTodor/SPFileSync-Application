@@ -107,6 +107,7 @@
     <Compile Include="Helpers\ObservableHashSet.cs" />
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Helpers\PathConfiguration.cs" />
+    <Compile Include="Helpers\ShortcutInformations.cs" />
     <Compile Include="Helpers\ShortcutsHelper.cs" />
     <Compile Include="Helpers\SyncTimeValidator.cs" />
     <Compile Include="Helpers\XmlFileManipulator.cs" />
