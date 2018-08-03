@@ -19,8 +19,7 @@
         public static string GetApplicationDirectory(string wantedResource)
         {
             var path = Directory.GetCurrentDirectory();
-            //TODO [CR BT]: Use culture info  path.IndexOf(ConfigurationMessages.Bin, StringComparison.Ordinal);
-            var removeSegment = path.IndexOf(ConfigurationMessages.Bin);
+            var removeSegment = path.IndexOf(ConfigurationMessages.Bin,StringComparison.Ordinal);
             var resourceFolderPath = ($@"{path.Remove(removeSegment)}{wantedResource}").ToString(CultureInfo.InvariantCulture);
             return resourceFolderPath;
         }
