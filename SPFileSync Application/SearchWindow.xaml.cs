@@ -16,6 +16,7 @@
     /// </summary>
     public partial class SearchWindow : Window
     {
+        //TODO[CR BT]: Remove unused code
         private List<ConnectionConfiguration> _configurations;
         private ObservableHashSet<string> _configurationsURL;
         private FileSearcher _fileSearcher;
