@@ -17,14 +17,14 @@
             ListReferenceProvider = OperationsFactory.GetOperations(type);
             ListReferenceProvider.ConnectionConfiguration = configuration;
         }
-
+        //TODO[CR BT]: Remove unused code
         public FileSearcher() { }
 
         public Task<Dictionary<string, string>> SearchSpFiles(string item)
         {
            return Task.Run(() => SearchFiles(item));
         }
-
+        //TODO[CR BT]: Remove empty lines
         private Dictionary<string, string> SearchFiles(string item)
         {
             

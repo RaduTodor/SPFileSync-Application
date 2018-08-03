@@ -214,6 +214,9 @@
             }
         }
 
+        //TODO[CR BT]: Extract in multiple methods. The code is very hard to be read.
+        //TODO[CR BT]: Do not use "x" variables
+        //TODO[CR BT]: Formate the code as you see above on method GetSearchedXElements
         private Dictionary<string, string> CreateDictionaryFromXelements(Stream receiveStream)
         {
             var wantedElements = GetSearchedXElements(receiveStream);
@@ -231,9 +234,7 @@
             .ToDictionary(x => x.path, x => x.title);
             return elementsDictionary;
         }
-
-
-
+        //TODO[CR BT]: Extract in multiple methods. THere should be two methods here the first one which makes the query and the other one which process the results.
         public override Dictionary<string, string> SearchSPFiles(string wantedItem)
         {
             var request = BuildCommonRequest(string.Format(ApiConstants.SearchItems, wantedItem));

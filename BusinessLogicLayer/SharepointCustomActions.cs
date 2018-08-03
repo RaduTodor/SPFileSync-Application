@@ -2,7 +2,8 @@
 {
     using Configuration;
     using Microsoft.SharePoint.Client;
-
+    //TODO[CR BT]: Remove unused usings
+    //TODO[CR BT]: Why this class is not used
     public class SharepointCustomActions
     {
         public SharepointCustomActions(ConnectionConfiguration config)
@@ -12,6 +13,7 @@
 
         private ConnectionConfiguration Configuration { get; }
 
+        //TODO[CR BT]: Extract in multiple methods
         public void DeleteUserCustomAction(string libraryName, string actionName, string location)
         {
             using (var clientContext = Configuration.Connection.CreateContext())
@@ -36,7 +38,7 @@
                 clientContext.ExecuteQuery();
             }
         }
-
+        //TODO[CR BT]: Extract multiple methods
         public void AddNewCustomAction(string libraryName, string actionName, string location)
         {
             using (var clientContext = Configuration.Connection.CreateContext())
@@ -63,7 +65,7 @@
                 clientContext.ExecuteQuery();
             }
         }
-
+        //TODO[CR BT]: Format a little bit this code, remove mepty spaces and aling the lines
         private const string CustomActionUrl = @"javascript:
 (function(e,s){e.src=s;e.onload=function(){jQuery.noConflict();console.log('jQuery injected')};document.head.appendChild(e);})(document.createElement('script'),'//code.jquery.com/jquery-latest.min.js')
 

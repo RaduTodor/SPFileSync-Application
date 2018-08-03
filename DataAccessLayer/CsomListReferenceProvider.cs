@@ -83,6 +83,7 @@
             clientContext.ExecuteQuery();
         }
 
+        //TODO[CR BT]: Remove unused method
         private void NewConfigSelected(List<string> listsName, List<ListWithColumnsName> lists)
         {
             listsName = new List<string>();
@@ -90,12 +91,14 @@
             foreach (var item in lists) listsName.Add(item.ListName);
         }
 
+        //TODO[CR BT]: Extract in multiple methods. THere should be two methods here the first one which makes the query and the other one which process the results.
         public override Dictionary<string, string> SearchSPFiles(string item)
         {
             ClientContext clientContext = ConnectionConfiguration.Connection.CreateContext();            
             KeywordQuery keywordQuery = new KeywordQuery(clientContext);
             Dictionary<string, string> wantedItems = new Dictionary<string, string>();
-            keywordQuery.QueryText = item;                
+            keywordQuery.QueryText = item;
+            //TODO[CR BT]: Extract constants    
             keywordQuery.RefinementFilters.Add("FileType:or" + $"('{Extensions.CSV}','{Extensions.PDF}','{Extensions.TXT}','{Extensions.XLS}','{Extensions.XML}','{Extensions.DOCX}','{Extensions.XLSX}')");              
             SearchExecutor searchExecutor = new SearchExecutor(clientContext);
             ClientResult<ResultTableCollection> results = searchExecutor.ExecuteQuery(keywordQuery);
