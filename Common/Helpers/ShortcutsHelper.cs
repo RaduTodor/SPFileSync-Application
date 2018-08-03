@@ -16,25 +16,24 @@
         private const string ShortcutApplicationArgument = "-k";
         private const string ShortcutEmptyArgument = "";
 
-        //TODO CR: Too many parameters. Please consider to extract a class with these parameters and use the new class as parameter also in ConstructShortcut method
-        public static void CreateFileShortcut(string fileName, string filePath, string fileDirectoryPath,
-            string arguments)
+        public static void CreateFileShortcut(ShortcutInformations shortcutInformations)
         {
             try
             {
-                if (arguments == ShortcutEmptyArgument)
+                if (shortcutInformations.ShortcutArguments == ShortcutEmptyArgument)
                 {
-                    IWshShortcut shortcut = ConstructShortcut(HelpersConstants.FileShortcutLocation,
-                        HelpersConstants.FileShortcutsDirectory, fileName, filePath, arguments);
-                    shortcut.WorkingDirectory = fileDirectoryPath;
+                    shortcutInformations.ShortcutLocation = HelpersConstants.FileShortcutLocation;
+                    shortcutInformations.ShortcutDirectory = HelpersConstants.FileShortcutsDirectory;
+                    IWshShortcut shortcut = ConstructShortcut(shortcutInformations);
+                    shortcut.WorkingDirectory = shortcutInformations.FileDirectoryPath;
                     shortcut.Save();
                     AddShortcutDirectoryInLibrary(HelpersConstants.FileShortcutsLibraryName, HelpersConstants.FileShortcutsDirectory);
                 }
                 else
                 {
-
-                    IWshShortcut shortcut = ConstructShortcut(HelpersConstants.SharepointFileShortcutLocation,
-                        HelpersConstants.SharepointFileShortcutsDirectory, fileName, filePath, arguments);
+                    shortcutInformations.ShortcutLocation = HelpersConstants.SharepointFileShortcutLocation;
+                    shortcutInformations.ShortcutDirectory = HelpersConstants.SharepointFileShortcutsDirectory;
+                    IWshShortcut shortcut = ConstructShortcut(shortcutInformations);
                     shortcut.Save();
                     AddShortcutDirectoryInLibrary(HelpersConstants.SharepointFileShortcutsLibraryName, HelpersConstants.SharepointFileShortcutsDirectory);
                 }
@@ -46,28 +45,26 @@
             }
         }
 
-        //TODO CR: Too many parameters. 
-        private static IWshShortcut ConstructShortcut(string shortcutLocation, string shortcutDirectory, string fileName, string filePath, string arguments)
+        private static IWshShortcut ConstructShortcut(ShortcutInformations shortcutInformations)
         {
-            if (!File.Exists(string.Format(shortcutLocation, fileName)))
+            if (!File.Exists(string.Format(shortcutInformations.ShortcutLocation, shortcutInformations.FileName)))
             {
-                //TODO CR: Please extract a variable and do not use + when the path is created. Plaese use string format or url utility classes.
-                FileEditingHelper.CreateAccesibleFile(
-                    Directory.GetCurrentDirectory() +
-                    string.Format(shortcutLocation, fileName),
-                    Directory.GetCurrentDirectory() + shortcutDirectory);
+                string filePath =
+                    $"{Directory.GetCurrentDirectory()}{string.Format(shortcutInformations.ShortcutLocation, shortcutInformations.FileName)}";
+                string directoryPath = $"{Directory.GetCurrentDirectory()}{shortcutInformations.ShortcutDirectory}";
+                FileEditingHelper.CreateAccesibleFile(filePath,directoryPath);
 
                 var wsh = new WshShellClass();
-                //TODO CR: Please extract a variable and do not use + when the path is created. Plaese use string format or url utility classes.
-                var shortcut = wsh.CreateShortcut(
-                    Directory.GetCurrentDirectory() +
-                    string.Format(shortcutLocation, fileName)) as IWshShortcut;
+
+                string pathLink =
+                    $"{Directory.GetCurrentDirectory()}{string.Format(shortcutInformations.ShortcutLocation, shortcutInformations.FileName)}";
+                var shortcut = wsh.CreateShortcut(pathLink) as IWshShortcut;
                 if (shortcut != null)
                 {
-                    shortcut.Arguments = arguments;
-                    shortcut.TargetPath = filePath;
+                    shortcut.Arguments = shortcutInformations.ShortcutArguments;
+                    shortcut.TargetPath = shortcutInformations.FilePath;
                     shortcut.WindowStyle = 1;
-                    shortcut.Description = string.Format(HelpersConstants.ShortcutDescription, fileName);
+                    shortcut.Description = string.Format(HelpersConstants.ShortcutDescription, shortcutInformations.FileName);
                     return shortcut;
                 }
             }
@@ -77,10 +74,9 @@
 
         private static void AddShortcutDirectoryInLibrary(string libraryName, string shortcutDirectory)
         {
-            CreateLibrary(libraryName); 
-            //TODO CR: Please extract a variable and do not use + when the path is created. Plaese use string format or url utility classes.
-            AddFolderToLibrary(libraryName,
-                Directory.GetCurrentDirectory() + shortcutDirectory);
+            CreateLibrary(libraryName);
+            string folderPath = $"{Directory.GetCurrentDirectory()}{shortcutDirectory}";
+            AddFolderToLibrary(libraryName,folderPath);
         }
 
         private static void AddFolderToLibrary(string libraryName, string folderPath)
@@ -95,7 +91,7 @@
         {
             try
             {
-                 new ShellLibrary(libraryName, HelpersConstants.WindowsLibrariesLocation, false);
+                new ShellLibrary(libraryName, HelpersConstants.WindowsLibrariesLocation, false);
             }
             catch (Exception exception)
             {
@@ -106,7 +102,14 @@
         public static void CreateUrlShortcut(string fileName, string filePath, string fileDirectoryPath)
         {
             filePath = AddWebDavToTargetPath(filePath);
-            CreateFileShortcut(fileName, filePath, fileDirectoryPath, ShortcutApplicationArgument);
+            ShortcutInformations shortcutInformations = new ShortcutInformations
+            {
+                FileName = fileName,
+                FilePath = filePath,
+                FileDirectoryPath = fileDirectoryPath,
+                ShortcutArguments = ShortcutApplicationArgument
+            };
+            CreateFileShortcut(shortcutInformations);
         }
 
         private static string AddWebDavToTargetPath(string filePath)

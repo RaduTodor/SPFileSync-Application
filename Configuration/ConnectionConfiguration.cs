@@ -44,5 +44,15 @@
 
             return listsNames;
         }
+
+        public string GetUserName()
+        {
+            return Connection.Credentials.UserName;
+        }
+
+        public string GetPassword()
+        {
+            return Connection.Credentials.Password;
+        }
     }
 }

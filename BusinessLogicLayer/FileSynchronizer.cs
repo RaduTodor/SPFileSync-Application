@@ -49,14 +49,11 @@
             try
             {
                 var spData = GetUserUrlsWithDate();
-                
-                //TODO CR: Please create the path using string format or url utility classes
-                var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(
-                    Directory.GetCurrentDirectory() + string.Format(
-                        HelpersConstants.MetadataFileLocation,
-                        //TODO CR: Too many dots. Please keep the ConnectionConfiguration as a member of this class or just find a way to access the method without so many dots. 
-                        ListReferenceProvider.ConnectionConfiguration.Connection.GetSharepointIdentifier()),
-                    Directory.GetCurrentDirectory() + HelpersConstants.ParentDirectory);
+
+                string filePath =
+                    $"{Directory.GetCurrentDirectory()}{string.Format(HelpersConstants.MetadataFileLocation, ListReferenceProvider.GetSharepointIdentifier())}";
+                string directoryPath = $"{Directory.GetCurrentDirectory()}{HelpersConstants.ParentDirectory}";
+                var currentData = CsvMetadataFileManipulator.ReadMetadata<MetadataModel>(filePath, directoryPath);
                 foreach (var model in spData)
                 {
                     if (model.ModifiedDate != DateTime.MinValue)
@@ -64,12 +61,7 @@
                         EnsureFile(model, currentData);
                     }
                 }
-                //TODO CR: Please create the path using string format or url utility classes
-                CsvMetadataFileManipulator.WriteMetadata(Directory.GetCurrentDirectory() + string.Format(
-                                                             HelpersConstants.MetadataFileLocation,
-                                                             ListReferenceProvider.ConnectionConfiguration.Connection
-                                                                 .GetSharepointIdentifier()),
-                    currentData);
+                CsvMetadataFileManipulator.WriteMetadata(filePath, currentData);
                 ProgressUpdate?.Invoke(this, ConfigurationNumber);
             }
             catch (Exception exception)
@@ -89,9 +81,7 @@
             var match = currentData.FirstOrDefault(x => x.Url == model.Url);
             string fileName = ParsingHelpers.ParseUrlFileName(model.Url);
             string directoryPath = ListReferenceProvider.ConnectionConfiguration.DirectoryPath;
-            string filePath = string.Format(HelpersConstants.FilePath,
-                directoryPath,
-                fileName);
+            string filePath = string.Format(HelpersConstants.FilePath, directoryPath, fileName);
             if (match != null && match.ModifiedDate < model.ModifiedDate)
             {
                 DownloadFileAndAddMetadata(true, currentData, model);
@@ -99,7 +89,7 @@
             }
             else
             {
-                
+
                 if (!File.Exists(filePath))
                 {
                     DownloadFileAndAddMetadata(false, currentData, model);
