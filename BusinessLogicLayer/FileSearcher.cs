@@ -1,15 +1,11 @@
-﻿using Common.ApplicationEnums;
-using Configuration;
-using DataAccessLayer;
-//TODO CR: Please remove unused using and add the rest inside the namespace
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BusinessLogicLayer
+﻿namespace BusinessLogicLayer
 {
+    using Common.ApplicationEnums;
+    using Configuration;
+    using DataAccessLayer;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     public class FileSearcher
     {
         private FileOperationProvider FileOperationProvider { get; }

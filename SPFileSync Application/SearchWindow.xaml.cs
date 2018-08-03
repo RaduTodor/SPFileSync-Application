@@ -1,26 +1,16 @@
-﻿using BusinessLogicLayer;
-using Common.ApplicationEnums;
-using Common.Constants;
-using Common.Helpers;
-using Configuration;
-using Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-//TODO CR: Remove unused using and move the rest inside the namespace
-namespace SPFileSync_Application
+﻿namespace SPFileSync_Application
 {
+    using BusinessLogicLayer;
+    using Common.ApplicationEnums;
+    using Common.Constants;
+    using Common.Helpers;
+    using Configuration;
+    using Models;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
     /// <summary>
     /// Interaction logic for SearchWindow.xaml
     /// </summary>
