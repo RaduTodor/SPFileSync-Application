@@ -8,7 +8,6 @@
     ///     Manages ListReference with an instance of BaseListReferenceProvider
     /// </summary>
     /// 
-    ///TODO[CR BT]: Extract code ducplication. Each method has two lines that are the same. Extract them in a method and call it on constructor if it's the case.
     public class ListReferenceManager
     {
         public ListReferenceManager(ConnectionConfiguration configuration, ListReferenceProviderType type)
@@ -28,15 +27,12 @@
         /// <param name="listName"></param>
         public void AddSyncListItem(string listName, string url)
         {
-            var listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
-            listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
-            listReferenceProvider.AddListReferenceItem(listName, new Uri(url));
+            GetListReferenceProvider().AddListReferenceItem(listName, new Uri(url));
         }
 
         public void AddItemToSyncList(string url)
         {
-            var listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
-            listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
+            GetListReferenceProvider();
         }
 
         /// <summary>
@@ -46,9 +42,7 @@
         /// <param name="listName"></param>
         public void RemoveSyncListItem(string listName, int id)
         {
-            var listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
-            listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
-            listReferenceProvider.RemoveListReferenceItem(listName, id);
+            GetListReferenceProvider().RemoveListReferenceItem(listName, id);
         }
 
         /// <summary>
@@ -59,16 +53,19 @@
         /// <param name="listName"></param>
         public void ChangeSyncListItem(string url, int id, string listName)
         {
+            GetListReferenceProvider().ChangeListReferenceItem(new Uri(url), id, listName);
+        }
+
+        private DataAccessLayer.BaseListReferenceProvider GetListReferenceProvider()
+        {
             var listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
             listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
-            listReferenceProvider.ChangeListReferenceItem(new Uri(url), id, listName);
+            return listReferenceProvider;
         }
 
         public void SearchFiles(string item)
         {
-            var listReferenceProvider = OperationsFactory.GetOperations(ProviderType);
-            listReferenceProvider.ConnectionConfiguration = ConnectionConfiguration;
-            listReferenceProvider.SearchSPFiles(item);
+            GetListReferenceProvider().SearchSPFiles(item);
         }
 
     }
