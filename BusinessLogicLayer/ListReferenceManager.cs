@@ -7,6 +7,8 @@
     /// <summary>
     ///     Manages ListReference with an instance of BaseListReferenceProvider
     /// </summary>
+    /// 
+    ///TODO[CR BT]: Extract code ducplication. Each method has two lines that are the same. Extract them in a method and call it on constructor if it's the case.
     public class ListReferenceManager
     {
         public ListReferenceManager(ConnectionConfiguration configuration, ListReferenceProviderType type)

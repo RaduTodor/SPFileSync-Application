@@ -110,6 +110,7 @@
         /// <returns></returns>
         private HttpWebRequest CreateRequest(int itemId, string listName)
         {
+            //TOCO[CR BT]:extract code duplication in a method
             if (itemId == -1)
             {
                 var httpWebRequest = BuildCommonRequest(string.Format(ApiConstants.ListItemsApi, listName));
