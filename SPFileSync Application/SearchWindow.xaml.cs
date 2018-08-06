@@ -16,11 +16,9 @@
     /// </summary>
     public partial class SearchWindow : Window
     {
-        //TODO[CR BT]: Remove unused code
         private List<ConnectionConfiguration> _configurations;
         private ObservableHashSet<string> _configurationsURL;
         private FileSearcher _fileSearcher;
-        private NotifyUI _notifyUI = new NotifyUI();
         private Dictionary<string, string> _searchedElements;
         private ObservableCollection<string> _listsName;
         private ObservableCollection<string> _dictionaryValues;

@@ -214,34 +214,52 @@
             }
         }
 
-        //TODO[CR BT]: Extract in multiple methods. The code is very hard to be read.
-        //TODO[CR BT]: Do not use "x" variables
-        //TODO[CR BT]: Formate the code as you see above on method GetSearchedXElements
+        private List<string> GetElementsPath(IEnumerable<XElement> wantedElements)
+        {
+            var elementsPath = wantedElements
+                .Elements(DataAccessLayerConstants.DNamespace + SearchConstants.Element)
+                .Where(element => element.Element(DataAccessLayerConstants.DNamespace + SearchConstants.Key)
+                .Value.StartsWith(SearchConstants.ElementPath))
+                .Select(element => element.Value.Remove(SearchConstants.RemoveStartIndex, SearchConstants.ElementPath.Length)
+                .Replace(SearchConstants.UselessTitleSegment, ""))
+                .ToList();
+            return elementsPath;
+        }
+
+        private List<string> GetElementsTitle(IEnumerable<XElement> wantedElements)
+        {
+            var elementsTitle = wantedElements.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.Element)
+                 .Where(element => element.Element(DataAccessLayerConstants.DNamespace + SearchConstants.Key)
+                 .Value.Equals(SearchConstants.Title))
+                 .Select(element => element.Value.Remove(SearchConstants.RemoveStartIndex, SearchConstants.Title.Length)
+                 .Replace(SearchConstants.UselessTitleSegment, ""))
+                 .ToList();
+            return elementsTitle;
+        }
+
         private Dictionary<string, string> CreateDictionaryFromXelements(Stream receiveStream)
         {
             var wantedElements = GetSearchedXElements(receiveStream);
-            var elementsPath = wantedElements.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.Element).
-            Where(x => x.Element(DataAccessLayerConstants.DNamespace + SearchConstants.Key).
-            Value.StartsWith(SearchConstants.ElementPath))
-            .Select(x => x.Value.Remove(SearchConstants.RemoveStartIndex, SearchConstants.ElementPath.Length).Replace(SearchConstants.UselessTitleSegment, ""))
-            .ToList();
-            var elementsTitle = wantedElements.Elements(DataAccessLayerConstants.DNamespace + SearchConstants.Element)
-                .Where(x => x.Element(DataAccessLayerConstants.DNamespace + SearchConstants.Key).
-            Value.Equals(SearchConstants.Title))
-            .Select(x => x.Value.Remove(SearchConstants.RemoveStartIndex, SearchConstants.Title.Length).Replace(SearchConstants.UselessTitleSegment, ""))
-            .ToList();
-            var elementsDictionary = elementsPath.Zip(elementsTitle, (path, title) => new { path, title })
-            .ToDictionary(x => x.path, x => x.title);
+            var elementsPath = GetElementsPath(wantedElements);
+            var elementsTitle = GetElementsTitle(wantedElements);                  
+            var elementsDictionary = elementsPath
+                .Zip(elementsTitle, (path, title) => new { path, title })
+                .ToDictionary(element => element.path, element => element.title);
             return elementsDictionary;
         }
-        //TODO[CR BT]: Extract in multiple methods. THere should be two methods here the first one which makes the query and the other one which process the results.
-        public override Dictionary<string, string> SearchSPFiles(string wantedItem)
+
+        private Stream GetResponse(string wantedItem)
         {
             var request = BuildCommonRequest(string.Format(ApiConstants.SearchItems, wantedItem));
             var response = (HttpWebResponse)request.GetResponse();
             Stream receiveStream = response.GetResponseStream();
+            return receiveStream;
+        }
+      
+        public override Dictionary<string, string> SearchSPFiles(string wantedItem)
+        {          
             Dictionary<string, string> searchedElementsOnWantedSiteCollection = new Dictionary<string, string>();
-            var elementsDictionary = CreateDictionaryFromXelements(receiveStream);
+            var elementsDictionary = CreateDictionaryFromXelements(GetResponse(wantedItem));
             foreach (var element in elementsDictionary)
             {
                 if (element.Key.StartsWith(ConnectionConfiguration.Connection.UriString))

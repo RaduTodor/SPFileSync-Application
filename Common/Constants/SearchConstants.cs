@@ -25,5 +25,7 @@
         public const string Key = "Key";
 
         public const string UselessTitleSegment = "Edm.String";
+
+        public const string FileType = "FileType:or";
     }
 }
